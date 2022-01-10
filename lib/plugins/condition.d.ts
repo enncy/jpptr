@@ -1,25 +1,13 @@
-import { Page } from "puppeteer-core";
+import { PluginContext } from ".";
 import { Action } from "../core/types";
+declare const _default: {
+    name: string;
+    invoke({ page, frame, json }: PluginContext<ConditionPluginJSON>): Promise<Action[] | undefined>;
+};
 /**
  * 条件判断插件
  */
-export declare class ConditionPlugin {
-    invoke(page: Page, json: ConditionPluginJSON): Promise<Action[] | undefined>;
-    /**
-     * 处理 if 语句
-     * @param page 页面
-     * @param ifJSON 语句体
-     */
-    if(page: Page, ifJSON: ConditionJSON): Promise<Action[] | undefined>;
-    /**
-     * 处理条件
-     * @param page page 页面
-     * @param conditions 条件构造体
-     * @param handler 处理器
-     * @returns
-     */
-    handle(page: Page, conditions: ConditionWrapper, handler: (condition: string, str: string) => boolean | Promise<boolean>): Promise<boolean>;
-}
+export default _default;
 export interface ConditionWrapper {
     url?: string;
     cookie?: string;

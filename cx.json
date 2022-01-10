@@ -1,0 +1,27 @@
+{
+    "options": {
+        "executablePath": "C:/Program Files/Google/Chrome/Application/chrome.exe",
+        "defaultViewport": null,
+        "headless": false
+    },
+    "actions": [
+        ["goto", "https://passport2.chaoxing.com/login?loginType=4&fid=10649&newversion=true&refer=http://i.mooc.chaoxing.com"],
+        ["type", "#phone", "18275719980"],
+        ["type", "#pwd", "skeleton132525"],
+        ["click", "#phoneLoginBtn"],
+        ["waitForNavigation"],
+        ["waitForTimeout", 3000],
+        {
+            "use": "frame",
+            "name": "frame_content",
+            "actions": [["click", "#courseList > li  img"]]
+        },
+        ["click", "div"],
+        {
+            "use": "module",
+            "path": "E:\\github\\enncy\\json-puppeteer\\test.js"
+        },
+        ["waitForTimeout", 3000],
+        ["close"]
+    ]
+}

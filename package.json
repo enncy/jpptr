@@ -25,6 +25,7 @@
   },
   "homepage": "https://github.com/enncy/json-puppeteer#readme",
   "dependencies": {
+    "@types/node": "^17.0.8",
     "axios": "^0.24.0",
     "puppeteer-core": "^13.0.1",
     "reflect-metadata": "^0.1.13"

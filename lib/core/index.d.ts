@@ -1,7 +1,7 @@
-import { Page } from "puppeteer-core";
+import { Frame, Page } from "puppeteer-core";
 import "reflect-metadata";
 import { JSONPlugin } from "../plugins";
-import { Action, ArrayAction, JSONExecutor, ObjectAction } from "./types";
+import { Action, ActionExecutor, ArrayAction, JSONExecutor, ObjectAction } from "./types";
 /**
  * 数组解析器
  */
@@ -14,19 +14,21 @@ export declare class ArrayExecutor extends JSONExecutor {
  */
 export declare class ObjectExecutor extends JSONExecutor {
     page: Page;
+    mainFrame: Frame;
     plugins: JSONPlugin[];
     arrayExecutor: ArrayExecutor;
-    constructor(page: Page);
-    execute(action: ObjectAction): Promise<Action[] | undefined>;
+    constructor(page: Page, mainFrame: Frame);
+    execute(action: ObjectAction): Promise<ActionExecutor | undefined>;
 }
 /**
  * 默认的解析器
  */
 export declare class DefaultExecutor extends JSONExecutor {
     page: Page;
+    mainFrame: Frame;
     arrayExecutor: ArrayExecutor;
     objectExecutor: ObjectExecutor;
-    constructor(page: Page);
+    constructor(page: Page, mainFrame: Frame);
     execute(action: Action): Promise<void>;
-    executeAll(actions: Action[]): Promise<void>;
+    executeAll(actionExecutor: ActionExecutor): Promise<void>;
 }

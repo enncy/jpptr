@@ -1,8 +1,13 @@
-import { Page } from "puppeteer-core";
+import { PluginContext } from ".";
+/**
+ * 外部脚本加载插件
+ */
 export declare class ExternalPlugin {
-    invoke(page: Page, json: any): Promise<void>;
+    invoke({ page, frame, json }: PluginContext): Promise<void>;
 }
 export interface ExternalPluginJSON {
-    url: string;
-    file: string;
+    url?: string;
+    path?: string;
+    content?: string;
+    frame?: string;
 }

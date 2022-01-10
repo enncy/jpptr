@@ -1,10 +1,13 @@
-import { Page } from "puppeteer-core";
-import { Action } from "../core/types";
+import { Frame, Page } from "puppeteer-core";
+import { Action, ActionExecutor } from "../core/types";
+export interface PluginContext<T> {
+    page: Page;
+    frame: Frame;
+    json: T;
+}
 export interface JSONPlugin {
-    invoke(page: Page, json: any): void | undefined | Action[] | Promise<void | undefined | Action[]>;
+    name: string;
+    invoke(ctx: PluginContext<any>): void | undefined | ActionExecutor | Action[] | Promise<void | undefined | ActionExecutor | Action[]>;
 }
-export interface JSONPluginConstructor {
-    new (): JSONPlugin;
-}
-declare let plugin: JSONPluginConstructor[];
+declare let plugin: JSONPlugin[];
 export default plugin;

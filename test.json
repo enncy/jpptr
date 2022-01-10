@@ -36,6 +36,9 @@
             ]
         },
         ["waitForTimeout", 3000],
-        ["close"]
+        {
+            "use":"external",
+            "url":"https://cdn.jsdelivr.net/npm/axios@0.24.0/dist/axios.min.js"
+        }
     ]
 }

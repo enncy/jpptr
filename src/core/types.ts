@@ -1,4 +1,4 @@
-import { LaunchOptions, BrowserLaunchArgumentOptions, BrowserConnectOptions, Product, Page } from "puppeteer-core";
+import { LaunchOptions, BrowserLaunchArgumentOptions, BrowserConnectOptions, Product, Page, Frame } from "puppeteer-core";
 
 export function Plugin(name: string): ClassDecorator {
     return (target: any) => {
@@ -14,7 +14,7 @@ export type PuppeteerOptions = LaunchOptions &
     };
 
 export abstract class JSONExecutor {
-    constructor(public page: Page) {}
+    constructor(public page: Page,public mainFrame:Frame) {}
     abstract execute(...args: any[]): any;
 }
 
@@ -26,6 +26,11 @@ export type ObjectAction = {
 export type ArrayAction = [string, ...(string | number)[]];
 
 export type Action = ArrayAction | ObjectAction;
+
+export interface ActionExecutor {
+    frame: Frame;
+    actions: Action[];
+}
 
 export interface JSONSchema {
     options?: PuppeteerOptions;

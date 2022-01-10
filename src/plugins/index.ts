@@ -1,15 +1,23 @@
-import { Page } from "puppeteer-core";
-import { Action } from "../core/types";
-import { ConditionPlugin } from "./condition";
-import { FunctionPlugin } from "./function";
+import { Browser, Frame, Page } from "puppeteer-core";
+import { Action, ActionExecutor } from "../core/types";
+import ConditionPlugin from "./condition";
+import ScriptPlugin from "./script";
+import FramePlugin from "./frame";
+import FunctionPlugin from "./function";
+import ModulePlugin from "./module";
+
+export interface PluginContext<T> {
+    browser:Browser
+    page: Page;
+    frame: Frame;
+    json: T;
+}
 
 export interface JSONPlugin {
-    invoke(page: Page, json: any): void | undefined | Action[] | Promise<void | undefined | Action[]>;
-}
-export interface JSONPluginConstructor {
-    new (): JSONPlugin;
+    name: string;
+    run(ctx: PluginContext<any>): void | undefined | ActionExecutor | Action[] | Promise<void | undefined | ActionExecutor | Action[]>;
 }
 
-let plugin: JSONPluginConstructor[] = [ConditionPlugin, FunctionPlugin];
+let plugin: JSONPlugin[] = [ConditionPlugin, FunctionPlugin, ScriptPlugin, FramePlugin, ModulePlugin];
 
 export default plugin;

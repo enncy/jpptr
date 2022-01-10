@@ -1,0 +1,41 @@
+{
+    "options": {
+        "executablePath": "C:/Program Files/Google/Chrome/Application/chrome.exe",
+        "defaultViewport": null,
+        "headless": false
+    },
+    "actions": [
+        {
+            "use": "function",
+            "name": "goto",
+            "args": ["https://baidu.com"]
+        },
+        {
+            "use": "function",
+            "name": "screenshot",
+            "args": [
+                {
+                    "path": "./test.png"
+                }
+            ]
+        },
+        {
+            "use": "condition",
+            "if": {
+                "match": {
+                    "text": "百度一下"
+                },
+                "actions": [
+                    ["type", "#kw", "typescript"],
+                    ["click", "[type=\"submit\"]"]
+                ]
+            },
+            "else": [
+                ["type", "#kw", "javascript"],
+                ["click", "[type=\"submit\"]"]
+            ]
+        },
+        ["waitForTimeout", 3000],
+        ["close"]
+    ]
+}

@@ -1,0 +1,32 @@
+{
+  "name": "json-puppeteer",
+  "version": "1.0.0",
+  "description": "operate puppeteer with json",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "tsc && node ./lib/index"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/enncy/json-puppeteer.git"
+  },
+  "keywords": [
+    "puppeteer",
+    "json",
+    "headless-chrome",
+    "nodejs",
+    "typescript"
+  ],
+  "author": "enncy",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/enncy/json-puppeteer/issues"
+  },
+  "homepage": "https://github.com/enncy/json-puppeteer#readme",
+  "dependencies": {
+    "axios": "^0.24.0",
+    "puppeteer-core": "^13.0.1",
+    "reflect-metadata": "^0.1.13"
+  }
+}

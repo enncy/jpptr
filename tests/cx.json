@@ -14,12 +14,20 @@
         {
             "use": "frame",
             "name": "frame_content",
-            "actions": [["click", "#courseList > li  img"], ["waitForTimeout", 6000], ["close"]]
+            "actions": [
+                ["click", "#courseList > li  img"],
+                ["waitForTimeout", 3000],
+                {
+                    "use": "function",
+                    "name": "close",
+                    "page": -1
+                }
+            ]
         },
 
         {
             "use": "module",
-            "path": "E:\\github\\enncy\\json-puppeteer\\test.js"
+            "path": "E:\\github\\enncy\\jsonsep\\tests\\test-plugin.js"
         },
         ["waitForTimeout", 3000],
         ["close"]

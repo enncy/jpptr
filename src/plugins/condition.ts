@@ -1,6 +1,5 @@
- 
-import { PluginContext } from ".";
-import { Action  } from "../core/types";
+import { Frame, Page } from "puppeteer-core";
+import { Action, ObjectAction, PluginContext } from ".";
 
 /**
  * 条件判断插件
@@ -8,15 +7,15 @@ import { Action  } from "../core/types";
 
 export default {
     name: "condition",
-    async run({ browser, page, frame, action }: PluginContext<ConditionPluginParam>): Promise<Action[] | undefined> {
+    async run({ page, frame, action }: PluginContext<ConditionPluginParam>): Promise<Action[] | undefined> {
         if (action.if) {
-            let actions = await handleIf({ page, frame, action: action.if });
+            let actions = await handleIf(page, frame, action.if);
             if (actions) {
                 return actions;
             }
         } else if (action["else if"]) {
             for (const elseif of action["else if"]) {
-                let action = await handleIf({ page, frame, action: elseif });
+                let action = await handleIf(page, frame, elseif);
                 if (action) {
                     return action;
                 }
@@ -30,22 +29,21 @@ export default {
 /**
  * 处理 if 语句
  */
-async function handleIf({ page, frame, action }: Omit<PluginContext<ConditionParam>, "browser">): Promise<Action[] | undefined> {
-    let _if = action;
+async function handleIf(page: Page, frame: Frame, param: ConditionParam): Promise<Action[] | undefined> {
     // 处理正则表达式判断
-    if (_if.match && (await handleCondition({ page, frame, action }, _if.match, (cdt, str) => RegExp(cdt).test(str)))) {
-        return _if.actions;
+    if (param.match && (await handleCondition({ page, frame, conditions: param.match, handler: (cdt, str) => RegExp(cdt).test(str) }))) {
+        return param.actions;
     }
     // 处理字符串包含判断
-    else if (_if.include && handleCondition({ page, frame, action }, _if.include, (cdt, str) => str.indexOf(cdt) !== -1)) {
-        return _if.actions;
+    else if (param.include && handleCondition({ page, frame, conditions: param.include, handler: (cdt, str) => str.indexOf(cdt) !== -1 })) {
+        return param.actions;
     }
 }
 
 /**
  * 处理条件
  */
-async function handleCondition({ page, frame }: Omit<PluginContext<ConditionParam>, "browser">, conditions: ConditionWrapper, handler: (condition: string, str: string) => boolean | Promise<boolean>): Promise<boolean> {
+async function handleCondition({ page, frame, conditions, handler }: { page: Page; frame: Frame; conditions: ConditionWrapper; handler: (condition: string, str: string) => boolean | Promise<boolean> }): Promise<boolean> {
     let cdt = conditions;
     // 判断页面链接
     if (cdt.url) {
@@ -84,7 +82,7 @@ export interface ConditionWrapper {
     selector?: string;
 }
 
-export interface ConditionPluginParam {
+export interface ConditionPluginParam extends ObjectAction {
     if: ConditionParam;
     "else if": ConditionParam[];
     else: Action[];

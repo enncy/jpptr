@@ -1,14 +1,23 @@
 import { Browser, Frame, Page } from "puppeteer-core";
-import { Action } from "../core/types";
-export interface PluginContext<T> {
+export interface ObjectAction {
+    [x: string]: any;
+    use: string;
+    frame?: string;
+    page?: number;
+    actions?: Action[];
+}
+export declare type ArrayAction = [string, ...(string | number)[]];
+export declare type Action = ArrayAction | ObjectAction;
+export interface PluginContext<T extends Action> {
     browser: Browser;
     page: Page;
     frame: Frame;
-    json: T;
+    action: T;
 }
-export interface JSONPlugin {
+export interface Plugin {
     name: string;
-    run(ctx: PluginContext<any>): void | undefined | PluginContext<any> | Action[] | Promise<void | undefined | PluginContext<any> | Action[]>;
+    run(ctx: PluginContext<any>): void | undefined | PluginContext<Action> | Action[] | Promise<void | undefined | PluginContext<Action> | Action[]>;
 }
-declare let plugin: JSONPlugin[];
+export declare function switchPluginContext(ctx: PluginContext<any>): Promise<PluginContext<any>>;
+declare let plugin: Plugin[];
 export default plugin;

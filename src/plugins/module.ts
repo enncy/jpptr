@@ -1,4 +1,4 @@
-import { Plugin, PluginContext } from ".";
+import { ObjectAction, Plugin, PluginContext } from ".";
 
 /**
  * 脚本加载插件
@@ -14,6 +14,6 @@ export default {
     },
 };
 
-export interface ModulePluginParam {
+export interface ModulePluginParam  extends ObjectAction {
     path?: string;
 }

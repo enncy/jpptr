@@ -1,8 +1,7 @@
-import { PluginContext } from ".";
-import { Action } from "../core/types";
+import { Action, ObjectAction, PluginContext } from ".";
 declare const _default: {
     name: string;
-    run({ browser, page, frame, json }: PluginContext<ConditionPluginJSON>): Promise<Action[] | undefined>;
+    run({ page, frame, action }: PluginContext<ConditionPluginParam>): Promise<Action[] | undefined>;
 };
 /**
  * 条件判断插件
@@ -14,12 +13,12 @@ export interface ConditionWrapper {
     text?: string;
     selector?: string;
 }
-export interface ConditionPluginJSON {
-    if: ConditionJSON;
-    "else if": ConditionJSON[];
+export interface ConditionPluginParam extends ObjectAction {
+    if: ConditionParam;
+    "else if": ConditionParam[];
     else: Action[];
 }
-export interface ConditionJSON {
+export interface ConditionParam {
     include?: ConditionWrapper;
     match?: ConditionWrapper;
     actions: Action[];

@@ -1,12 +1,12 @@
-import { PluginContext } from ".";
+import { ObjectAction, PluginContext } from ".";
 declare const _default: {
     name: string;
-    run({ browser, page, frame, json }: PluginContext<ModulePluginJSON>): Promise<void | import("../core/types").Action[] | PluginContext<any>>;
+    run({ browser, page, frame, action }: PluginContext<ModulePluginParam>): Promise<void | import(".").Action[] | PluginContext<import(".").Action>>;
 };
 /**
  * 脚本加载插件
  */
 export default _default;
-export interface ModulePluginJSON {
+export interface ModulePluginParam extends ObjectAction {
     path?: string;
 }

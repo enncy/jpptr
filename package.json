@@ -2,9 +2,9 @@
     "name": "jsonsep",
     "version": "1.0.0",
     "description": "a json syntactic sugar for execute puppeteer",
-    "main": "index.js",
+    "main": "./lib/index.js",
     "scripts": {
-        "test": "tsc && mocha"
+        "test": "tsc && mocha tests"
     },
     "repository": {
         "type": "git",

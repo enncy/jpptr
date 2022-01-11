@@ -1,6 +1,6 @@
- 
-import { PluginContext } from ".";
- 
+import { Target } from "puppeteer-core";
+import { ObjectAction, PluginContext } from ".";
+import { executePageFunction } from "../core/utils";
 
 /**
  * 函数执行插件
@@ -9,16 +9,11 @@ import { PluginContext } from ".";
 export default {
     name: "function",
     async run({ page, frame, action }: PluginContext<FunctionPluginParam>) {
-        const fun = Reflect.get(frame, action.name);
-        if (typeof fun === "function") {
-            await Reflect.apply(fun, frame, action.args);
-        } else {
-            // warning...
-        }
+        executePageFunction(page, frame, action.name, action.args);
     },
 };
 
-export interface FunctionPluginParam {
+export interface FunctionPluginParam extends ObjectAction {
     name: string;
     args: (string | number)[];
 }

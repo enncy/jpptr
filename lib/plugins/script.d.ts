@@ -1,13 +1,12 @@
 import { FrameAddScriptTagOptions } from "puppeteer-core";
-import { PluginContext } from ".";
+import { ObjectAction, PluginContext } from ".";
 declare const _default: {
     name: string;
-    run({ page, frame, json }: PluginContext<ScriptPluginJSON>): Promise<void>;
+    run({ frame, action }: PluginContext<ScriptPluginParam>): Promise<void>;
 };
 /**
  * 脚本加载插件
  */
 export default _default;
-export interface ScriptPluginJSON extends FrameAddScriptTagOptions {
-    frame?: string;
+export interface ScriptPluginParam extends FrameAddScriptTagOptions, ObjectAction {
 }

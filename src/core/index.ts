@@ -1,35 +1,19 @@
+
 import "reflect-metadata";
-import Plugins, { Plugin, PluginContext } from "../plugins";
+import Plugins, { Action, ArrayAction, ObjectAction, Plugin, PluginContext, switchPluginContext } from "../plugins";
 import { Executor } from "./types";
+import { executePageFunction } from "./utils";
+
+
 
 /**
  * 数组解析器
  */
 export class ArrayExecutor extends Executor {
-    async execute(ctx: PluginContext<any>) {
-        console.log(ctx.action);
-
-        if (ctx.action.length) {
-            let key = ctx.action.shift();
-            if (key) {
-                const fun = Reflect.get(ctx.frame, key);
-                if (fun) {
-                    if (typeof fun === "function") {
-                        await Reflect.apply(fun, ctx.frame, ctx.action);
-                    }
-                } else {
-                    const pageFun = Reflect.get(ctx.page, key);
-                    if (pageFun) {
-                        if (typeof pageFun === "function") {
-                            await Reflect.apply(pageFun, ctx.page, ctx.action);
-                        }
-                    } else {
-                        // warning...
-                    }
-                }
-            }
-        } else {
-            // warning...
+    async execute(ctx: PluginContext<ArrayAction>) {
+        let [name, ...args] = ctx.action;
+        if (name) {
+            executePageFunction(ctx.page, ctx.frame, name, args);
         }
     }
 }
@@ -48,23 +32,23 @@ export class ObjectExecutor extends Executor {
         this.plugins = Plugins;
     }
 
-    async execute(ctx: PluginContext<any>) {
+    async execute(ctx: PluginContext<ObjectAction>) {
         if (ctx.action.use) {
             // 执行插件方法
             for (const plugin of this.plugins) {
                 if (plugin.name === ctx.action.use) {
                     // 运行插件
-                    const invokeAction = await plugin.run(ctx);
+                    const result = await plugin.run(ctx);
                     // 如果存在返回值，则处理
-                    if (invokeAction) {
+                    if (result) {
                         // 如果返回新的执行列表，则执行
-                        if (Array.isArray(invokeAction)) {
-                            ctx.action = invokeAction;
+                        if (Array.isArray(result)) {
+                            ctx.action.actions = result;
                             return ctx;
                         }
                         // 如果返回新的上下文，则直接使用此上下文
-                        else if (invokeAction.frame) {
-                            return invokeAction;
+                        else {
+                            return result;
                         }
                     }
                 }
@@ -82,28 +66,28 @@ export class DefaultExecutor extends Executor {
 
     constructor() {
         super();
-
         this.arrayExecutor = new ArrayExecutor();
         this.objectExecutor = new ObjectExecutor();
     }
 
     async execute(ctx: PluginContext<any>) {
-        if (typeof ctx.action !== "object") {
+        if (typeof ctx.action !== "object" && Array.isArray(ctx.action)) {
             // warning...
         } else {
             if (Array.isArray(ctx.action)) {
                 await this.arrayExecutor.execute(ctx);
             } else {
-                const actionExecutor = await this.objectExecutor.execute(ctx);
-                if (actionExecutor) {
-                    await this.executeAll(actionExecutor);
+                const newCtx = await this.objectExecutor.execute(await switchPluginContext(ctx));
+                // 如果返回的上下文中 操作带有子操作的，则执行子操作
+                if (newCtx && !Array.isArray(newCtx.action) && newCtx.action.actions) {
+                    await this.executeAll(newCtx.action.actions, newCtx);
                 }
             }
         }
     }
 
-    async executeAll(ctx: PluginContext<any>) {
-        for (const action of ctx.action) {
+    async executeAll(actions: Action[], ctx: Omit<PluginContext<any>, "action">) {
+        for (const action of actions) {
             try {
                 await this.execute({
                     ...ctx,

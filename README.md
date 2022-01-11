@@ -1,2 +1,2 @@
-# json-puppeteer
-operate puppeteer with json
+# jsonsep
+> a json syntactic sugar for execute puppeteer

@@ -1,30 +1,35 @@
-import { Frame, Page } from "puppeteer-core";
 import "reflect-metadata";
-import Plugins, { JSONPlugin } from "../plugins";
-import { Action, ActionExecutor, ArrayAction, JSONExecutor, ObjectAction } from "./types";
+import Plugins, { Plugin, PluginContext } from "../plugins";
+import { Executor } from "./types";
 
 /**
  * 数组解析器
  */
-export class ArrayExecutor extends JSONExecutor {
-    async execute(action: ArrayAction) {
-        let key = action.shift();
-        if (key) {
-            const fun = Reflect.get(this.mainFrame, key);
-            if (fun) {
-                if (typeof fun === "function") {
-                    await Reflect.apply(fun, this.mainFrame, action);
-                }
-            } else {
-                const pageFun = Reflect.get(this.page, key);
-                if (pageFun) {
-                    if (typeof pageFun === "function") {
-                        await Reflect.apply(pageFun, this.page, action);
+export class ArrayExecutor extends Executor {
+    async execute(ctx: PluginContext<any>) {
+        console.log(ctx.action);
+
+        if (ctx.action.length) {
+            let key = ctx.action.shift();
+            if (key) {
+                const fun = Reflect.get(ctx.frame, key);
+                if (fun) {
+                    if (typeof fun === "function") {
+                        await Reflect.apply(fun, ctx.frame, ctx.action);
                     }
                 } else {
-                    // warning...
+                    const pageFun = Reflect.get(ctx.page, key);
+                    if (pageFun) {
+                        if (typeof pageFun === "function") {
+                            await Reflect.apply(pageFun, ctx.page, ctx.action);
+                        }
+                    } else {
+                        // warning...
+                    }
                 }
             }
+        } else {
+            // warning...
         }
     }
 }
@@ -33,36 +38,32 @@ export class ArrayExecutor extends JSONExecutor {
  * 对象解析器
  * 加载内置插件，并对json进行解析运行
  */
-export class ObjectExecutor extends JSONExecutor {
-    plugins: JSONPlugin[];
+export class ObjectExecutor extends Executor {
+    plugins: Plugin[];
     arrayExecutor: ArrayExecutor;
 
-    constructor(public page: Page, public mainFrame: Frame) {
-        super(page, mainFrame);
-        this.arrayExecutor = new ArrayExecutor(page, mainFrame);
+    constructor() {
+        super();
+        this.arrayExecutor = new ArrayExecutor();
         this.plugins = Plugins;
     }
 
-    async execute(action: ObjectAction) {
-        if (action.use) {
+    async execute(ctx: PluginContext<any>) {
+        if (ctx.action.use) {
             // 执行插件方法
             for (const plugin of this.plugins) {
-                if (plugin.name === action.use) {
+                if (plugin.name === ctx.action.use) {
                     // 运行插件
-                    const invokeAction = await plugin.run({
-                        browser:this.page.browser(),
-                        page: this.page,
-                        frame: this.mainFrame,
-                        json: action,
-                    });
+                    const invokeAction = await plugin.run(ctx);
                     // 如果存在返回值，则处理
                     if (invokeAction) {
+                        // 如果返回新的执行列表，则执行
                         if (Array.isArray(invokeAction)) {
-                            return {
-                                actions: invokeAction,
-                                frame: this.page.mainFrame(),
-                            } as ActionExecutor;
-                        } else if (invokeAction.frame) {
+                            ctx.action = invokeAction;
+                            return ctx;
+                        }
+                        // 如果返回新的上下文，则直接使用此上下文
+                        else if (invokeAction.frame) {
                             return invokeAction;
                         }
                     }
@@ -75,25 +76,25 @@ export class ObjectExecutor extends JSONExecutor {
 /**
  * 默认的解析器
  */
-export class DefaultExecutor extends JSONExecutor {
+export class DefaultExecutor extends Executor {
     arrayExecutor: ArrayExecutor;
     objectExecutor: ObjectExecutor;
 
-    constructor(public page: Page, public mainFrame: Frame) {
-        super(page, mainFrame);
-        this.mainFrame = page.mainFrame();
-        this.arrayExecutor = new ArrayExecutor(this.page, this.mainFrame);
-        this.objectExecutor = new ObjectExecutor(this.page, this.mainFrame);
+    constructor() {
+        super();
+
+        this.arrayExecutor = new ArrayExecutor();
+        this.objectExecutor = new ObjectExecutor();
     }
 
-    async execute(action: Action) {
-        if (typeof action !== "object") {
+    async execute(ctx: PluginContext<any>) {
+        if (typeof ctx.action !== "object") {
             // warning...
         } else {
-            if (Array.isArray(action)) {
-                await this.arrayExecutor.execute(action);
+            if (Array.isArray(ctx.action)) {
+                await this.arrayExecutor.execute(ctx);
             } else {
-                const actionExecutor = await this.objectExecutor.execute(action);
+                const actionExecutor = await this.objectExecutor.execute(ctx);
                 if (actionExecutor) {
                     await this.executeAll(actionExecutor);
                 }
@@ -101,15 +102,13 @@ export class DefaultExecutor extends JSONExecutor {
         }
     }
 
-    async executeAll(actionExecutor: ActionExecutor) {
-        for (const action of actionExecutor.actions) {
+    async executeAll(ctx: PluginContext<any>) {
+        for (const action of ctx.action) {
             try {
-                let frame = this.mainFrame;
-                this.arrayExecutor.mainFrame = actionExecutor.frame;
-                this.objectExecutor.mainFrame = actionExecutor.frame;
-                await this.execute(action);
-                this.arrayExecutor.mainFrame = frame;
-                this.objectExecutor.mainFrame = frame;
+                await this.execute({
+                    ...ctx,
+                    action,
+                });
             } catch (e) {
                 console.error(["error", e]);
             }

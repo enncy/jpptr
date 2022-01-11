@@ -1,7 +1,7 @@
 
 module.exports = {
     name:'test',
-    invoke({page,frame,json}){
+    run({page,frame,json}){
         console.log("test",json);
     }
 }

@@ -1,7 +1,7 @@
 import { PluginContext } from ".";
 declare const _default: {
     name: string;
-    invoke({ page, frame, json }: PluginContext<FunctionPluginJSON>): Promise<void>;
+    run({ page, frame, json }: PluginContext<FunctionPluginJSON>): Promise<void>;
 };
 /**
  * 函数执行插件

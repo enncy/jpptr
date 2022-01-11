@@ -1,11 +1,6 @@
 import { LaunchOptions, BrowserLaunchArgumentOptions, BrowserConnectOptions, Product, Page, Frame } from "puppeteer-core";
-
-export function Plugin(name: string): ClassDecorator {
-    return (target: any) => {
-        Reflect.defineMetadata("plugin:name", name, target);
-    };
-}
-
+import { PluginContext } from "../plugins";
+ 
 export type PuppeteerOptions = LaunchOptions &
     BrowserLaunchArgumentOptions &
     BrowserConnectOptions & {
@@ -13,9 +8,8 @@ export type PuppeteerOptions = LaunchOptions &
         extraPrefsFirefox?: Record<string, unknown>;
     };
 
-export abstract class JSONExecutor {
-    constructor(public page: Page,public mainFrame:Frame) {}
-    abstract execute(...args: any[]): any;
+export abstract class Executor {
+    abstract execute<T extends Action>(ctx: PluginContext<T>): any;
 }
 
 export type ObjectAction = {
@@ -27,12 +21,7 @@ export type ArrayAction = [string, ...(string | number)[]];
 
 export type Action = ArrayAction | ObjectAction;
 
-export interface ActionExecutor {
-    frame: Frame;
-    actions: Action[];
-}
-
-export interface JSONSchema {
+export interface JsonsepSchema {
     options?: PuppeteerOptions;
     actions: Action[];
 }

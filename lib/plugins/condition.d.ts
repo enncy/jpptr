@@ -2,7 +2,7 @@ import { PluginContext } from ".";
 import { Action } from "../core/types";
 declare const _default: {
     name: string;
-    invoke({ page, frame, json }: PluginContext<ConditionPluginJSON>): Promise<Action[] | undefined>;
+    run({ browser, page, frame, json }: PluginContext<ConditionPluginJSON>): Promise<Action[] | undefined>;
 };
 /**
  * 条件判断插件

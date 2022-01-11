@@ -1,7 +1,7 @@
 import { PluginContext } from ".";
 declare const _default: {
     name: string;
-    invoke({ page, frame, json }: PluginContext<ModulePluginJSON>): Promise<void | import("../core/types").ActionExecutor | import("../core/types").Action[]>;
+    run({ browser, page, frame, json }: PluginContext<ModulePluginJSON>): Promise<void | import("../core/types").Action[] | PluginContext<any>>;
 };
 /**
  * 脚本加载插件

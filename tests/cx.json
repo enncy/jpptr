@@ -14,9 +14,9 @@
         {
             "use": "frame",
             "name": "frame_content",
-            "actions": [["click", "#courseList > li  img"]]
+            "actions": [["click", "#courseList > li  img"], ["waitForTimeout", 6000], ["close"]]
         },
-        ["click", "div"],
+
         {
             "use": "module",
             "path": "E:\\github\\enncy\\json-puppeteer\\test.js"

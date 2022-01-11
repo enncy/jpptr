@@ -1,14 +1,12 @@
-import { LaunchOptions, BrowserLaunchArgumentOptions, BrowserConnectOptions, Product, Page, Frame } from "puppeteer-core";
+import { LaunchOptions, BrowserLaunchArgumentOptions, BrowserConnectOptions, Product } from "puppeteer-core";
+import { PluginContext } from "../plugins";
 export declare function Plugin(name: string): ClassDecorator;
 export declare type PuppeteerOptions = LaunchOptions & BrowserLaunchArgumentOptions & BrowserConnectOptions & {
     product?: Product;
     extraPrefsFirefox?: Record<string, unknown>;
 };
 export declare abstract class JSONExecutor {
-    page: Page;
-    mainFrame: Frame;
-    constructor(page: Page, mainFrame: Frame);
-    abstract execute(...args: any[]): any;
+    abstract execute<T extends Action>(ctx: PluginContext<T>): any;
 }
 export declare type ObjectAction = {
     [x: string]: any;
@@ -16,10 +14,6 @@ export declare type ObjectAction = {
 };
 export declare type ArrayAction = [string, ...(string | number)[]];
 export declare type Action = ArrayAction | ObjectAction;
-export interface ActionExecutor {
-    frame: Frame;
-    actions: Action[];
-}
 export interface JSONSchema {
     options?: PuppeteerOptions;
     actions: Action[];

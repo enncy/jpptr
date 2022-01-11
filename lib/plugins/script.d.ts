@@ -2,7 +2,7 @@ import { FrameAddScriptTagOptions } from "puppeteer-core";
 import { PluginContext } from ".";
 declare const _default: {
     name: string;
-    invoke({ page, frame, json }: PluginContext<ScriptPluginJSON>): Promise<void>;
+    run({ page, frame, json }: PluginContext<ScriptPluginJSON>): Promise<void>;
 };
 /**
  * 脚本加载插件

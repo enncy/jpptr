@@ -1,11 +1,13 @@
-import { Frame } from "puppeteer-core";
+import { Frame, Page } from "puppeteer-core";
 import { PluginContext } from ".";
 import { Action } from "../core/types";
 declare const _default: {
     name: string;
-    invoke({ page, frame, json }: PluginContext<FramePluginJSON>): {
-        actions: Action[];
+    run({ browser, page, frame, json }: PluginContext<FramePluginJSON>): {
+        browser: import("puppeteer-core").Browser;
+        page: Page;
         frame: Frame;
+        json: Action[];
     } | undefined;
 };
 /**

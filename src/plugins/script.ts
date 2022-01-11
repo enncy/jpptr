@@ -1,17 +1,16 @@
-import { Frame, FrameAddScriptTagOptions, Page } from "puppeteer-core";
+import { FrameAddScriptTagOptions } from "puppeteer-core";
 import { PluginContext } from ".";
-import { Plugin } from "../core/types";
 
 /**
  * 脚本加载插件
  */
 export default {
     name: "script",
-    async run({ page, frame, json }: PluginContext<ScriptPluginJSON>) {
-        await frame.addScriptTag(json);
+    async run({ page, frame, action }: PluginContext<ScriptPluginParam>) {
+        await frame.addScriptTag(action);
     },
 };
 
-export interface ScriptPluginJSON extends FrameAddScriptTagOptions {
+export interface ScriptPluginParam extends FrameAddScriptTagOptions {
     frame?: string;
 }

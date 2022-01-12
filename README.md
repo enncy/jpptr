@@ -68,3 +68,7 @@ module.exports = {
 };
 
 ```
+run
+```shell
+node index.js
+```

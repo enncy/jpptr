@@ -2,7 +2,10 @@
 > a json syntactic sugar for execute puppeteer
 
 ## example
-
+install `jsonsep`
+```shell
+npm install jsonsep
+```
 test.json
 ```json
 {

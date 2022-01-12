@@ -1,10 +1,10 @@
 lockfileVersion: 5.3
 
 specifiers:
-  jsonsep: 1.0.0
+  jsonsep: ^1.0.1
 
 dependencies:
-  jsonsep: 1.0.0
+  jsonsep: 1.0.1
 
 packages:
 
@@ -197,8 +197,8 @@ packages:
     resolution: {integrity: sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==}
     dev: false
 
-  /jsonsep/1.0.0:
-    resolution: {integrity: sha512-Gv3cGEj3bDx5TCKTorZlEGfvygI4N7fkcDHhanIkifMSu+Dw+wHlsy0dDKPDti4fi4u78wtBoFUgL38+LcnF3w==}
+  /jsonsep/1.0.1:
+    resolution: {integrity: sha512-Zr7frWU3jCRw2tf8suH6jHaxRHSi3UfyVRXhEzgK7cU7HuQiaGpcvopbR1yWLP/4+L4Rf3j2gVUaUojBxfjzOQ==}
     dependencies:
       '@types/node': 17.0.8
       '@types/should': 13.0.0

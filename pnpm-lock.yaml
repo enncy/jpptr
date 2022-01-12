@@ -2,7 +2,6 @@ lockfileVersion: 5.3
 
 specifiers:
   '@types/node': ^17.0.8
-  '@types/should': ^13.0.0
   axios: ^0.24.0
   mocha: ^9.1.3
   puppeteer-core: ^13.0.1
@@ -10,28 +9,19 @@ specifiers:
   should: ^13.2.3
 
 dependencies:
-  '@types/node': 17.0.8
-  '@types/should': 13.0.0
   axios: 0.24.0
   puppeteer-core: 13.0.1
   reflect-metadata: 0.1.13
-  should: 13.2.3
 
 devDependencies:
+  '@types/node': 17.0.8
   mocha: 9.1.3
+  should: 13.2.3
 
 packages:
 
   /@types/node/17.0.8:
     resolution: {integrity: sha512-YofkM6fGv4gDJq78g4j0mMuGMkZVxZDgtU0JRdx6FgiJDG+0fY0GKVolOV8WqVmEhLCXkQRjwDdKyPxJp/uucg==}
-    dev: false
-
-  /@types/should/13.0.0:
-    resolution: {integrity: sha512-Mi6YZ2ABnnGGFMuiBDP0a8s1ZDCDNHqP97UH8TyDmCWuGGavpsFMfJnAMYaaqmDlSCOCNbVLHBrSDEOpx/oLhw==}
-    deprecated: This is a stub types definition for should.js (https://github.com/shouldjs/should.js). should.js provides its own type definitions, so you don't need @types/should installed!
-    dependencies:
-      should: 13.2.3
-    dev: false
 
   /@types/yauzl/2.9.2:
     resolution: {integrity: sha512-8uALY5LTvSuHgloDVUvWP3pIauILm+8/0pDMokuDYIoNsOkSwd5AiHBTSEJjKTDcZr5z8UpgOWZkxBF4iJftoA==}
@@ -692,29 +682,29 @@ packages:
     resolution: {integrity: sha512-ZP36TMrK9euEuWQYBig9W55WPC7uo37qzAEmbjHz4gfyuXrEUgF8cUvQVO+w+d3OMfPvSRQJ22lSm8MQJ43LTA==}
     dependencies:
       should-type: 1.4.0
-    dev: false
+    dev: true
 
   /should-format/3.0.3:
     resolution: {integrity: sha1-m/yPdPo5IFxT04w01xcwPidxJPE=}
     dependencies:
       should-type: 1.4.0
       should-type-adaptors: 1.1.0
-    dev: false
+    dev: true
 
   /should-type-adaptors/1.1.0:
     resolution: {integrity: sha512-JA4hdoLnN+kebEp2Vs8eBe9g7uy0zbRo+RMcU0EsNy+R+k049Ki+N5tT5Jagst2g7EAja+euFuoXFCa8vIklfA==}
     dependencies:
       should-type: 1.4.0
       should-util: 1.0.1
-    dev: false
+    dev: true
 
   /should-type/1.4.0:
     resolution: {integrity: sha1-B1bYzoRt/QmEOmlHcZ36DUz/XPM=}
-    dev: false
+    dev: true
 
   /should-util/1.0.1:
     resolution: {integrity: sha512-oXF8tfxx5cDk8r2kYqlkUJzZpDBqVY/II2WhvU0n9Y3XYvAYRmeaf1PvvIvTgPnv4KJ+ES5M0PyDq5Jp+Ygy2g==}
-    dev: false
+    dev: true
 
   /should/13.2.3:
     resolution: {integrity: sha512-ggLesLtu2xp+ZxI+ysJTmNjh2U0TsC+rQ/pfED9bUZZ4DKefP27D+7YJVVTvKsmjLpIi9jAa7itwDGkDDmt1GQ==}
@@ -724,7 +714,7 @@ packages:
       should-type: 1.4.0
       should-type-adaptors: 1.1.0
       should-util: 1.0.1
-    dev: false
+    dev: true
 
   /string-width/4.2.3:
     resolution: {integrity: sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==}

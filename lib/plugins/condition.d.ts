@@ -1,25 +1,26 @@
-import { Action, ObjectAction, PluginContext } from ".";
+import { Action, ObjectAction, ActionContext } from ".";
 declare const _default: {
     name: string;
-    run({ page, frame, action }: PluginContext<ConditionPluginParam>): Promise<Action[] | undefined>;
+    run({ page, frame, action }: ActionContext<ConditionPluginParam>): Promise<Action[]>;
 };
 /**
  * 条件判断插件
  */
 export default _default;
-export interface ConditionWrapper {
+interface ConditionWrapper {
     url?: string;
     cookie?: string;
     text?: string;
     selector?: string;
 }
 export interface ConditionPluginParam extends ObjectAction {
+    use: "condition";
     if: ConditionParam;
-    "else if": ConditionParam[];
+    elif: ConditionParam[];
     else: Action[];
 }
-export interface ConditionParam {
+interface ConditionParam {
     include?: ConditionWrapper;
     match?: ConditionWrapper;
-    actions: Action[];
+    actions?: Action[];
 }

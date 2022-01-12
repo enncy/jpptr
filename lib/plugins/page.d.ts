@@ -1,7 +1,7 @@
-import { Action, ObjectAction, PluginContext } from ".";
+import { ObjectAction, ActionContext } from ".";
 declare const _default: {
     name: string;
-    run({ browser, page, frame, action }: PluginContext<PagePluginParam>): Promise<{
+    run({ browser, page, frame, action }: ActionContext<PagePluginParam>): Promise<{
         browser: import("puppeteer-core").Browser;
         page: import("puppeteer-core").Page;
         frame: import("puppeteer-core").Frame;
@@ -13,7 +13,6 @@ declare const _default: {
  */
 export default _default;
 export interface PagePluginParam extends ObjectAction {
+    use: "page";
     index?: number;
-    page?: number;
-    actions: Action[];
 }

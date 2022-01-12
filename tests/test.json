@@ -5,40 +5,29 @@
         "headless": false
     },
     "actions": [
+        ["goto", "https://enncy.github.io/jsonsep/test.html"],
+        ["type", "#username", "enncy"],
+        ["type", "#password", "123456"],
+        ["click", "#submit"],
+        ["waitForTimeout", 3000],
+        ["click", "#example"],
+        ["waitForTimeout", 3000],
         {
+            "page": -1,
             "use": "function",
-            "name": "goto",
-            "args": ["https://baidu.com"]
-        },
-        {
-            "use": "function",
-            "name": "screenshot",
-            "args": [
+            "name": "evaluate",
+            "args": ["alert('hello json')"],
+            "wait": false,
+            "actions": [
                 {
-                    "path": "./test.png"
-                }
-            ]
-        },
-        {
-            "use": "condition",
-            "if": {
-                "match": {
-                    "text": "百度一下"
+                    "use": "module",
+                    "path": "./tests/close-dialog-plugin.js"
                 },
-                "actions": [
-                    ["type", "#kw", "typescript"],
-                    ["click", "[type=\"submit\"]"]
-                ]
-            },
-            "else": [
-                ["type", "#kw", "javascript"],
-                ["click", "[type=\"submit\"]"]
+                ["waitForTimeout", 3000],
+                ["close"]
             ]
         },
         ["waitForTimeout", 3000],
-        {
-            "use":"external",
-            "url":"https://cdn.jsdelivr.net/npm/axios@0.24.0/dist/axios.min.js"
-        }
+        ["close"]
     ]
 }

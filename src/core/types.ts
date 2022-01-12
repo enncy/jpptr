@@ -1,5 +1,6 @@
 import { LaunchOptions, BrowserLaunchArgumentOptions, BrowserConnectOptions, Product, Page, Frame } from "puppeteer-core";
-import { Action, PluginContext } from "../plugins";
+import { Action, ObjectAction, ActionContext } from "../plugins";
+import "reflect-metadata";
 
 export type PuppeteerOptions = LaunchOptions &
     BrowserLaunchArgumentOptions &
@@ -8,10 +9,19 @@ export type PuppeteerOptions = LaunchOptions &
         extraPrefsFirefox?: Record<string, unknown>;
     };
 
-export abstract class Executor {
-    abstract execute(ctx: PluginContext<any>): any;
+export interface Executor {
+    execute(ctx: ActionContext<ObjectAction>): Promise<ActionContext<ObjectAction> | undefined>;
 }
 
+export interface ActionParser {
+    parse(action: Action): ObjectAction | undefined;
+}
+
+export function Parser(name: string): ClassDecorator {
+    return (target: any) => {
+        Reflect.defineMetadata("parser:name", name, target);
+    };
+}
 
 export interface JsonsepSchema {
     options?: PuppeteerOptions;

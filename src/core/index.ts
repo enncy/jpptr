@@ -1,96 +1,53 @@
+import { ObjectExecutor } from "./executor/ObjectExecutor";
+import { ActionContext, Action, ObjectAction, ActionParser } from "..";
 
-import "reflect-metadata";
-import Plugins, { Action, ArrayAction, ObjectAction, Plugin, PluginContext, switchPluginContext } from "../plugins";
-import { Executor } from "./types";
-import { executePageFunction } from "./utils";
+import { ArrayParser } from "./parser/ArrayParser";
 
+import { Parsers } from "./parser";
+import { ParserFactory } from "./parser/ParserFactory";
+import { Browser, Frame, Page } from "puppeteer-core";
 
-
-/**
- * 数组解析器
- */
-export class ArrayExecutor extends Executor {
-    async execute(ctx: PluginContext<ArrayAction>) {
-        let [name, ...args] = ctx.action;
-        if (name) {
-            executePageFunction(ctx.page, ctx.frame, name, args);
-        }
-    }
+export interface JsonsepOptions {
+    parserNames?: (keyof Parsers)[];
 }
 
-/**
- * 对象解析器
- * 加载内置插件，并对json进行解析运行
- */
-export class ObjectExecutor extends Executor {
-    plugins: Plugin[];
-    arrayExecutor: ArrayExecutor;
+export class Jsonsep {
+    private parsers: ActionParser[];
+    private parserFactory: ParserFactory = new ParserFactory();
+    private objectExecutor: ObjectExecutor = new ObjectExecutor();
 
-    constructor() {
-        super();
-        this.arrayExecutor = new ArrayExecutor();
-        this.plugins = Plugins;
+    constructor(options?: JsonsepOptions) {
+        this.parsers = this.parserFactory.all(options?.parserNames || ["array", "page", "frame"]);
     }
 
-    async execute(ctx: PluginContext<ObjectAction>) {
-        if (ctx.action.use) {
-            // 执行插件方法
-            for (const plugin of this.plugins) {
-                if (plugin.name === ctx.action.use) {
-                    // 运行插件
-                    const result = await plugin.run(ctx);
-                    // 如果存在返回值，则处理
-                    if (result) {
-                        // 如果返回新的执行列表，则执行
-                        if (Array.isArray(result)) {
-                            ctx.action.actions = result;
-                            return ctx;
-                        }
-                        // 如果返回新的上下文，则直接使用此上下文
-                        else {
-                            return result;
-                        }
-                    }
-                }
-            }
+    parse(action: Action): ObjectAction {
+        for (const parser of this.parsers) {
+            action = parser.parse(action) || action;
         }
-    }
-}
-
-/**
- * 默认的解析器
- */
-export class DefaultExecutor extends Executor {
-    arrayExecutor: ArrayExecutor;
-    objectExecutor: ObjectExecutor;
-
-    constructor() {
-        super();
-        this.arrayExecutor = new ArrayExecutor();
-        this.objectExecutor = new ObjectExecutor();
+        return action as ObjectAction;
     }
 
-    async execute(ctx: PluginContext<any>) {
-        if (typeof ctx.action !== "object" && Array.isArray(ctx.action)) {
-            // warning...
-        } else {
-            if (Array.isArray(ctx.action)) {
-                await this.arrayExecutor.execute(ctx);
-            } else {
-                const newCtx = await this.objectExecutor.execute(await switchPluginContext(ctx));
-                // 如果返回的上下文中 操作带有子操作的，则执行子操作
-                if (newCtx && !Array.isArray(newCtx.action) && newCtx.action.actions) {
-                    await this.executeAll(newCtx.action.actions, newCtx);
-                }
-            }
+    parseAll(actions: Action[]) {
+        return actions.map((action) => this.parse(action));
+    }
+
+    async execute(ctx: ActionContext<Action>) {
+        ctx.action = this.parse(ctx.action);
+        const newContext = await this.objectExecutor.execute(ctx as ActionContext<ObjectAction>);
+        // 如果返回的上下文中 操作带有子操作的，则执行子操作
+        if (newContext && !Array.isArray(newContext.action) && newContext.action.actions) {
+            await this.executeAll(newContext.action.actions, newContext);
         }
     }
 
-    async executeAll(actions: Action[], ctx: Omit<PluginContext<any>, "action">) {
-        for (const action of actions) {
+    /** 全部解析 */
+    async executeAll(actions: Action[], options: ExecuteOptions) {
+        for (let action of actions) {
             try {
                 await this.execute({
-                    ...ctx,
+                    browser: options.browser || options.page.browser(),
+                    page: options.page,
+                    frame: options.frame || options.page.mainFrame(),
                     action,
                 });
             } catch (e) {
@@ -98,4 +55,10 @@ export class DefaultExecutor extends Executor {
             }
         }
     }
+}
+
+export interface ExecuteOptions {
+    browser?: Browser;
+    page: Page;
+    frame?: Frame;
 }

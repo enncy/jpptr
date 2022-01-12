@@ -1,5 +1,5 @@
 import { Frame, Page } from "puppeteer-core";
-import { Action, ObjectAction, PluginContext } from ".";
+import { Action, ObjectAction, Plugin, ActionContext } from ".";
 
 /**
  * 条件判断插件
@@ -7,22 +7,20 @@ import { Action, ObjectAction, PluginContext } from ".";
 
 export default {
     name: "condition",
-    async run({ page, frame, action }: PluginContext<ConditionPluginParam>): Promise<Action[] | undefined> {
-        if (action.if) {
-            let actions = await handleIf(page, frame, action.if);
-            if (actions) {
-                return actions;
+    async run({ page, frame, action }: ActionContext<ConditionPluginParam>) {
+        let { actions = [] } = action;
+
+        // 条件列表
+        let ifs = [action.if].concat(action.elif);
+
+        for (const _if of ifs) {
+            // 处理条件，直到某个返回一个操作列表
+            let ifActions = await handleIf(page, frame, action.if);
+            if (ifActions) {
+                return actions.concat(ifActions);
             }
-        } else if (action["else if"]) {
-            for (const elseif of action["else if"]) {
-                let action = await handleIf(page, frame, elseif);
-                if (action) {
-                    return action;
-                }
-            }
-        } else {
-            return action.else;
         }
+        return actions.concat(action.else);
     },
 };
 
@@ -32,11 +30,11 @@ export default {
 async function handleIf(page: Page, frame: Frame, param: ConditionParam): Promise<Action[] | undefined> {
     // 处理正则表达式判断
     if (param.match && (await handleCondition({ page, frame, conditions: param.match, handler: (cdt, str) => RegExp(cdt).test(str) }))) {
-        return param.actions;
+        return param?.actions || [];
     }
     // 处理字符串包含判断
     else if (param.include && handleCondition({ page, frame, conditions: param.include, handler: (cdt, str) => str.indexOf(cdt) !== -1 })) {
-        return param.actions;
+        return param?.actions || [];
     }
 }
 
@@ -62,7 +60,12 @@ async function handleCondition({ page, frame, conditions, handler }: { page: Pag
     }
     // 判断页面是否含有子串
     if (cdt.text) {
+        // html 内容
         if (handler(cdt.text, await frame.content()) || handler(cdt.text, await page.content())) {
+            return true;
+        }
+        // 纯文字内容
+        if (handler(cdt.text, await frame.evaluate(() => document.body.innerText)) || handler(cdt.text, await page.evaluate(() => document.body.innerText))) {
             return true;
         }
     }
@@ -75,21 +78,24 @@ async function handleCondition({ page, frame, conditions, handler }: { page: Pag
     return false;
 }
 
-export interface ConditionWrapper {
+interface ConditionWrapper {
     url?: string;
     cookie?: string;
     text?: string;
     selector?: string;
 }
 
-export interface ConditionPluginParam extends ObjectAction {
+export interface ConditionPluginParam extends ObjectAction  {
+    use: "condition";
     if: ConditionParam;
-    "else if": ConditionParam[];
+    elif: ConditionParam[];
     else: Action[];
 }
-
-export interface ConditionParam {
+interface ConditionParam {
+    // 是否包含某个子串
     include?: ConditionWrapper;
+    // 是否匹配某个子串
     match?: ConditionWrapper;
-    actions: Action[];
+    // 子操作
+    actions?: Action[];
 }

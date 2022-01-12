@@ -1,29 +1,22 @@
-import "reflect-metadata";
-import { Action, ArrayAction, ObjectAction, Plugin, PluginContext } from "../plugins";
-import { Executor } from "./types";
-/**
- * 数组解析器
- */
-export declare class ArrayExecutor extends Executor {
-    execute(ctx: PluginContext<ArrayAction>): Promise<void>;
+import { ActionContext, Action, ObjectAction } from "..";
+import { Parsers } from "./parser";
+import { Browser, Frame, Page } from "puppeteer-core";
+export interface JsonsepOptions {
+    parserNames?: (keyof Parsers)[];
 }
-/**
- * 对象解析器
- * 加载内置插件，并对json进行解析运行
- */
-export declare class ObjectExecutor extends Executor {
-    plugins: Plugin[];
-    arrayExecutor: ArrayExecutor;
-    constructor();
-    execute(ctx: PluginContext<ObjectAction>): Promise<PluginContext<Action> | undefined>;
+export declare class Jsonsep {
+    private parsers;
+    private parserFactory;
+    private objectExecutor;
+    constructor(options?: JsonsepOptions);
+    parse(action: Action): ObjectAction;
+    parseAll(actions: Action[]): ObjectAction[];
+    execute(ctx: ActionContext<Action>): Promise<void>;
+    /** 全部解析 */
+    executeAll(actions: Action[], options: ExecuteOptions): Promise<void>;
 }
-/**
- * 默认的解析器
- */
-export declare class DefaultExecutor extends Executor {
-    arrayExecutor: ArrayExecutor;
-    objectExecutor: ObjectExecutor;
-    constructor();
-    execute(ctx: PluginContext<any>): Promise<void>;
-    executeAll(actions: Action[], ctx: Omit<PluginContext<any>, "action">): Promise<void>;
+export interface ExecuteOptions {
+    browser?: Browser;
+    page: Page;
+    frame?: Frame;
 }

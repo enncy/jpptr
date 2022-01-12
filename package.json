@@ -4,7 +4,7 @@
     "description": "a json syntactic sugar for execute puppeteer",
     "main": "./lib/index.js",
     "scripts": {
-        "test": "tsc && mocha tests"
+        "test": "tsc && mocha tests -t 60000"
     },
     "repository": {
         "type": "git",
@@ -25,9 +25,11 @@
     "homepage": "https://github.com/enncy/json-puppeteer#readme",
     "dependencies": {
         "@types/node": "^17.0.8",
+        "@types/should": "^13.0.0",
         "axios": "^0.24.0",
         "puppeteer-core": "^13.0.1",
-        "reflect-metadata": "^0.1.13"
+        "reflect-metadata": "^0.1.13",
+        "should": "^13.2.3"
     },
     "devDependencies": {
         "mocha": "^9.1.3"

@@ -3,6 +3,9 @@
     "version": "1.0.0",
     "description": "a json syntactic sugar for execute puppeteer",
     "main": "./lib/index.js",
+    "files": [
+        "lib"
+    ],
     "scripts": {
         "test": "tsc && mocha tests -t 60000"
     },

@@ -28,7 +28,7 @@ test.json
             "actions": [
                 {
                     "use": "module",
-                    "path": "./tests/close-dialog-plugin.js"
+                    "path": "./close-dialog-plugin.js"
                 },
                 ["waitForTimeout", 3000],
                 ["close"]
@@ -40,9 +40,28 @@ test.json
 }
 
 ```
-test.js
+index.js
 ```js
 const { start } = require("jsonsep");
-const json = require(path.resolve(__dirname, "./test.json"))
-start(json)
+const json = require("./test.json");
+
+start(json);
+
+```
+close-dialog-plugin.js
+```js
+module.exports = {
+    name: "close-dialog-plugin",
+    run({ page, frame, json }) {
+        return new Promise((resolve, reject) => {
+            page.once("dialog", async (dialog) => {
+                setTimeout(async () => {
+                    await dialog.dismiss();
+                    resolve();
+                }, 3000);
+            });
+        });
+    },
+};
+
 ```

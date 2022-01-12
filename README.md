@@ -1,7 +1,8 @@
 # jsonsep
 > a json syntactic sugar for execute puppeteer
 
-## example
+
+## Quickly Start
 install `jsonsep`
 ```shell
 npm install jsonsep
@@ -72,3 +73,7 @@ run
 ```shell
 node index.js
 ```
+
+## Sample
+
+all the sample see [https://github.com/enncy/jsonsep/tree/main/sample](https://github.com/enncy/jsonsep/tree/main/sample)

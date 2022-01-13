@@ -1,26 +1,16 @@
-import { Action, Plugin, ActionContext } from "../..";
-import { Executor } from "../types";
-import Plugins, { ObjectAction, PluginReturnType } from "../../plugins";
+import { Action, ActionContext } from "../..";
+import { ObjectAction, PluginFunction, PluginReturnType } from "../../plugins";
 /**
- * 对象解析器
+ * 插件执行器
  * 加载内置插件，并对json进行解析运行
  */
-export class ObjectExecutor implements Executor {
-    plugins: Plugin<Action>[];
+export class PluginExecutor {
+    constructor() {}
 
-    constructor() {
-        this.plugins = Plugins;
-    }
-
-    async execute(ctx: ActionContext<ObjectAction>) {
-        // 执行插件方法
-        for (const plugin of this.plugins) {
-            if (plugin.name === ctx.action.use) {
-                // 运行插件
-                const result = await plugin.run(ctx);
-                return this.resolveReturnValue(ctx, result);
-            }
-        }
+    async execute(plugin: PluginFunction<Action>, ctx: ActionContext<ObjectAction>) {
+        // 运行插件
+        const result = await plugin(ctx);
+        return this.resolveReturnValue(ctx, result);
     }
 
     /**

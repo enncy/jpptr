@@ -1,30 +1,20 @@
 import { Browser, Frame, Page } from "puppeteer-core";
-import ConditionPlugin, { ConditionPluginParam } from "./condition";
-import ScriptPlugin, { ScriptPluginParam } from "./script";
-import FramePlugin, { FramePluginParam } from "./frame";
-import PagePlugin, { PagePluginParam } from "./page";
-import FunctionPlugin, { FunctionPluginParam } from "./function";
-import ModulePlugin, { ModulePluginParam } from "./module";
+import { ConditionPluginParam } from "./condition";
+import { FramePlugin, FramePluginParam } from "./frame";
+import { PagePlugin, PagePluginParam } from "./page";
+import { FunctionPluginParam } from "./function";
+import { ModulePluginParam } from "./module";
 
 export interface ObjectAction {
-    use: keyof ObjectActionParams;
+    use: string;
     frame?: string;
     page?: number;
     actions?: Action[];
 }
 
-export interface ObjectActionParams {
-    condition: ConditionPluginParam;
-    script: ScriptPluginParam;
-    frame: FramePluginParam;
-    page: PagePluginParam;
-    function: FunctionPluginParam;
-    module: ModulePluginParam;
-}
-
 export type ArrayAction = [string, ...(string | number | boolean)[]];
 
-export type Action = ArrayAction | ObjectAction | ConditionPluginParam | ScriptPluginParam | FramePluginParam | PagePluginParam | FunctionPluginParam | ModulePluginParam;
+export type Action = ArrayAction | ObjectAction | ConditionPluginParam | FramePluginParam | PagePluginParam | FunctionPluginParam | ModulePluginParam;
 
 export interface ActionContext<T extends Action> {
     browser: Browser;
@@ -33,12 +23,9 @@ export interface ActionContext<T extends Action> {
     action: T;
 }
 
-export type PluginReturnType<T extends Action> = undefined | T[] | ActionContext<T>;
+export type PluginReturnType<T extends Action> = void | undefined | T[] | ActionContext<T>;
 
-export interface Plugin<T extends Action> {
-    name: keyof ObjectActionParams;
-    run(ctx: ActionContext<any>): PluginReturnType<T> | Promise<PluginReturnType<T>>;
-}
+export type PluginFunction<T extends Action> = (ctx: ActionContext<any>) => PluginReturnType<T> | Promise<PluginReturnType<T>>;
 
 /**
  * 转换插件上下文
@@ -51,18 +38,12 @@ export async function switchActionContext(ctx: ActionContext<any>) {
         // warning...
     } else {
         if (ctx.action.page) {
-            ctx = await PagePlugin.run(ctx);
+            ctx = await PagePlugin(ctx);
         }
         if (ctx.action.frame) {
-            ctx = await FramePlugin.run(ctx);
+            ctx = await FramePlugin(ctx);
         }
     }
 
     return ctx;
 }
-
-let plugin: Plugin<Action>[] = [ConditionPlugin, FunctionPlugin, ScriptPlugin, FramePlugin, PagePlugin, ModulePlugin] as Plugin<Action>[];
-
-export default plugin;
-
-export { ConditionPlugin, FunctionPlugin, ScriptPlugin, FramePlugin, PagePlugin, ModulePlugin };

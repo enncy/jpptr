@@ -9,13 +9,11 @@ export type PuppeteerOptions = LaunchOptions &
         extraPrefsFirefox?: Record<string, unknown>;
     };
 
-export interface Executor {
-    execute(ctx: ActionContext<ObjectAction>): Promise<ActionContext<ObjectAction> | undefined>;
-}
-
 export interface ActionParser {
     parse(action: Action): ObjectAction | undefined;
 }
+
+export type ParserFunction = (action: Action) => ObjectAction | undefined;
 
 export function Parser(name: string): ClassDecorator {
     return (target: any) => {

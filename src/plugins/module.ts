@@ -1,23 +1,21 @@
-import { Action, ObjectAction, Plugin, ActionContext } from ".";
+import { Action, ObjectAction, ActionContext, PluginFunction } from ".";
 import fs from "fs";
 import path from "path";
+
+export const MODULE_PLUGIN_NAME = "module";
 
 /**
  * 脚本加载插件
  */
 
-export default {
-    name: "module",
-    async run({ browser, page, frame, action }: ActionContext<ModulePluginParam>) {
-        if (action.path) {
-            let modulePath = fs.existsSync(action.path) ? path.resolve(action.path) : path.resolve(__dirname, action.path);
-            const plugin: Plugin<Action> = require(modulePath);
-            return await plugin.run({ browser, page, frame, action });
-        }
-    },
-};
+export async function ModulePlugin({ browser, page, frame, action }: ActionContext<ModulePluginParam>) {
+    if (action.path) {
+        let modulePath = fs.existsSync(path.resolve(action.path)) ? path.resolve(action.path) : path.resolve(__dirname, action.path);
 
+        const plugin: PluginFunction<Action> = require(modulePath);
+        return await plugin({ browser, page, frame, action });
+    }
+}
 export interface ModulePluginParam extends ObjectAction {
-    use: "module";
     path?: string;
 }

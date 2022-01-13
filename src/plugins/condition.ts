@@ -1,28 +1,27 @@
 import { Frame, Page } from "puppeteer-core";
-import { Action, ObjectAction, Plugin, ActionContext } from ".";
+import { Action, ObjectAction, ActionContext } from ".";
+
+export const CONDITION_PLUGIN_NAME = "condition"
 
 /**
  * 条件判断插件
  */
 
-export default {
-    name: "condition",
-    async run({ page, frame, action }: ActionContext<ConditionPluginParam>) {
-        let { actions = [] } = action;
+export async function ConditionPlugin({ page, frame, action }: ActionContext<ConditionPluginParam>) {
+    let { actions = [] } = action;
 
-        // 条件列表
-        let ifs = [action.if].concat(action.elif);
+    // 条件列表
+    let ifs = [action.if].concat(action.elif);
 
-        for (const _if of ifs) {
-            // 处理条件，直到某个返回一个操作列表
-            let ifActions = await handleIf(page, frame, action.if);
-            if (ifActions) {
-                return actions.concat(ifActions);
-            }
+    for (const _if of ifs) {
+        // 处理条件，直到某个返回一个操作列表
+        let ifActions = await handleIf(page, frame, action.if);
+        if (ifActions) {
+            return actions.concat(ifActions);
         }
-        return actions.concat(action.else);
-    },
-};
+    }
+    return actions.concat(action.else);
+}
 
 /**
  * 处理 if 语句
@@ -85,8 +84,7 @@ interface ConditionWrapper {
     selector?: string;
 }
 
-export interface ConditionPluginParam extends ObjectAction  {
-    use: "condition";
+export interface ConditionPluginParam extends ObjectAction {
     if: ConditionParam;
     elif: ConditionParam[];
     else: Action[];

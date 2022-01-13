@@ -1,14 +1,13 @@
 {
     "name": "jsonsep",
-    "version": "1.0.1",
+    "version": "1.1.0",
     "description": "a json syntactic sugar for execute puppeteer",
     "main": "./lib/index.js",
     "files": [
         "lib"
     ],
     "scripts": {
-        "test": "tsc && mocha tests -t 60000",
-        "dev": "tsc && node ./lib/test.js"
+        "test": "tsc && mocha tests -t 60000"
     },
     "repository": {
         "type": "git",
@@ -30,6 +29,7 @@
     "dependencies": {
         "axios": "^0.24.0",
         "denque": "^2.0.1",
+        "jsonsep": "link:",
         "puppeteer-core": "^13.0.1",
         "reflect-metadata": "^0.1.13"
     },

@@ -27,23 +27,4 @@ export type PluginReturnType<T extends Action> = void | undefined | T[] | Action
 
 export type PluginFunction  = (ctx: ActionContext<any>) => PluginReturnType<Action> | Promise<PluginReturnType<Action>>;
 
-/**
- * 转换插件上下文
- * 用于切换每个 action 中所指定的 page 或者 frame 选项
- * @param ctx
- * @returns
- */
-export async function switchActionContext(ctx: ActionContext<any>) {
-    if (Array.isArray(ctx.action)) {
-        // warning...
-    } else {
-        if (ctx.action.page) {
-            ctx = await PagePlugin(ctx);
-        }
-        if (ctx.action.frame) {
-            ctx = await FramePlugin(ctx);
-        }
-    }
-
-    return ctx;
-}
+export interface JsonsepPluginError extends Error{}

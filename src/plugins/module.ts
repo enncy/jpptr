@@ -12,8 +12,12 @@ export async function ModulePlugin({ browser, page, frame, action }: ActionConte
     if (action.path) {
         let modulePath = fs.existsSync(path.resolve(action.path)) ? path.resolve(action.path) : path.resolve(__dirname, action.path);
 
-        const plugin: PluginFunction  = require(modulePath);
-        return await plugin({ browser, page, frame, action });
+        const plugin: PluginFunction = require(modulePath);
+        if (typeof plugin !== "function") {
+            throw new Error(`plugin module execute error : module  ${modulePath}  is not a function , make sure export default a function`)
+        } else {
+            return await plugin({ browser, page, frame, action });
+        }
     }
 }
 export interface ModulePluginParam extends ObjectAction {

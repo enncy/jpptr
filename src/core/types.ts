@@ -9,18 +9,6 @@ export type PuppeteerOptions = LaunchOptions &
         extraPrefsFirefox?: Record<string, unknown>;
     };
 
-export interface ActionParser {
-    parse(action: Action): ObjectAction | undefined;
-}
-
-export type ParserFunction = (action: Action) => ObjectAction | undefined;
-
-export function Parser(name: string): ClassDecorator {
-    return (target: any) => {
-        Reflect.defineMetadata("parser:name", name, target);
-    };
-}
-
 export interface JsonsepSchema {
     options?: PuppeteerOptions;
     actions: Action[];

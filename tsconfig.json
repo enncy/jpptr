@@ -10,6 +10,7 @@
         "declaration":true,
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
-        "outDir": "./lib"
+        "outDir": "./lib",
+        "downlevelIteration": true
     }
 }

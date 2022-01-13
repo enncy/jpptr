@@ -1,5 +1,6 @@
  
-import { ObjectAction, Action } from "..";
+ 
+import { Action } from "../plugins";
 import { FramePluginParam, FRAME_PLUGIN_NAME } from "../plugins/frame";
 
  

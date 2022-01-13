@@ -1,85 +1,104 @@
-import { PluginExecutor } from "./executor/PluginExecutor";
-import { ActionContext, Action, ObjectAction, PluginFunction, ParserFunction } from "..";
-import { Browser, Frame, Page } from "puppeteer-core";
-import EventEmitter from "events";
+import { EventEmitter } from "events";
+import { launch, Page } from "puppeteer-core";
+import { PluginFunction, JsonsepSchema } from "..";
+import { Parser, ParserFunction } from "../parser";
 import { ArrayParser } from "../parser/ArrayParser";
 import { FrameParser } from "../parser/FrameParser";
 import { PageParser } from "../parser/PageParser";
+import { ActionContext, Action } from "../plugins";
+import { ConditionPlugin } from "../plugins/condition";
+import { FramePlugin } from "../plugins/frame";
+import { FunctionPlugin } from "../plugins/function";
+import { ModulePlugin } from "../plugins/module";
+import { PagePlugin } from "../plugins/page";
+import { Register } from "./register";
+import { Walker } from "./walker";
 
-export interface JsonsepOptions {}
 
-export class Jsonsep extends EventEmitter {
-    private parsers: ParserFunction[] = [ArrayParser, FrameParser, PageParser];
-    private plugins: Map<string, PluginFunction> = new Map();
-    private pluginExecutor: PluginExecutor = new PluginExecutor();
+export abstract class ActionExecutor extends Walker<ActionContext<Action>> {
+    private parserRegister: Register<ParserFunction> = new Register();
+    private pluginRegister: Register<PluginFunction> = new Register();
+    public parser: Parser;
+    public register: { plugin: Register<PluginFunction>; parser: Register<ParserFunction> };
+    public currentContext: ActionContext<Action>;
 
-    constructor(options?: JsonsepOptions) {
+    constructor({ page, actions }: { page: Page; actions?: Action[] }) {
         super();
-    }
-    /** 清除所有插件 */
-    clear() {
-        this.plugins.clear();
+        this.addActions(actions || [], { browser: page.browser(), page, frame: page.mainFrame() });
+        this.registerPlugin(this.pluginRegister);
+        this.registerParser(this.parserRegister);
 
-        return this;
-    }
-
-    /** 注册插件 */
-    use(name: string, plugin: PluginFunction) {
-        this.plugins.set(name, plugin);
-
-        return this;
+        this.currentContext = this.peek(0);
+        this.parser = new Parser(this.parserRegister.values());
+        this.register = {
+            plugin: this.pluginRegister,
+            parser: this.parserRegister,
+        };
     }
 
-    /** 删除插件 */
-    remove(name: string) {
-        this.plugins.delete(name);
-        return this;
-    }
+    protected abstract registerParser(parserRegister: Register<ParserFunction>): void;
+    protected abstract registerPlugin(pluginRegister: Register<PluginFunction>): void;
 
-    /** 解析操作 */
-    parse(action: Action): ObjectAction {
-        for (const parser of this.parsers) {
-            action = parser(action) || action;
-        }
-        return action as ObjectAction;
-    }
+    async execute() {
+        let ctx = await this.walk();
+        ctx.action = this.parser.parse(ctx.action);
 
-    /** 解析操作列表 */
-    parseAll(actions: Action[]) {
-        return actions.map((action) => this.parse(action));
-    }
+        this.currentContext = ctx;
 
-    async execute(ctx: ActionContext<Action>) {
-        ctx.action = this.parse(ctx.action);
-        const plugin = this.plugins.get(ctx.action.use);
-        if (plugin) {
-            const newContext = await this.pluginExecutor.execute(plugin, ctx as ActionContext<ObjectAction>);
-            // 如果返回的上下文中 操作带有子操作的，则执行子操作
-            if (newContext && !Array.isArray(newContext.action) && newContext.action.actions) {
-                await this.executeAll(newContext.action.actions, newContext);
+        if (!Array.isArray(ctx.action)) {
+            const plugin = this.pluginRegister.get(ctx.action.use);
+            if (plugin) {
+                let result = await plugin(ctx);
+                if (result) {
+                    if (Array.isArray(result)) {
+                        ctx.action.actions = result;
+                    } else {
+                        ctx = result;
+                    }
+
+                    if (!Array.isArray(ctx.action) && ctx.action.actions) {
+                        this.addActions(ctx.action.actions, ctx);
+                    }
+                }
             }
         }
     }
 
-    /** 全部执行 */
-    async executeAll(actions: Action[], options: ExecuteOptions) {
-        for (let action of actions) {
-            try {
-                await this.execute({
-                    browser: options.browser || options.page.browser(),
-                    page: options.page,
-                    frame: options.frame || options.page.mainFrame(),
-                    action,
-                });
-            } catch (e) {
-                console.error(["error", e]);
-            }
-        }
+    addActions(actions: Action[], ctx: Omit<ActionContext<Action>, "action">) {
+        let { page, browser, frame } = ctx;
+        this.add(
+            ...actions.map(
+                (a) =>
+                    ({
+                        page,
+                        browser,
+                        frame,
+                        action: a,
+                    } as ActionContext<Action>)
+            )
+        );
     }
 }
 
-export interface ExecuteOptions {
-    browser?: Browser;
-    page: Page;
-    frame?: Frame;
+export class Jsonsep extends ActionExecutor {
+    public static defaultParsers() {
+        return new Register<ParserFunction>().use("array", ArrayParser).use("frame", FrameParser).use("page", PageParser);
+    }
+
+    public static defaultPlugins() {
+        return new Register<PluginFunction>().use("condition", ConditionPlugin).use("frame", FramePlugin).use("function", FunctionPlugin).use("module", ModulePlugin).use("page", PagePlugin);
+    }
+
+    public static async createJsonsep(json: JsonsepSchema) {
+        const browser = await launch(json.options);
+        const [page] = await browser.pages();
+        return new Jsonsep({ page, actions: json.actions });
+    }
+
+    registerParser(parserRegister: Register<ParserFunction>): void {
+        parserRegister.useAll(Jsonsep.defaultParsers().entries());
+    }
+    registerPlugin(pluginRegister: Register<PluginFunction>): void {
+        pluginRegister.useAll(Jsonsep.defaultPlugins().entries());
+    }
 }

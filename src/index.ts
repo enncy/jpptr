@@ -21,3 +21,4 @@ export async function start(json: JsonsepSchema) {
 
     jsonsep.executeAll(json.actions, { browser, page, frame: page.mainFrame() });
 }
+

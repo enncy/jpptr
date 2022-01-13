@@ -25,7 +25,7 @@ export interface ActionContext<T extends Action> {
 
 export type PluginReturnType<T extends Action> = void | undefined | T[] | ActionContext<T>;
 
-export type PluginFunction<T extends Action> = (ctx: ActionContext<any>) => PluginReturnType<T> | Promise<PluginReturnType<T>>;
+export type PluginFunction  = (ctx: ActionContext<any>) => PluginReturnType<Action> | Promise<PluginReturnType<Action>>;
 
 /**
  * 转换插件上下文

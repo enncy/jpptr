@@ -7,7 +7,7 @@ import { ObjectAction, PluginFunction, PluginReturnType } from "../../plugins";
 export class PluginExecutor {
     constructor() {}
 
-    async execute(plugin: PluginFunction<Action>, ctx: ActionContext<ObjectAction>) {
+    async execute(plugin: PluginFunction, ctx: ActionContext<ObjectAction>) {
         // 运行插件
         const result = await plugin(ctx);
         return this.resolveReturnValue(ctx, result);

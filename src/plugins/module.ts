@@ -12,7 +12,7 @@ export async function ModulePlugin({ browser, page, frame, action }: ActionConte
     if (action.path) {
         let modulePath = fs.existsSync(path.resolve(action.path)) ? path.resolve(action.path) : path.resolve(__dirname, action.path);
 
-        const plugin: PluginFunction<Action> = require(modulePath);
+        const plugin: PluginFunction  = require(modulePath);
         return await plugin({ browser, page, frame, action });
     }
 }

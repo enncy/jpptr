@@ -10,7 +10,7 @@ export interface JsonsepOptions {}
 
 export class Jsonsep extends EventEmitter {
     private parsers: ParserFunction[] = [ArrayParser, FrameParser, PageParser];
-    private plugins: Map<string, PluginFunction<Action>> = new Map();
+    private plugins: Map<string, PluginFunction> = new Map();
     private pluginExecutor: PluginExecutor = new PluginExecutor();
 
     constructor(options?: JsonsepOptions) {
@@ -24,7 +24,7 @@ export class Jsonsep extends EventEmitter {
     }
 
     /** 注册插件 */
-    use(name: string, plugin: PluginFunction<Action>) {
+    use(name: string, plugin: PluginFunction) {
         this.plugins.set(name, plugin);
 
         return this;
@@ -33,7 +33,6 @@ export class Jsonsep extends EventEmitter {
     /** 删除插件 */
     remove(name: string) {
         this.plugins.delete(name);
-
         return this;
     }
 

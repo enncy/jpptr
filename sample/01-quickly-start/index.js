@@ -1,4 +1,13 @@
-const { start } = require("jsonsep");
+// @ts-check
+const { Jsonsep } = require("jsonsep");
 const json = require("./test.json");
 
-start(json);
+async function start() {
+    // @ts-ignore
+    const jsonsep = await Jsonsep.createJsonsep(json);
+    while (!jsonsep.end()) {
+        await jsonsep.execute();
+    }
+}
+
+start();

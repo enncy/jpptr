@@ -1,0 +1,1068 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "https://github.com/enncy/jsonsep/jsonsep.schema.json",
+    "title": "jsonsep schema",
+    "description": "jsonsep schema",
+    "type": "object",
+    "properties": {
+        "options": {
+            "description": "the launch options of puppeteer",
+            "type": "object"
+        },
+        "register": {
+            "description": "the parser or plugin register of jsonsep",
+            "type": "object",
+            "properties": {
+                "parsers": {
+                    "description": "the parsers of puppeteer",
+                    "type": "array",
+                    "items": {
+                        "properties": {
+                            "name": { "type": "string" },
+                            "path": { "type": "string" }
+                        }
+                    }
+                },
+                "plugins": {
+                    "description": "the plugins of puppeteer",
+                    "type": "array",
+                    "items": {
+                        "properties": {
+                            "name": { "type": "string" },
+                            "path": { "type": "string" }
+                        }
+                    }
+                }
+            }
+        },
+        "actions": {
+            "description": "the actions of jsonsep",
+            "type": "array",
+            "items": {
+                "anyOf": [
+                    {
+                        "$ref": "#/definitions/puppeteer-function-array-like"
+                    },
+                    {
+                        "$ref": "#/definitions/plugin-properties"
+                    }
+                ]
+            }
+        }
+    },
+    "required": ["options", "actions"],
+    "definitions": {
+        "condition-properties": {
+            "properties": {
+                "include": {
+                    "properties": {
+                        "text": { "type": "string" },
+                        "cookie": { "type": "string" },
+                        "url": { "type": "string" },
+                        "selector": { "type": "string" }
+                    }
+                },
+                "match": {
+                    "properties": {
+                        "text": { "type": "string" },
+                        "cookie": { "type": "string" },
+                        "url": { "type": "string" },
+                        "selector": { "type": "string" }
+                    }
+                },
+                "evaluate": { "type": "string" },
+                "actions": {
+                    "$ref": "#/properties/actions"
+                }
+            },
+
+            "required": ["actions"]
+        },
+        "plugin-properties": {
+            "type": "object",
+            "description": "plugin properties",
+            "properties": {
+                "description": {
+                    "description": "the description of action",
+                    "type": "string"
+                },
+                "use": {
+                    "description": "插件名",
+                    "enum": ["function", "condition", "page", "frame", "external"]
+                },
+                "page": {
+                    "description": "需要切换的 标签页 的索引",
+                    "type": "number"
+                },
+                "frame": {
+                    "description": "需要切换的 frame 的名字或索引, 例如 frame_foo 或 -1",
+                    "anyOf": [{ "type": "string" }, { "type": "number" }]
+                },
+                "actions": {
+                    "$ref": "#/properties/actions"
+                }
+            },
+            "anyOf": [
+                {
+                    "description": "external plugin , 外部引用插件，可在 register.plugins 中定义 , 按照 \"key\":\"value\" 的方式定义一个外部插件",
+                    "properties": {
+                        "use": {
+                            "description": "external plugin , 外部引用插件，可在 register.plugins 中定义 , 按照 \"key\":\"value\" 的方式定义一个外部插件",
+                            "const": "external"
+                        },
+                        "name": {
+                            "description": "name 是 register.plugins 中定义的任意属性名",
+                            "type": "string"
+                        }
+                    },
+                    "required": ["name"]
+                },
+                {
+                    "$ref": "#/definitions/puppeteer-functions"
+                },
+                {
+                    "description": "condition plugin",
+                    "properties": {
+                        "use": {
+                            "description": "condition plugin",
+                            "const": "condition"
+                        },
+                        "if": {
+                            "$ref": "#/definitions/condition-properties"
+                        },
+                        "elif": {
+                            "$ref": "#/definitions/condition-properties"
+                        },
+                        "else": {
+                            "$ref": "#/properties/actions"
+                        }
+                    },
+                    "required": ["if"]
+                },
+                {
+                    "description": "page plugin",
+                    "properties": {
+                        "use": {
+                            "description": "page plugin",
+                            "const": "page"
+                        },
+                        "index": {
+                            "description": "需要切换的 标签页 的索引",
+                            "type": "number"
+                        },
+                        "actions": {
+                            "$ref": "#/properties/actions"
+                        }
+                    },
+                    "required": ["index", "actions"]
+                },
+                {
+                    "description": "frame plugin",
+                    "properties": {
+                        "use": {
+                            "description": "frame plugin",
+                            "const": "frame"
+                        },
+                        "index": {
+                            "description": "需要切换的 frame 索引",
+                            "type": "number"
+                        },
+                        "name": {
+                            "description": "需要切换的 frame 名字",
+                            "type": "string"
+                        },
+                        "actions": {
+                            "$ref": "#/properties/actions"
+                        }
+                    },
+                    "required": ["name", "actions"]
+                },
+                {
+                    "description": "empty action",
+                    "properties": {
+                        "actions": {
+                            "$ref": "#/properties/actions"
+                        }
+                    }
+                }
+            ]
+        },
+        "puppeteer-functions": {
+            "description": "action-like of all the puppeteer page function",
+            "required": ["use", "name"],
+            "properties": {
+                "use": {
+                    "const": "function"
+                },
+                "args": {
+                    "type": "array"
+                },
+                "wait": {
+                    "type": "boolean",
+                    "default": false
+                }
+            },
+            "anyOf": [
+                {
+                    "properties": {
+                        "name": {
+                            "description": "page.addScriptTag(options)",
+                            "const": "addScriptTag"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "description": "page.addStyleTag(options)",
+                            "const": "addStyleTag"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "description": "page.authenticate(credentials)",
+                            "const": "authenticate"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "description": "page.bringToFront()",
+                            "const": "bringToFront"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "description": "page.click(selector[, options])",
+                            "const": "click"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "description": "page.close([options])",
+                            "const": "close"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "description": "page.deleteCookie(...cookies)",
+                            "const": "deleteCookie"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "description": "page.emulate(options)",
+                            "const": "emulate"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "description": "page.emulateCPUThrottling(factor)",
+                            "const": "emulateCPUThrottling"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "description": "page.emulateIdleState(overrides)",
+                            "const": "emulateIdleState"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "description": "page.emulateMediaFeatures(features)",
+                            "const": "emulateMediaFeatures"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "description": "page.emulateMediaType(type)",
+                            "const": "emulateMediaType"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "description": "page.emulateNetworkConditions(networkConditions)",
+                            "const": "emulateNetworkConditions"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "description": "page.emulateTimezone(timezoneId)",
+                            "const": "emulateTimezone"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "description": "page.emulateVisionDeficiency(type)",
+                            "const": "emulateVisionDeficiency"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "description": "page.evaluate(pageFunction[, ...args])",
+                            "const": "evaluate"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "description": "page.evaluateHandle(pageFunction[, ...args])",
+                            "const": "evaluateHandle"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "description": "page.evaluateOnNewDocument(pageFunction[, ...args])",
+                            "const": "evaluateOnNewDocument"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "description": "page.focus(selector)",
+                            "const": "focus"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "description": "page.goBack([options])",
+                            "const": "goBack"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "description": "page.goForward([options])",
+                            "const": "goForward"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "description": "page.goto(url[, options])",
+                            "const": "goto"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "description": "page.hover(selector)",
+                            "const": "hover"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "description": "page.pdf([options])",
+                            "const": "pdf"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "description": "page.reload([options])",
+                            "const": "reload"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "description": "page.screenshot([options])",
+                            "const": "screenshot"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "description": "page.select(selector, ...values)",
+                            "const": "select"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "description": "page.setBypassCSP(enabled)",
+                            "const": "setBypassCSP"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "description": "page.setCacheEnabled([enabled])",
+                            "const": "setCacheEnabled"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "description": "page.setContent(html[, options])",
+                            "const": "setContent"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "description": "page.setCookie(...cookies)",
+                            "const": "setCookie"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "description": "page.setDefaultNavigationTimeout(timeout)",
+                            "const": "setDefaultNavigationTimeout"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "description": "page.setDefaultTimeout(timeout)",
+                            "const": "setDefaultTimeout"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "description": "page.setDragInterception(enabled)",
+                            "const": "setDragInterception"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "description": "page.setExtraHTTPHeaders(headers)",
+                            "const": "setExtraHTTPHeaders"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "description": "page.setGeolocation(options)",
+                            "const": "setGeolocation"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "description": "page.setJavaScriptEnabled(enabled)",
+                            "const": "setJavaScriptEnabled"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "description": "page.setOfflineMode(enabled)",
+                            "const": "setOfflineMode"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "description": "page.setRequestInterception(value)",
+                            "const": "setRequestInterception"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "description": "page.setUserAgent(userAgent[, userAgentMetadata])",
+                            "const": "setUserAgent"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "description": "page.setViewport(viewport)",
+                            "const": "setViewport"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "description": "page.tap(selector)",
+                            "const": "tap"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "description": "page.type(selector, text[, options])",
+                            "const": "type"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "description": "page.waitFor(selectorOrFunctionOrTimeout[, options[, ...args]])",
+                            "const": "waitFor"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "description": "page.waitForFileChooser([options])",
+                            "const": "waitForFileChooser"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "description": "page.waitForFrame(urlOrPredicate[, options])",
+                            "const": "waitForFrame"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "description": "page.waitForFunction(pageFunction[, options[, ...args]])",
+                            "const": "waitForFunction"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "description": "page.waitForNavigation([options])",
+                            "const": "waitForNavigation"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "description": "page.waitForNetworkIdle([options])",
+                            "const": "waitForNetworkIdle"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "description": "page.waitForRequest(urlOrPredicate[, options])",
+                            "const": "waitForRequest"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "description": "page.waitForResponse(urlOrPredicate[, options])",
+                            "const": "waitForResponse"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "description": "page.waitForSelector(selector[, options])",
+                            "const": "waitForSelector"
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "description": "page.waitForTimeout(milliseconds)",
+                            "const": "waitForTimeout"
+                        }
+                    }
+                }
+            ]
+        },
+        "puppeteer-function-array-like": {
+            "type": "array",
+            "contains": true,
+            "anyOf": [
+                {
+                    "items": [
+                        {
+                            "description": "page.addScriptTag(options)",
+                            "const": "addScriptTag"
+                        }
+                    ]
+                },
+                {
+                    "items": [
+                        {
+                            "description": "page.addStyleTag(options)",
+                            "const": "addStyleTag"
+                        }
+                    ]
+                },
+                {
+                    "items": [
+                        {
+                            "description": "page.authenticate(credentials)",
+                            "const": "authenticate"
+                        }
+                    ]
+                },
+                {
+                    "items": [
+                        {
+                            "description": "page.bringToFront()",
+                            "const": "bringToFront"
+                        }
+                    ]
+                },
+                {
+                    "items": [
+                        {
+                            "description": "page.click(selector[, options])",
+                            "const": "click"
+                        }
+                    ]
+                },
+                {
+                    "items": [
+                        {
+                            "description": "page.close([options])",
+                            "const": "close"
+                        }
+                    ]
+                },
+                {
+                    "items": [
+                        {
+                            "description": "page.deleteCookie(...cookies)",
+                            "const": "deleteCookie"
+                        }
+                    ]
+                },
+                {
+                    "items": [
+                        {
+                            "description": "page.emulate(options)",
+                            "const": "emulate"
+                        }
+                    ]
+                },
+                {
+                    "items": [
+                        {
+                            "description": "page.emulateCPUThrottling(factor)",
+                            "const": "emulateCPUThrottling"
+                        }
+                    ]
+                },
+                {
+                    "items": [
+                        {
+                            "description": "page.emulateIdleState(overrides)",
+                            "const": "emulateIdleState"
+                        }
+                    ]
+                },
+                {
+                    "items": [
+                        {
+                            "description": "page.emulateMediaFeatures(features)",
+                            "const": "emulateMediaFeatures"
+                        }
+                    ]
+                },
+                {
+                    "items": [
+                        {
+                            "description": "page.emulateMediaType(type)",
+                            "const": "emulateMediaType"
+                        }
+                    ]
+                },
+                {
+                    "items": [
+                        {
+                            "description": "page.emulateNetworkConditions(networkConditions)",
+                            "const": "emulateNetworkConditions"
+                        }
+                    ]
+                },
+                {
+                    "items": [
+                        {
+                            "description": "page.emulateTimezone(timezoneId)",
+                            "const": "emulateTimezone"
+                        }
+                    ]
+                },
+                {
+                    "items": [
+                        {
+                            "description": "page.emulateVisionDeficiency(type)",
+                            "const": "emulateVisionDeficiency"
+                        }
+                    ]
+                },
+                {
+                    "items": [
+                        {
+                            "description": "page.evaluate(pageFunction[, ...args])",
+                            "const": "evaluate"
+                        }
+                    ]
+                },
+                {
+                    "items": [
+                        {
+                            "description": "page.evaluateHandle(pageFunction[, ...args])",
+                            "const": "evaluateHandle"
+                        }
+                    ]
+                },
+                {
+                    "items": [
+                        {
+                            "description": "page.evaluateOnNewDocument(pageFunction[, ...args])",
+                            "const": "evaluateOnNewDocument"
+                        }
+                    ]
+                },
+                {
+                    "items": [
+                        {
+                            "description": "page.focus(selector)",
+                            "const": "focus"
+                        }
+                    ]
+                },
+                {
+                    "items": [
+                        {
+                            "description": "page.goBack([options])",
+                            "const": "goBack"
+                        }
+                    ]
+                },
+                {
+                    "items": [
+                        {
+                            "description": "page.goForward([options])",
+                            "const": "goForward"
+                        }
+                    ]
+                },
+                {
+                    "items": [
+                        {
+                            "description": "page.goto(url[, options])",
+                            "const": "goto"
+                        },
+                        {
+                            "description": "url",
+                            "type": "string",
+                            "format": "uri"
+                        }
+                    ]
+                },
+                {
+                    "items": [
+                        {
+                            "description": "page.hover(selector)",
+                            "const": "hover"
+                        }
+                    ]
+                },
+                {
+                    "items": [
+                        {
+                            "description": "page.pdf([options])",
+                            "const": "pdf"
+                        }
+                    ]
+                },
+                {
+                    "items": [
+                        {
+                            "description": "page.reload([options])",
+                            "const": "reload"
+                        }
+                    ]
+                },
+                {
+                    "items": [
+                        {
+                            "description": "page.screenshot([options])",
+                            "const": "screenshot"
+                        }
+                    ]
+                },
+                {
+                    "items": [
+                        {
+                            "description": "page.select(selector, ...values)",
+                            "const": "select"
+                        }
+                    ]
+                },
+                {
+                    "items": [
+                        {
+                            "description": "page.setBypassCSP(enabled)",
+                            "const": "setBypassCSP"
+                        }
+                    ]
+                },
+                {
+                    "items": [
+                        {
+                            "description": "page.setCacheEnabled([enabled])",
+                            "const": "setCacheEnabled"
+                        }
+                    ]
+                },
+                {
+                    "items": [
+                        {
+                            "description": "page.setContent(html[, options])",
+                            "const": "setContent"
+                        }
+                    ]
+                },
+                {
+                    "items": [
+                        {
+                            "description": "page.setCookie(...cookies)",
+                            "const": "setCookie"
+                        }
+                    ]
+                },
+                {
+                    "items": [
+                        {
+                            "description": "page.setDefaultNavigationTimeout(timeout)",
+                            "const": "setDefaultNavigationTimeout"
+                        }
+                    ]
+                },
+                {
+                    "items": [
+                        {
+                            "description": "page.setDefaultTimeout(timeout)",
+                            "const": "setDefaultTimeout"
+                        }
+                    ]
+                },
+                {
+                    "items": [
+                        {
+                            "description": "page.setDragInterception(enabled)",
+                            "const": "setDragInterception"
+                        }
+                    ]
+                },
+                {
+                    "items": [
+                        {
+                            "description": "page.setExtraHTTPHeaders(headers)",
+                            "const": "setExtraHTTPHeaders"
+                        }
+                    ]
+                },
+                {
+                    "items": [
+                        {
+                            "description": "page.setGeolocation(options)",
+                            "const": "setGeolocation"
+                        }
+                    ]
+                },
+                {
+                    "items": [
+                        {
+                            "description": "page.setJavaScriptEnabled(enabled)",
+                            "const": "setJavaScriptEnabled"
+                        }
+                    ]
+                },
+                {
+                    "items": [
+                        {
+                            "description": "page.setOfflineMode(enabled)",
+                            "const": "setOfflineMode"
+                        }
+                    ]
+                },
+                {
+                    "items": [
+                        {
+                            "description": "page.setRequestInterception(value)",
+                            "const": "setRequestInterception"
+                        }
+                    ]
+                },
+                {
+                    "items": [
+                        {
+                            "description": "page.setUserAgent(userAgent[, userAgentMetadata])",
+                            "const": "setUserAgent"
+                        }
+                    ]
+                },
+                {
+                    "items": [
+                        {
+                            "description": "page.setViewport(viewport)",
+                            "const": "setViewport"
+                        }
+                    ]
+                },
+                {
+                    "items": [
+                        {
+                            "description": "page.tap(selector)",
+                            "const": "tap"
+                        }
+                    ]
+                },
+                {
+                    "items": [
+                        {
+                            "description": "page.type(selector, text[, options])",
+                            "const": "type"
+                        }
+                    ]
+                },
+                {
+                    "items": [
+                        {
+                            "description": "page.waitFor(selectorOrFunctionOrTimeout[, options[, ...args]])",
+                            "const": "waitFor"
+                        }
+                    ]
+                },
+                {
+                    "items": [
+                        {
+                            "description": "page.waitForFileChooser([options])",
+                            "const": "waitForFileChooser"
+                        }
+                    ]
+                },
+                {
+                    "items": [
+                        {
+                            "description": "page.waitForFrame(urlOrPredicate[, options])",
+                            "const": "waitForFrame"
+                        }
+                    ]
+                },
+                {
+                    "items": [
+                        {
+                            "description": "page.waitForFunction(pageFunction[, options[, ...args]])",
+                            "const": "waitForFunction"
+                        }
+                    ]
+                },
+                {
+                    "items": [
+                        {
+                            "description": "page.waitForNavigation([options])",
+                            "const": "waitForNavigation"
+                        }
+                    ]
+                },
+                {
+                    "items": [
+                        {
+                            "description": "page.waitForNetworkIdle([options])",
+                            "const": "waitForNetworkIdle"
+                        }
+                    ]
+                },
+                {
+                    "items": [
+                        {
+                            "description": "page.waitForRequest(urlOrPredicate[, options])",
+                            "const": "waitForRequest"
+                        }
+                    ]
+                },
+                {
+                    "items": [
+                        {
+                            "description": "page.waitForResponse(urlOrPredicate[, options])",
+                            "const": "waitForResponse"
+                        }
+                    ]
+                },
+                {
+                    "items": [
+                        {
+                            "description": "page.waitForSelector(selector[, options])",
+                            "const": "waitForSelector"
+                        }
+                    ]
+                },
+                {
+                    "items": [
+                        {
+                            "description": "page.waitForTimeout(milliseconds)",
+                            "const": "waitForTimeout"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

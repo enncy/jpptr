@@ -10,6 +10,18 @@ export type PuppeteerOptions = LaunchOptions &
     };
 
 export interface JsonsepSchema {
+    register?: ModuleRegister;
     options?: PuppeteerOptions;
     actions: Action[];
+}
+
+export interface ModuleRegister {
+    plugins?: {
+        name: string;
+        path: string;
+    }[];
+    parsers?: {
+        name: string;
+        path: string;
+    }[];
 }

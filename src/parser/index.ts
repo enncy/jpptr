@@ -1,19 +1,19 @@
+import { Register } from "../core/register";
 import { Action, ObjectAction } from "../plugins";
 
- 
 export interface ActionParser {
-    parse(action: Action): ObjectAction | undefined;
+    parse: ParserFunction;
 }
 
-export type ParserFunction = (action: Action) => ObjectAction | undefined;
-
-
+export type ParserFunction = (action: any) => ObjectAction | undefined;
 
 export class Parser {
-    constructor(private parsers: ParserFunction[]) {}
+    constructor(private parserRegister: Register<ParserFunction>) {}
     parse(json: any) {
-        for (const p of this.parsers) {
-            json = p(json) || json;
+        if (json) {
+            for (const p of this.parserRegister.values()) {
+                json = p(json) || json;
+            }
         }
         return json;
     }

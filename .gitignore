@@ -1,7 +1,7 @@
 
 
 lib/
-
+local-test/
 # Logs
 logs
 *.log

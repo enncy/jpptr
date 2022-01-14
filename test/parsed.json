@@ -1,0 +1,133 @@
+[
+    {
+        "use": "function",
+        "name": "goto",
+        "args": ["https://enncy.github.io/jsonsep/test.html"]
+    },
+    {
+        "use": "function",
+        "name": "type",
+        "args": ["#username", "enncy"]
+    },
+    {
+        "use": "function",
+        "name": "type",
+        "args": ["#password", "123456"]
+    },
+    {
+        "use": "function",
+        "name": "click",
+        "args": ["#submit"]
+    },
+    {
+        "use": "function",
+        "name": "waitForTimeout",
+        "args": [2000]
+    },
+    {
+        "use": "frame",
+        "index": -1,
+        "actions": [
+            {
+                "use": "function",
+                "name": "evaluate",
+                "args": ["document.querySelector('h1').innerText = 'hello jsonsep'"]
+            }
+        ]
+    },
+    {
+        "use": "function",
+        "name": "waitForTimeout",
+        "args": [2000]
+    },
+    {
+        "use": "frame",
+        "name": "jsonsep_frame",
+        "actions": [
+            {
+                "use": "function",
+                "name": "evaluate",
+                "args": ["document.querySelector('h1').innerText = 'hello jsonsep , this is jsonsep_frame'"]
+            },
+            [
+                "addStyleTag",
+                {
+                    "url": "https://enncy.github.io/jsonsep/test.css"
+                }
+            ]
+        ]
+    },
+    {
+        "use": "function",
+        "name": "waitForTimeout",
+        "args": [2000]
+    },
+    {
+        "use": "function",
+        "name": "click",
+        "args": ["#example"]
+    },
+    {
+        "description": "等待一段时间,防止页面打开延迟导致的切换错误,你也可以自定义模块去实现页面见的跳转和切换 \n waiting for a period of time to prevent switching errors caused by the delay in opening the page, you can also customize the module(plugin or parser) to jump and switch between pages",
+        "actions": [["waitForTimeout", 3000]]
+    },
+    {
+        "use": "page",
+        "index": -1,
+        "actions": [
+            {
+                "use": "function",
+                "name": "waitForNetworkIdle"
+            },
+            {
+                "use": "function",
+                "name": "evaluate",
+                "args": ["alert('hello jsonsep')"],
+                "wait": false
+            },
+            {
+                "use": "external",
+                "name": "close-dialog"
+            },
+            ["waitForTimeout", 2000],
+            {
+                "use": "condition",
+                "if": {
+                    "evaluate": "new Date().getMinutes()%2===0",
+                    "actions": [
+                        {
+                            "use": "function",
+                            "name": "evaluate",
+                            "args": ["alert('Now the timestamp is even')"],
+                            "wait": false
+                        }
+                    ]
+                },
+                "else": [
+                    {
+                        "use": "function",
+                        "name": "evaluate",
+                        "args": ["alert('Now the timestamp is singular')"],
+                        "wait": false
+                    }
+                ]
+            },
+            {
+                "use": "external",
+                "name": "close-dialog"
+            },
+            ["waitForTimeout", 2000],
+            ["close"]
+        ]
+    },
+    {
+        "use": "function",
+        "name": "waitForTimeout",
+        "args": [2000]
+    },
+    {
+        "use": "function",
+        "name": "close",
+        "args": []
+    }
+]

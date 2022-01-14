@@ -1,0 +1,10 @@
+{
+    "$schema": "https://json.schemastore.org/mocharc.json",
+    "extension": ["ts"],
+    "package": "./package.json",
+    "reporter": "spec",
+    "slow": 75,
+    "timeout": 60000,
+    "ui": "bdd",
+    "spec": ["./test/**/*.ts"]
+}

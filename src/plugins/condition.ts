@@ -1,26 +1,25 @@
 import { Frame, Page } from "puppeteer-core";
 import { Action, ObjectAction, ActionContext } from ".";
-
-export const CONDITION_PLUGIN_NAME = "condition"
-
+ 
 /**
  * 条件判断插件
  */
 
 export async function ConditionPlugin({ page, frame, action }: ActionContext<ConditionPluginParam>) {
     let { actions = [] } = action;
+    if (page && frame) {
+        // 条件列表
+        let ifs = [action.if].concat(action.elif);
 
-    // 条件列表
-    let ifs = [action.if].concat(action.elif);
-
-    for (const _if of ifs) {
-        // 处理条件，直到某个返回一个操作列表
-        let ifActions = await handleIf(page, frame, action.if);
-        if (ifActions) {
-            return actions.concat(ifActions);
+        for (const _if of ifs) {
+            // 处理条件，直到某个返回一个操作列表
+            let ifActions = await handleIf(page, frame, action.if);
+            if (ifActions) {
+                return actions.concat(ifActions);
+            }
         }
+        return actions.concat(action.else);
     }
-    return actions.concat(action.else);
 }
 
 /**
@@ -34,6 +33,12 @@ async function handleIf(page: Page, frame: Frame, param: ConditionParam): Promis
     // 处理字符串包含判断
     else if (param.include && handleCondition({ page, frame, conditions: param.include, handler: (cdt, str) => str.indexOf(cdt) !== -1 })) {
         return param?.actions || [];
+    }
+    // 调用页面函数判断
+    else if (param.evaluate) {
+        if ((await frame.evaluate(param.evaluate)) || (await page.evaluate(param.evaluate))) {
+            return param?.actions || [];
+        }
     }
 }
 
@@ -74,6 +79,7 @@ async function handleCondition({ page, frame, conditions, handler }: { page: Pag
             return true;
         }
     }
+
     return false;
 }
 
@@ -94,6 +100,8 @@ interface ConditionParam {
     include?: ConditionWrapper;
     // 是否匹配某个子串
     match?: ConditionWrapper;
+    // 调用页面函数判断
+    evaluate?: string;
     // 子操作
     actions?: Action[];
 }

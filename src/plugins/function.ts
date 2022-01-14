@@ -1,15 +1,14 @@
 import { Page, Frame } from "puppeteer-core";
-import { Action, ObjectAction, ActionContext } from ".";
-
-export const FUNCTION_PLUGIN_NAME = "function"
-
+import {   ObjectAction, ActionContext } from ".";
+ 
 /**
  * 函数执行插件
  */
 
 export async function FunctionPlugin({ page, frame, action }: ActionContext<FunctionPluginParam>) {
     let { name, args, wait } = action;
-    // 执行函数，如果 frame 无此函数，则上升到 page
+    if(page && frame){
+       // 执行函数，如果 frame 无此函数，则上升到 page
     const fun = Reflect.get(frame, name);
     if (fun) {
         await applyFunction({
@@ -25,6 +24,7 @@ export async function FunctionPlugin({ page, frame, action }: ActionContext<Func
             args,
             wait,
         });
+    } 
     }
 }
 async function applyFunction({ fun, target, args = [], wait = true }: { fun: Function; target: Page | Frame; args?: any[]; wait?: boolean }) {

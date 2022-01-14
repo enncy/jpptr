@@ -1,12 +1,14 @@
 <h1>puppeteer test page</h1> 
 <hr/>
-
-
+ 
 <form>
   <br>
   <h2>type</h2>
-  <input id="username" type="text">
-  <input id="password" type="password">
+  username: <input id="username" name="uname" type="text"><br>
+  password: <input id="password" name="pwd" type="password"><br>
+  <br>
+  your username : <span id="uname"></span>
+  your password : <span id="pwd"></span>
   <br>
   <h2>click</h2>
   <input id="submit" type="submit" value="submit">
@@ -25,3 +27,12 @@
 "></iframe>
 
 <br>
+
+<script>
+    window.onload=function(){
+      var url = new URL(window.location.href)
+      document.querySelector("#uname").innerText = url.searchParams.get("uname")
+      document.querySelector("#pwd").innerText = url.searchParams.get("pwd")
+    }
+</script>
+

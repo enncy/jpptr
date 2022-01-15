@@ -1,35 +1,54 @@
-import { Page, Frame } from "puppeteer-core";
-import {   ObjectAction, ActionContext } from ".";
- 
+import { Page, Frame, Browser } from "puppeteer-core";
+import { ObjectAction, ActionContext } from ".";
+
 /**
  * 函数执行插件
  */
 
-export async function FunctionPlugin({ page, frame, action }: ActionContext<FunctionPluginParam>) {
+export async function FunctionPlugin({ browser, page, frame, action }: ActionContext<FunctionPluginParam>) {
     let { name, args, wait } = action;
-    if(page && frame){
-       // 执行函数，如果 frame 无此函数，则上升到 page
-    const fun = Reflect.get(frame, name);
-    if (fun) {
-        await applyFunction({
-            fun,
-            target: frame,
-            args,
-            wait,
-        });
-    } else {
-        await applyFunction({
-            fun: Reflect.get(page, name),
-            target: page,
-            args,
-            wait,
-        });
-    } 
+    /** 优先级为 browser > page > frame */
+
+    if (browser && page) {
+        const func = Reflect.get(browser, name);
+        if (func) {
+            await applyFunction({
+                func,
+                target: browser,
+                args,
+                wait,
+            });
+        } else {
+            /** 如果 frame 已经被切换，则优先级为 frame > page */
+            if (page && frame) {
+                if (frame._id !== page.mainFrame()._id) {
+                    const frameFunc = Reflect.get(frame, name);
+                    if (frameFunc) {
+                        await applyFunction({
+                            func: frameFunc,
+                            target: frame,
+                            args,
+                            wait,
+                        });
+                    }
+                } else {
+                    const pageFunc = Reflect.get(page, name);
+                    if (pageFunc) {
+                        await applyFunction({
+                            func: pageFunc,
+                            target: page,
+                            args,
+                            wait,
+                        });
+                    }
+                }
+            }
+        }
     }
 }
-async function applyFunction({ fun, target, args = [], wait = true }: { fun: Function; target: Page | Frame; args?: any[]; wait?: boolean }) {
-    if (typeof fun === "function") {
-        let apply = Reflect.apply(fun, target, args);
+async function applyFunction({ func, target, args = [], wait = true }: { func: Function; target: Browser | Page | Frame; args?: any[]; wait?: boolean }) {
+    if (typeof func === "function") {
+        let apply = Reflect.apply(func, target, args);
         wait && (await apply);
     }
 }

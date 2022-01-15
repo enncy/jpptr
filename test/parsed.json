@@ -129,5 +129,10 @@
         "use": "function",
         "name": "close",
         "args": []
+    },
+    {
+        "use": "function",
+        "name": "close",
+        "args": []
     }
 ]

@@ -2,6 +2,10 @@
 
 lib/
 local-test/
+
+.temp
+.cache
+
 # Logs
 logs
 *.log

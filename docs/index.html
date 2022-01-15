@@ -1,0 +1,79 @@
+<!DOCTYPE html><html class="default"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>jsonsep-api - v1.1.0</title><meta name="description" content="Documentation for jsonsep-api - v1.1.0"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="assets/style.css"/><link rel="stylesheet" href="assets/highlight.css"/><link rel="stylesheet" href="assets/custom.css"/><script async src="assets/search.js" id="search-script"></script></head><body><script>document.body.classList.add(localStorage.getItem("tsd-theme") || "os")</script><header><div class="tsd-page-toolbar"><div class="container"><div class="table-wrap"><div class="table-cell" id="tsd-search" data-base="."><div class="field"><label for="tsd-search-field" class="tsd-widget search no-caption">Search</label><input type="text" id="tsd-search-field"/></div><ul class="results"><li class="state loading">Preparing search index...</li><li class="state failure">The search index is not available</li></ul><a href="index.html" class="title">jsonsep-api - v1.1.0</a></div><div class="table-cell" id="tsd-widgets"><div id="tsd-filter"><a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a><div class="tsd-filter-group"><div class="tsd-select" id="tsd-filter-visibility"><span class="tsd-select-label">All</span><ul class="tsd-select-list"><li data-value="public">Public</li><li data-value="protected">Public/Protected</li><li data-value="private" class="selected">All</li></ul></div> <input type="checkbox" id="tsd-filter-inherited" checked/><label class="tsd-widget" for="tsd-filter-inherited">Inherited</label></div></div><a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a></div></div></div></div><div class="tsd-page-title"><div class="container"><h1>jsonsep-api - v1.1.0</h1></div></div></header><div class="container container-main"><div class="row"><div class="col-8 col-content"><div class="tsd-panel tsd-typography">
+<a href="#jsonsep" id="jsonsep" style="color: inherit; text-decoration: none;">
+  <h1>jsonsep</h1>
+</a>
+<blockquote>
+<p>a json syntactic sugar for execute puppeteer</p>
+</blockquote>
+
+<a href="#quickly-start" id="quickly-start" style="color: inherit; text-decoration: none;">
+  <h2>Quickly Start</h2>
+</a>
+<p>install <code>jsonsep</code></p>
+<pre><code class="radius hljs language-shell">npm install jsonsep
+</code></pre>
+<p>test.json</p>
+<pre><code class="radius hljs language-json"><span class="hljs-punctuation">{</span>
+    <span class="hljs-attr">&quot;options&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
+        <span class="hljs-attr">&quot;executablePath&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;C:/Program Files/Google/Chrome/Application/chrome.exe&quot;</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;defaultViewport&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-keyword">null</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-attr">&quot;headless&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-keyword">false</span>
+    <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+    <span class="hljs-attr">&quot;actions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+        <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;goto&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;https://enncy.github.io/jsonsep/test.html&quot;</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;type&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;#username&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;myusername&quot;</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;type&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;#password&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;123456&quot;</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;click&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;#submit&quot;</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;waitForTimeout&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-number">3000</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;click&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;#example&quot;</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;waitForTimeout&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-number">3000</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-punctuation">{</span>
+            <span class="hljs-attr">&quot;page&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">-1</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">&quot;use&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;function&quot;</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;evaluate&quot;</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">&quot;args&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;alert(&#x27;hello json&#x27;)&quot;</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">&quot;wait&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-keyword">false</span><span class="hljs-punctuation">,</span>
+            <span class="hljs-attr">&quot;actions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
+                <span class="hljs-punctuation">{</span>
+                    <span class="hljs-attr">&quot;use&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;module&quot;</span><span class="hljs-punctuation">,</span>
+                    <span class="hljs-attr">&quot;path&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;./close-dialog-plugin.js&quot;</span>
+                <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+                <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;waitForTimeout&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-number">3000</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+                <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;close&quot;</span><span class="hljs-punctuation">]</span>
+            <span class="hljs-punctuation">]</span>
+        <span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;waitForTimeout&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-number">3000</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
+        <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;close&quot;</span><span class="hljs-punctuation">]</span>
+    <span class="hljs-punctuation">]</span>
+<span class="hljs-punctuation">}</span>
+</code></pre>
+<p>index.js</p>
+<pre><code class="radius hljs language-js"><span class="hljs-keyword">const</span> { start } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&quot;jsonsep&quot;</span>);
+<span class="hljs-keyword">const</span> json = <span class="hljs-built_in">require</span>(<span class="hljs-string">&quot;./test.json&quot;</span>);
+
+<span class="hljs-title function_">start</span>(json);
+</code></pre>
+<p>close-dialog-plugin.js</p>
+<pre><code class="radius hljs language-js"><span class="hljs-variable language_">module</span>.<span class="hljs-property">exports</span> = {
+    <span class="hljs-attr">name</span>: <span class="hljs-string">&quot;close-dialog-plugin&quot;</span>,
+    <span class="hljs-title function_">run</span>(<span class="hljs-params">{ page, frame, json }</span>) {
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resolve, reject</span>) =&gt;</span> {
+            page.<span class="hljs-title function_">once</span>(<span class="hljs-string">&quot;dialog&quot;</span>, <span class="hljs-keyword">async</span> (dialog) =&gt; {
+                <span class="hljs-built_in">setTimeout</span>(<span class="hljs-keyword">async</span> () =&gt; {
+                    <span class="hljs-keyword">await</span> dialog.<span class="hljs-title function_">dismiss</span>();
+                    <span class="hljs-title function_">resolve</span>();
+                }, <span class="hljs-number">3000</span>);
+            });
+        });
+    },
+};
+</code></pre>
+<p>run</p>
+<pre><code class="radius hljs language-shell">node index.js
+</code></pre>
+
+<a href="#sample" id="sample" style="color: inherit; text-decoration: none;">
+  <h2>Sample</h2>
+</a>
+<p>all the sample see <a href="https://github.com/enncy/jsonsep/tree/main/sample">https://github.com/enncy/jsonsep/tree/main/sample</a></p>
+</div></div><div class="col-4 col-menu menu-sticky-wrap menu-highlight"><nav class="tsd-navigation primary"><ul><li class="current"><a href="modules.html">Exports</a></li></ul></nav><nav class="tsd-navigation secondary menu-sticky"><ul><li class="tsd-kind-class"><a href="classes/Jsonsep.html" class="tsd-kind-icon">Jsonsep</a></li><li class="tsd-kind-function"><a href="modules.html#createJsonsep" class="tsd-kind-icon">create<wbr/>Jsonsep</a></li><li class="tsd-kind-function"><a href="modules.html#defaultParsers" class="tsd-kind-icon">default<wbr/>Parsers</a></li><li class="tsd-kind-function"><a href="modules.html#defaultPlugins" class="tsd-kind-icon">default<wbr/>Plugins</a></li><li class="tsd-kind-enum"><a href="enums/PluginNames.html" class="tsd-kind-icon">Plugin<wbr/>Names</a></li><li class="tsd-kind-enum"><a href="enums/ParserNames.html" class="tsd-kind-icon">Parser<wbr/>Names</a></li></ul></nav></div></div></div><footer class="with-border-bottom"><div class="container"><h2>Legend</h2><div class="tsd-legend-group"><ul class="tsd-legend"><li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li></ul><ul class="tsd-legend"><li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li></ul></div><h2>Settings</h2><p>Theme <select id="theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></p></div></footer><div class="container tsd-generator"><p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p></div><div class="overlay"></div><script src="assets/main.js"></script></body></html>

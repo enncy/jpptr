@@ -12,6 +12,32 @@ import { FramePlugin } from "../plugins/frame";
 import { FunctionPlugin } from "../plugins/function";
 import { PagePlugin } from "../plugins/page";
 
+
+/**
+ * jsonsep class
+ * @example
+ * ```ts
+ * 
+ * 
+ *  const browser = await puppeteer.launch(json.options);
+    const [page] = await browser.pages();
+    const jsonsep = new Jsonsep({ page, actions: json.actions });
+ 
+    jsonsep.register.parser.useAll(defaultParsers().entries());
+    jsonsep.register.plugin.useAll(defaultPlugins().entries());
+ 
+    const jsonRegister = json.register;
+    if (jsonRegister) {
+        const parsers = jsonRegister.parsers?.map((p) => [p.name, resolveModules(p.path)] as [string, any]);
+        const plugins = jsonRegister.plugins?.map((p) => [p.name, resolveModules(p.path)] as [string, any]);
+        jsonsep.register.parser.useAll(parsers || []);
+        jsonsep.register.plugin.useAll(plugins || []);
+    }
+
+    return jsonsep;
+
+ * ```
+ */
 export class Jsonsep extends ActionExecutor<any> {
     constructor(options?: { page?: Page; actions?: any[] }) {
         super(options);
@@ -31,7 +57,6 @@ function resolveModules(p: string) {
 /**
  * 创建 jsonsep 实例
  * @param json 配置文件
- * @returns
  */
 export async function createJsonsep(json: JsonsepSchema) {
     const browser = await puppeteer.launch(json.options);

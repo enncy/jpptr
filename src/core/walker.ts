@@ -18,7 +18,7 @@ export interface WalkerEvents<T> {
     start: number;
     stop: number;
 }
-
+ 
 export class Walker<T> extends EventEmitter {
     /** walk step index */
     protected index: number = 0;

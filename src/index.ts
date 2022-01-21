@@ -2,9 +2,9 @@ import { Register } from "./core/register";
 import { Walker } from "./core/walker";
 
 export { Action, ObjectAction, ArrayAction, ActionContext } from "./plugins/index";
-export { Jsonsep, createJsonsep, defaultParsers, defaultPlugins } from "./core/jsonsep";
+export { Jpptr, createJpptr, defaultParsers, defaultPlugins } from "./core/jpptr";
 export { ActionExecutor } from "./core/executor";
-export { JsonsepSchema, PuppeteerOptions } from "./core/types";
+export { JpptrSchema, PuppeteerOptions } from "./core/types";
 export { PluginFunction, PluginReturnType } from "./plugins";
 export { Parser, ParserFunction } from "./parser";
 

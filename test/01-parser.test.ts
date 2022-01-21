@@ -15,7 +15,7 @@ let gotoAction = {
 let typeAction = {
     use: "function",
     name: "type",
-    args: ["#kw", "jsonsep"],
+    args: ["#kw", "jpptr"],
 };
 
 describe("01 json parser 解析测试", () => {
@@ -53,7 +53,7 @@ describe("01 json parser 解析测试", () => {
         });
 
         it("type", () => {
-            expect(parser.parse(["type", "#kw", "jsonsep"])).deep.eq(typeAction);
+            expect(parser.parse(["type", "#kw", "jpptr"])).deep.eq(typeAction);
         });
     });
 

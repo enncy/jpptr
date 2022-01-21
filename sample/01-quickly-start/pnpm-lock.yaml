@@ -1,10 +1,10 @@
 lockfileVersion: 5.3
 
 specifiers:
-  jsonsep: ^1.1.0
+  jpptr: ^1.1.0
 
 dependencies:
-  jsonsep: 1.1.0
+  jpptr: 1.1.0
 
 packages:
 
@@ -196,7 +196,7 @@ packages:
     resolution: {integrity: sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==}
     dev: false
 
-  /jsonsep/1.1.0:
+  /jpptr/1.1.0:
     resolution: {integrity: sha512-79lTZYFA7dPfx/XB+CbwuSaKnv5XauUiKRVy/kEb/CgcDJnHdyh721eweG0hnIkn2CLNHcZ6/w04OPfzFonyeg==}
     dependencies:
       axios: 0.24.0

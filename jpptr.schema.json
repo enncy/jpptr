@@ -1,8 +1,8 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema",
-    "$id": "https://github.com/enncy/jsonsep/jsonsep.schema.json",
-    "title": "jsonsep schema",
-    "description": "jsonsep schema",
+    "$id": "https://github.com/enncy/jpptr/jpptr.schema.json",
+    "title": "jpptr schema",
+    "description": "jpptr schema",
     "type": "object",
     "properties": {
         "options": {
@@ -10,7 +10,7 @@
             "type": "object"
         },
         "register": {
-            "description": "the parser or plugin register of jsonsep",
+            "description": "the parser or plugin register of jpptr",
             "type": "object",
             "properties": {
                 "parsers": {
@@ -36,7 +36,7 @@
             }
         },
         "actions": {
-            "description": "the actions of jsonsep",
+            "description": "the actions of jpptr",
             "type": "array",
             "items": {
                 "anyOf": [

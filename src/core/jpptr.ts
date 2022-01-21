@@ -2,7 +2,7 @@ import { resolve } from "path";
 import { existsSync } from "fs";
 import puppeteer, { Page } from "puppeteer-core";
 import { ActionExecutor, defaultPwdPaths } from "./executor";
-import { JsonsepSchema, Register, ParserFunction, PluginFunction, ParserNames, PluginNames } from "..";
+import { JpptrSchema, Register, ParserFunction, PluginFunction, ParserNames, PluginNames } from "..";
 import { ArrayParser } from "../parser/ArrayParser";
 import { ExternalParser } from "../parser/ExternalParser";
 import { FrameParser } from "../parser/FrameParser";
@@ -14,31 +14,31 @@ import { PagePlugin } from "../plugins/page";
 
 
 /**
- * jsonsep class
+ * jpptr class
  * @example
  * ```ts
  * 
  * 
  *  const browser = await puppeteer.launch(json.options);
     const [page] = await browser.pages();
-    const jsonsep = new Jsonsep({ page, actions: json.actions });
+    const jpptr = new Jpptr({ page, actions: json.actions });
  
-    jsonsep.register.parser.useAll(defaultParsers().entries());
-    jsonsep.register.plugin.useAll(defaultPlugins().entries());
+    jpptr.register.parser.useAll(defaultParsers().entries());
+    jpptr.register.plugin.useAll(defaultPlugins().entries());
  
     const jsonRegister = json.register;
     if (jsonRegister) {
         const parsers = jsonRegister.parsers?.map((p) => [p.name, resolveModules(p.path)] as [string, any]);
         const plugins = jsonRegister.plugins?.map((p) => [p.name, resolveModules(p.path)] as [string, any]);
-        jsonsep.register.parser.useAll(parsers || []);
-        jsonsep.register.plugin.useAll(plugins || []);
+        jpptr.register.parser.useAll(parsers || []);
+        jpptr.register.plugin.useAll(plugins || []);
     }
 
-    return jsonsep;
+    return jpptr;
 
  * ```
  */
-export class Jsonsep extends ActionExecutor<any> {
+export class Jpptr extends ActionExecutor<any> {
     constructor(options?: { page?: Page; actions?: any[] }) {
         super(options);
     }
@@ -55,29 +55,29 @@ function resolveModules(p: string) {
 }
 
 /**
- * 创建 jsonsep 实例
+ * 创建 jpptr 实例
  * @param json 配置文件
  */
-export async function createJsonsep(json: JsonsepSchema) {
+export async function createJpptr(json: JpptrSchema) {
     const browser = await puppeteer.launch(json.options);
     const [page] = await browser.pages();
-    const jsonsep = new Jsonsep({ page, actions: json.actions });
+    const jpptr = new Jpptr({ page, actions: json.actions });
 
     /** 注册内部插件 */
 
-    jsonsep.register.parser.useAll(defaultParsers().entries());
-    jsonsep.register.plugin.useAll(defaultPlugins().entries());
+    jpptr.register.parser.useAll(defaultParsers().entries());
+    jpptr.register.plugin.useAll(defaultPlugins().entries());
 
     /** 注册外部插件 */
     const jsonRegister = json.register;
     if (jsonRegister) {
         const parsers = jsonRegister.parsers?.map((p) => [p.name, resolveModules(p.path)] as [string, any]);
         const plugins = jsonRegister.plugins?.map((p) => [p.name, resolveModules(p.path)] as [string, any]);
-        jsonsep.register.parser.useAll(parsers || []);
-        jsonsep.register.plugin.useAll(plugins || []);
+        jpptr.register.parser.useAll(parsers || []);
+        jpptr.register.plugin.useAll(plugins || []);
     }
 
-    return jsonsep;
+    return jpptr;
 }
 
 /**

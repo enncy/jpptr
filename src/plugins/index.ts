@@ -26,4 +26,4 @@ export type PluginReturnType<T extends Action> = void | undefined | T[] | Action
 
 export type PluginFunction = (ctx: ActionContext<any>) => PluginReturnType<Action> | Promise<PluginReturnType<Action>>;
 
-export interface JsonsepPluginError extends Error {}
+export interface JpptrPluginError extends Error {}

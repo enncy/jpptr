@@ -9,7 +9,7 @@ export type PuppeteerOptions = LaunchOptions &
         extraPrefsFirefox?: Record<string, unknown>;
     };
 
-export interface JsonsepSchema {
+export interface JpptrSchema {
     register?: ModuleRegister;
     options?: PuppeteerOptions;
     actions: Action[];

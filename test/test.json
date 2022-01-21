@@ -1,5 +1,5 @@
 {
-    "$schema": "../jsonsep.schema.json",
+    "$schema": "../jpptr.schema.json",
     "register": {
         "plugins": [
             {
@@ -11,10 +11,10 @@
     "options": {
         "executablePath": "C:/Program Files/Google/Chrome/Application/chrome.exe",
         "defaultViewport": null,
-        "headless": true
+        "headless": false
     },
     "actions": [
-        ["goto", "https://enncy.github.io/jsonsep/test.html"],
+        ["goto", "https://enncy.github.io/jpptr/test.html"],
         ["type", "#username", "enncy"],
         ["type", "#password", "123456"],
         ["click", "#submit"],
@@ -23,15 +23,15 @@
             "frame": -1,
             "use": "function",
             "name": "evaluate",
-            "args": ["document.querySelector('h1').innerText = 'hello jsonsep'"]
+            "args": ["document.querySelector('h1').innerText = 'hello jpptr'"]
         },
         ["waitForTimeout", 2000],
         {
-            "frame": "jsonsep_frame",
+            "frame": "jpptr_frame",
             "use": "function",
             "name": "evaluate",
-            "args": ["document.querySelector('h1').innerText = 'hello jsonsep , this is jsonsep_frame'"],
-            "actions": [["addStyleTag", { "url": "https://enncy.github.io/jsonsep/test.css" }]]
+            "args": ["document.querySelector('h1').innerText = 'hello jpptr , this is jpptr_frame'"],
+            "actions": [["addStyleTag", { "url": "https://enncy.github.io/jpptr/test.css" }]]
         },
         ["waitForTimeout", 2000],
         ["click", "#example"],
@@ -47,7 +47,7 @@
                 {
                     "use": "function",
                     "name": "evaluate",
-                    "args": ["alert('hello jsonsep')"],
+                    "args": ["alert('hello jpptr')"],
                     "wait": false
                 },
                 {

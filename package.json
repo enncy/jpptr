@@ -1,5 +1,5 @@
 {
-    "name": "jsonsep",
+    "name": "jpptr",
     "version": "1.1.0",
     "description": "a json syntactic sugar for execute puppeteer",
     "main": "./lib/index.js",
@@ -12,7 +12,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/enncy/json-puppeteer.git"
+        "url": "git+https://github.com/enncy/jpptr.git"
     },
     "keywords": [
         "puppeteer",
@@ -24,13 +24,13 @@
     "author": "enncy",
     "license": "MIT",
     "bugs": {
-        "url": "https://github.com/enncy/json-puppeteer/issues"
+        "url": "https://github.com/enncy/jpptr/issues"
     },
-    "homepage": "https://github.com/enncy/json-puppeteer#readme",
+    "homepage": "https://github.com/enncy/jpptr#readme",
     "dependencies": {
         "axios": "^0.24.0",
         "denque": "^2.0.1",
-        "jsonsep": "link:",
+        "jpptr": "link:",
         "puppeteer-core": "^13.0.1",
         "reflect-metadata": "^0.1.13"
     },

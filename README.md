@@ -1,11 +1,11 @@
-# jsonsep
+# jpptr
 > a json syntactic sugar for execute puppeteer
 
 
 ## Quickly Start
-install `jsonsep`
+install `jpptr`
 ```shell
-npm install jsonsep
+npm install jpptr
 ```
 test.json
 ```json
@@ -16,7 +16,7 @@ test.json
         "headless": false
     },
     "actions": [
-        ["goto", "https://enncy.github.io/jsonsep/test.html"],
+        ["goto", "https://enncy.github.io/jpptr/test.html"],
         ["type", "#username", "myusername"],
         ["type", "#password", "123456"],
         ["click", "#submit"],
@@ -46,7 +46,7 @@ test.json
 ```
 index.js
 ```js
-const { start } = require("jsonsep");
+const { start } = require("jpptr");
 const json = require("./test.json");
 
 start(json);
@@ -76,4 +76,4 @@ node index.js
 
 ## Sample
 
-all the sample see [https://github.com/enncy/jsonsep/tree/main/sample](https://github.com/enncy/jsonsep/tree/main/sample)
+all the sample see [https://github.com/enncy/jpptr/tree/main/sample](https://github.com/enncy/jpptr/tree/main/sample)

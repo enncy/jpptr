@@ -2,7 +2,7 @@
     {
         "use": "function",
         "name": "goto",
-        "args": ["https://enncy.github.io/jsonsep/test.html"]
+        "args": ["https://enncy.github.io/jpptr/test.html"]
     },
     {
         "use": "function",
@@ -31,7 +31,7 @@
             {
                 "use": "function",
                 "name": "evaluate",
-                "args": ["document.querySelector('h1').innerText = 'hello jsonsep'"]
+                "args": ["document.querySelector('h1').innerText = 'hello jpptr'"]
             }
         ]
     },
@@ -42,17 +42,17 @@
     },
     {
         "use": "frame",
-        "name": "jsonsep_frame",
+        "name": "jpptr_frame",
         "actions": [
             {
                 "use": "function",
                 "name": "evaluate",
-                "args": ["document.querySelector('h1').innerText = 'hello jsonsep , this is jsonsep_frame'"]
+                "args": ["document.querySelector('h1').innerText = 'hello jpptr , this is jpptr_frame'"]
             },
             [
                 "addStyleTag",
                 {
-                    "url": "https://enncy.github.io/jsonsep/test.css"
+                    "url": "https://enncy.github.io/jpptr/test.css"
                 }
             ]
         ]
@@ -82,7 +82,7 @@
             {
                 "use": "function",
                 "name": "evaluate",
-                "args": ["alert('hello jsonsep')"],
+                "args": ["alert('hello jpptr')"],
                 "wait": false
             },
             {

@@ -5,7 +5,7 @@
         "headless": false
     },
     "actions": [
-        ["goto", "https://enncy.github.io/jsonsep/test.html"],
+        ["goto", "https://enncy.github.io/jpptr/test.html"],
         ["type", "#username", "myusername"],
         ["type", "#password", "123456"],
         ["click", "#submit"],

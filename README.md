@@ -1,7 +1,7 @@
 # Jpptr
-> 
-
  
+![GitHub top language](https://img.shields.io/github/languages/top/enncy/jpptr) ![GitHub repo size](https://img.shields.io/github/repo-size/enncy/jpptr)  ![npm](https://img.shields.io/npm/v/jpptr) ![npm](https://img.shields.io/npm/dw/jpptr) ![GitHub](https://img.shields.io/github/license/enncy/jpptr)
+
 [中文](https://github.com/enncy/jpptr/blob/main/README.md) | [English](https://github.com/enncy/jpptr/blob/main/README.en-US.md)
 
 [文档](https://enncy.github.io/jpptr/) | [实例](https://github.com/enncy/jpptr/tree/main/sample)

@@ -1,79 +1,37 @@
-# jpptr
-> a json syntactic sugar for execute puppeteer
+# Jpptr
+> 
 
+ 
+[中文](https://github.com/enncy/jpptr/blob/main/README.md) | [English](https://github.com/enncy/jpptr/blob/main/README.en-US.md)
 
-## Quickly Start
-install `jpptr`
-```shell
-npm install jpptr
+[文档](https://enncy.github.io/jpptr/) | [实例](https://github.com/enncy/jpptr/tree/main/sample)
+  
+> 一个使用 json 语法糖去执行 puppeteer 的框架。     
+> 你可以使用 json 去执行 puppeteer , 就像使用 javascript 去执行 puppeteer 一样       
+- 你可以方便的的拓展你想要的功能
+- 你可以动态的进行事件的添加修改和删除。
+- 还有更多功能...请看文档
+
+## 例子
+```json
+["goto","https://example.com"]
 ```
-test.json
+转换成
 ```json
 {
-    "options": {
-        "executablePath": "C:/Program Files/Google/Chrome/Application/chrome.exe",
-        "defaultViewport": null,
-        "headless": false
-    },
-    "actions": [
-        ["goto", "https://enncy.github.io/jpptr/test.html"],
-        ["type", "#username", "myusername"],
-        ["type", "#password", "123456"],
-        ["click", "#submit"],
-        ["waitForTimeout", 3000],
-        ["click", "#example"],
-        ["waitForTimeout", 3000],
-        {
-            "page": -1,
-            "use": "function",
-            "name": "evaluate",
-            "args": ["alert('hello json')"],
-            "wait": false,
-            "actions": [
-                {
-                    "use": "module",
-                    "path": "./close-dialog-plugin.js"
-                },
-                ["waitForTimeout", 3000],
-                ["close"]
-            ]
-        },
-        ["waitForTimeout", 3000],
-        ["close"]
-    ]
+    "use":"function",
+    "name":"goto",
+    "args":["https://example.com"]
 }
-
 ```
-index.js
+最终执行的代码
 ```js
-const { start } = require("jpptr");
-const json = require("./test.json");
-
-start(json);
-
-```
-close-dialog-plugin.js
-```js
-module.exports = {
-    name: "close-dialog-plugin",
-    run({ page, frame, json }) {
-        return new Promise((resolve, reject) => {
-            page.once("dialog", async (dialog) => {
-                setTimeout(async () => {
-                    await dialog.dismiss();
-                    resolve();
-                }, 3000);
-            });
-        });
-    },
-};
-
-```
-run
-```shell
-node index.js
+page.goto("https://example.com")
 ```
 
-## Sample
+## 文档
+https://enncy.github.io/jpptr/
+## 实例
 
-all the sample see [https://github.com/enncy/jpptr/tree/main/sample](https://github.com/enncy/jpptr/tree/main/sample)
+[https://github.com/enncy/jpptr/tree/main/sample](https://github.com/enncy/jpptr/tree/main/sample)
+ 

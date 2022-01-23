@@ -37,7 +37,6 @@
         "axios": "^0.24.0",
         "denque": "^2.0.1",
         "glob": "^7.2.0",
-        "jpptr": "link:",
         "puppeteer-core": "^13.0.1",
         "reflect-metadata": "^0.1.13"
     },

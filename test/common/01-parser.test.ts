@@ -1,9 +1,9 @@
 import { describe, it } from "mocha";
 import { expect } from "chai";
-import { Parser, defaultParsers } from "../src";
-import { readFileSync, writeFileSync } from "fs";
+import { readFileSync } from "fs";
 import { resolve } from "path";
-
+import { defaultParsers, Parser } from "../../src/parser";
+ 
 const parser = new Parser(defaultParsers());
 
 let gotoAction = {
@@ -91,11 +91,12 @@ describe("01 json parser 解析测试", () => {
 
     describe("文件整体解析测试", () => {
         it("test.json actions => parsed.json", () => {
-            const json = require("./test.json");
+            const config = require("./test.json");
+            const parsedJson = require("./parsed.json");
 
-            const parsed = json.actions.map((a: any) => parser.parse(a));
+            const parsed = config.actions.map((a: any) => parser.parse(a));
 
-            expect(parsed).is.deep.eq(JSON.parse(readFileSync(resolve("./test/parsed.json")).toString()));
+            expect(parsed).is.deep.eq(parsedJson);
         });
     });
 });

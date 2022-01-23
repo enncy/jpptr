@@ -1,8 +1,10 @@
 import { Browser, Frame, Page } from "puppeteer-core";
-import { ConditionPluginParam } from "./condition";
-import { FramePluginParam } from "./frame";
-import { PagePluginParam } from "./page";
-import { FunctionPluginParam } from "./function";
+import { ConditionPlugin, ConditionPluginParam } from "./condition";
+import { FramePluginParam, FramePlugin } from "./frame";
+import { PagePluginParam, PagePlugin } from "./page";
+import { FunctionPluginParam, FunctionPlugin } from "./function";
+import { PluginNames } from "..";
+import { Register } from "../core/register";
 
 export interface ObjectAction {
     use: string;
@@ -27,3 +29,16 @@ export type PluginReturnType<T extends Action> = void | undefined | T[] | Action
 export type PluginFunction = (ctx: ActionContext<any>) => PluginReturnType<Action> | Promise<PluginReturnType<Action>>;
 
 export interface JpptrPluginError extends Error {}
+
+export { ConditionPlugin, FramePlugin, FunctionPlugin, PagePlugin };
+
+/**
+ * 默认插件注册器
+ */
+export function defaultPlugins() {
+    return new Register<PluginFunction>()
+        .use(PluginNames["condition-plugin"], ConditionPlugin)
+        .use(PluginNames["frame-plugin"], FramePlugin)
+        .use(PluginNames["function-plugin"], FunctionPlugin)
+        .use(PluginNames["page-plugin"], PagePlugin);
+}

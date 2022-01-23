@@ -1,12 +1,8 @@
 import { Register } from "./core/register";
 import { Walker } from "./core/walker";
 
-export { Action, ObjectAction, ArrayAction, ActionContext } from "./plugins/index";
-export { Jpptr, createJpptr, defaultParsers, defaultPlugins } from "./core/jpptr";
-export { ActionExecutor } from "./core/executor";
-export { JpptrSchema, PuppeteerOptions } from "./core/types";
-export { PluginFunction, PluginReturnType } from "./plugins";
-export { Parser, ParserFunction } from "./parser";
+export { Jpptr } from "./core/jpptr";
+export { ActionExecutor, GlobalRegister } from "./core/executor";
 
 export { Register, Walker };
 

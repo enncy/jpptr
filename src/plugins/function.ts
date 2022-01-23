@@ -8,7 +8,6 @@ import { ObjectAction, ActionContext } from ".";
 export async function FunctionPlugin({ browser, page, frame, action }: ActionContext<FunctionPluginParam>) {
     let { name, args, wait } = action;
     /** 优先级为 browser > page > frame */
-
     if (browser && page) {
         const func = Reflect.get(browser, name);
         if (func) {

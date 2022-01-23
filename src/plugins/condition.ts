@@ -12,7 +12,7 @@ export async function ConditionPlugin({ page, frame, action }: ActionContext<Con
         let ifs = [action.if].concat(action.elif);
 
         for (const _if of ifs) {
-            // 处理条件，直到某个返回一个操作列表
+            // 处理条件，直到某个返回一个动作列表
             let ifActions = await handleIf(page, frame, action.if);
             if (ifActions) {
                 return actions.concat(ifActions);

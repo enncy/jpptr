@@ -1,6 +1,8 @@
 import { LaunchOptions, BrowserLaunchArgumentOptions, BrowserConnectOptions, Product, Page, Frame } from "puppeteer-core";
-import { Action, ObjectAction, ActionContext } from "../plugins";
+import { Action, ObjectAction, ActionContext, PluginFunction } from "../plugins";
 import "reflect-metadata";
+import { GlobalRegister } from "./executor";
+import { ParserFunction } from "../parser";
 
 export type PuppeteerOptions = LaunchOptions &
     BrowserLaunchArgumentOptions &
@@ -9,19 +11,26 @@ export type PuppeteerOptions = LaunchOptions &
         extraPrefsFirefox?: Record<string, unknown>;
     };
 
+export interface JpptrOptions {
+    register?: GlobalRegister;
+    launch?: PuppeteerOptions;
+    actions?: Action[];
+}
+
 export interface JpptrSchema {
+    extends?: string;
     register?: ModuleRegister;
-    options?: PuppeteerOptions;
-    actions: Action[];
+    launch?: PuppeteerOptions;
+    actions?: Action[];
 }
 
 export interface ModuleRegister {
     plugins?: {
         name: string;
-        path: string;
+        plugin: string | PluginFunction;
     }[];
     parsers?: {
         name: string;
-        path: string;
+        parser: string | ParserFunction;
     }[];
 }

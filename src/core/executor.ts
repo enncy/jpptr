@@ -1,8 +1,9 @@
 import { Page } from "puppeteer-core";
-import { PluginFunction } from "..";
-import { Parser, ParserFunction } from "../parser";
-import { ActionContext, Action } from "../plugins";
+
+import { defaultParsers, Parser, ParserFunction } from "../parser";
+import { ActionContext, Action, PluginFunction, defaultPlugins } from "../plugins";
 import { Register } from "./register";
+import { ModuleRegister } from "./types";
 import { Walker, WalkerEvents } from "./walker";
 
 export interface ActionExecutorEvents<T extends Action> extends WalkerEvents<T> {
@@ -12,14 +13,28 @@ export interface ActionExecutorEvents<T extends Action> extends WalkerEvents<T> 
     parsefinish: ActionContext<T>;
 }
 
-export abstract class ActionExecutor<T extends Action> extends Walker<ActionContext<T>> {
-    private parserRegister: Register<ParserFunction> = new Register();
-    private pluginRegister: Register<PluginFunction> = new Register();
+export class GlobalRegister {
+    plugin: Register<PluginFunction> = new Register();
+    parser: Register<ParserFunction> = new Register();
+
+    constructor(useDefault?: boolean) {
+        this.parser.useAll(defaultParsers().entries());
+        this.plugin.useAll(defaultPlugins().entries());
+    }
+}
+
+export interface ActionExecutorOptions<T extends Action> {
+    page?: Page;
+    actions?: T[];
+    register?: GlobalRegister;
+}
+
+export class ActionExecutor<T extends Action> extends Walker<ActionContext<T>> {
     public parser: Parser;
-    public register: { plugin: Register<PluginFunction>; parser: Register<ParserFunction> };
+    public register: GlobalRegister;
     private currentContext?: ActionContext<T>;
 
-    constructor(options?: { page?: Page; actions?: T[] }) {
+    constructor(options?: ActionExecutorOptions<T>) {
         super();
         /** 初始化任务，如果不存在任务，则必须使用 addActions 添加 */
         if (options) {
@@ -31,11 +46,10 @@ export abstract class ActionExecutor<T extends Action> extends Walker<ActionCont
         let ctx = this.peek(0);
         if (ctx) this.currentContext = ctx;
 
-        this.parser = new Parser(this.parserRegister);
-        this.register = {
-            plugin: this.pluginRegister,
-            parser: this.parserRegister,
-        };
+        /** 初始化注册器 */
+        this.register = options?.register || new GlobalRegister();
+        /** 初始化动作解析器 */
+        this.parser = new Parser(this.register.parser);
     }
 
     on<E extends keyof ActionExecutorEvents<T>>(event: E, handler: (value: ActionExecutorEvents<T>[E]) => void) {
@@ -72,7 +86,7 @@ export abstract class ActionExecutor<T extends Action> extends Walker<ActionCont
 
             if (ctx.action && !Array.isArray(ctx.action)) {
                 /** 执行插件 ， 并处理返回值 */
-                const plugin = this.pluginRegister.get(ctx.action.use);
+                const plugin = this.register.plugin.get(ctx.action.use);
                 if (plugin) {
                     let result = await plugin(ctx);
                     this.emit("executefinish", ctx);
@@ -94,7 +108,7 @@ export abstract class ActionExecutor<T extends Action> extends Walker<ActionCont
     }
 
     /** 添加事件 */
-    addActions(actions: any[], ctx?: Omit<ActionContext<T>, "action">) {
+    public addActions(actions: any[], ctx?: Omit<ActionContext<T>, "action">) {
         let { page, browser, frame } = ctx || {};
         this.add(
             ...actions.map(
@@ -108,6 +122,11 @@ export abstract class ActionExecutor<T extends Action> extends Walker<ActionCont
             )
         );
     }
-}
 
-export let defaultPwdPaths = [process.cwd(), __dirname, "./"];
+    /** 执行全部 */
+    public async executeAll() {
+        while (!this.end()) {
+            await this.execute();
+        }
+    }
+}

@@ -4,34 +4,48 @@
     "title": "jpptr schema",
     "description": "jpptr schema",
     "type": "object",
-    "properties": {
-        "options": {
-            "description": "the launch options of puppeteer",
-            "type": "object"
-        },
-        "register": {
-            "description": "the parser or plugin register of jpptr",
-            "type": "object",
+
+    "$ref": "#/definitions/config",
+
+    "definitions": {
+        "config": {
             "properties": {
-                "parsers": {
-                    "description": "the parsers of puppeteer",
-                    "type": "array",
-                    "items": {
-                        "properties": {
-                            "name": { "type": "string" },
-                            "path": { "type": "string" }
+                "extends": {
+                    "description": "the parent config file",
+                    "type": "string"
+                },
+                "launch": {
+                    "description": "the launch options of puppeteer",
+                    "type": "object"
+                },
+                "register": {
+                    "description": "the parser or plugin register of jpptr",
+                    "type": "object",
+                    "properties": {
+                        "parsers": {
+                            "description": "the parsers of puppeteer",
+                            "type": "array",
+                            "items": {
+                                "properties": {
+                                    "name": { "type": "string" },
+                                    "parser": { "type": "string" }
+                                }
+                            }
+                        },
+                        "plugins": {
+                            "description": "the plugins of puppeteer",
+                            "type": "array",
+                            "items": {
+                                "properties": {
+                                    "name": { "type": "string" },
+                                    "plugin": { "type": "string" }
+                                }
+                            }
                         }
                     }
                 },
-                "plugins": {
-                    "description": "the plugins of puppeteer",
-                    "type": "array",
-                    "items": {
-                        "properties": {
-                            "name": { "type": "string" },
-                            "path": { "type": "string" }
-                        }
-                    }
+                "actions": {
+                    "$ref": "#/definitions/actions"
                 }
             }
         },
@@ -48,10 +62,7 @@
                     }
                 ]
             }
-        }
-    },
-    "required": ["options", "actions"],
-    "definitions": {
+        },
         "condition-properties": {
             "properties": {
                 "include": {
@@ -72,7 +83,7 @@
                 },
                 "evaluate": { "type": "string" },
                 "actions": {
-                    "$ref": "#/properties/actions"
+                    "$ref": "#/definitions/actions"
                 }
             },
 
@@ -99,7 +110,7 @@
                     "anyOf": [{ "type": "string" }, { "type": "number" }]
                 },
                 "actions": {
-                    "$ref": "#/properties/actions"
+                    "$ref": "#/definitions/actions"
                 }
             },
             "anyOf": [
@@ -134,7 +145,7 @@
                             "$ref": "#/definitions/condition-properties"
                         },
                         "else": {
-                            "$ref": "#/properties/actions"
+                            "$ref": "#/definitions/actions"
                         }
                     },
                     "required": ["if"]
@@ -151,7 +162,7 @@
                             "type": "number"
                         },
                         "actions": {
-                            "$ref": "#/properties/actions"
+                            "$ref": "#/definitions/actions"
                         }
                     },
                     "required": ["index", "actions"]
@@ -172,7 +183,7 @@
                             "type": "string"
                         },
                         "actions": {
-                            "$ref": "#/properties/actions"
+                            "$ref": "#/definitions/actions"
                         }
                     },
                     "required": ["name", "actions"]
@@ -181,7 +192,7 @@
                     "description": "empty action",
                     "properties": {
                         "actions": {
-                            "$ref": "#/properties/actions"
+                            "$ref": "#/definitions/actions"
                         }
                     }
                 }
@@ -1059,6 +1070,22 @@
                         {
                             "description": "page.waitForTimeout(milliseconds)",
                             "const": "waitForTimeout"
+                        }
+                    ]
+                },
+                {
+                    "items": [
+                        {
+                            "description": "browser.newPage()",
+                            "const": "newPage"
+                        }
+                    ]
+                },
+                {
+                    "items": [
+                        {
+                            "description": "browser.disconnect()",
+                            "const": "disconnect"
                         }
                     ]
                 }

@@ -42,12 +42,12 @@
     },
     {
         "use": "frame",
-        "name": "jpptr_frame",
+        "name": "test_frame",
         "actions": [
             {
                 "use": "function",
                 "name": "evaluate",
-                "args": ["document.querySelector('h1').innerText = 'hello jpptr , this is jpptr_frame'"]
+                "args": ["document.querySelector('h1').innerText = 'hello jpptr , this is test_frame'"]
             },
             [
                 "addStyleTag",
@@ -125,11 +125,13 @@
         "name": "waitForTimeout",
         "args": [2000]
     },
+
     {
         "use": "function",
         "name": "close",
         "args": []
     },
+
     {
         "use": "function",
         "name": "close",

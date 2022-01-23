@@ -1,6 +1,6 @@
 import { describe, it } from "mocha";
 import { expect } from "chai";
-import { Walker } from "../src";
+import { Walker } from "../../src";
 
 const walker = new Walker();
 
@@ -35,7 +35,7 @@ describe("00 walker 测试", () => {
                 // 停止动作
                 walker.stop();
                 expect(walker.isStop()).is.true;
-                // 添加一个延时事件，此事件必须等到 start 调用后才能停止阻塞
+                // 添加一个延时动作，此事件必须等到 start 调用后才能停止阻塞
                 walker.add(async () => 0);
                 expect(walker.peek(2)).is.instanceOf(Function);
                 // 模拟延时

@@ -1,14 +1,14 @@
 {
-    "$schema": "../jpptr.schema.json",
+    "$schema": "../../jpptr.schema.json",
     "register": {
         "plugins": [
             {
                 "name": "close-dialog",
-                "path": "./test/close-dialog-plugin.js"
+                "plugin": "./test/common/close-dialog-plugin.js"
             }
         ]
     },
-    "options": {
+    "launch": {
         "executablePath": "C:/Program Files/Google/Chrome/Application/chrome.exe",
         "defaultViewport": null,
         "headless": false
@@ -27,10 +27,10 @@
         },
         ["waitForTimeout", 2000],
         {
-            "frame": "jpptr_frame",
+            "frame": "test_frame",
             "use": "function",
             "name": "evaluate",
-            "args": ["document.querySelector('h1').innerText = 'hello jpptr , this is jpptr_frame'"],
+            "args": ["document.querySelector('h1').innerText = 'hello jpptr , this is test_frame'"],
             "actions": [["addStyleTag", { "url": "https://enncy.github.io/jpptr/test.css" }]]
         },
         ["waitForTimeout", 2000],

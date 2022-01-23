@@ -1,11 +1,11 @@
+#!/usr/bin/env node
+
 import { Command } from "commander";
 import { ExecuteProgram } from "./exec";
 import { resolve } from "path";
 import glob from "glob";
 import { Jpptr } from "..";
-
-import { JpptrConfigHandler } from "../core/config.handler";
-
+ 
 export interface ExecuteConfig {
     name: string;
     version: string;

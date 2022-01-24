@@ -4,7 +4,7 @@ import { defaultParsers } from "../parser";
 import { defaultPlugins } from "../plugins";
 
 import { GlobalRegister } from "./executor";
-import { error, log } from "./logger";
+import { error, log } from "../logger/logger";
 
 import { JpptrOptions, JpptrSchema, ModuleRegister, PuppeteerOptions } from "./types";
 

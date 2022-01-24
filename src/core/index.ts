@@ -7,4 +7,4 @@ export { Walker } from "./walker";
 export { Jpptr } from "./jpptr";
  
 
-export * from "./logger"
+export * from "../logger/logger"

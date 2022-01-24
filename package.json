@@ -7,9 +7,7 @@
     "files": [
         "lib"
     ],
-    "bin": {
-        "jpptr": "./lib/commander/index.js"
-    },
+    "bin": "./lib/commander/index.js",
     "scripts": {
         "test": "nyc mocha "
     },

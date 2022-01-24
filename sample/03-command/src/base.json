@@ -1,0 +1,9 @@
+{
+    "$schema": "../../../jpptr.schema.json",
+    "launch": {
+        "executablePath": "C:/Program Files/Google/Chrome/Application/chrome.exe",
+        "defaultViewport": null,
+        "headless": false
+    },
+    "actions": [["goto", "https://example.com"]]
+}

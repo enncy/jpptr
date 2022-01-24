@@ -14,11 +14,8 @@ ExecuteProgram.name("run")
     .description("run a single file with actions")
     .alias("exec")
     .argument("<file>", "json file with actions")
-    .action(async (file, options) => {
-        const jpptr = Jpptr.from(path.resolve(process.cwd(), file));
-        const execute = await jpptr.createExecutor();
-        await execute.executeAll();
-    })
+    .option("-c, --cwd", "command working directory, default : process.cwd()")
+    .action(ExecuteProgramAction)
     .addHelpText(
         "after",
         `
@@ -27,3 +24,9 @@ jpptr run ./test.json
 jpptr exec ./test.json
 `
     );
+
+export async function ExecuteProgramAction(file: string, options?: { cwd?: string }) {
+    const jpptr = Jpptr.from(path.resolve(options?.cwd || process.cwd(), file));
+    const execute = await jpptr.createExecutor();
+    await execute.executeAll();
+}

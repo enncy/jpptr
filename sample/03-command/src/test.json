@@ -1,0 +1,5 @@
+{
+    "$schema": "../../jpptr.schema.json",
+    "extends": "./base.json",
+    "actions": [["goto", "https://npmjs.com"], ["close"]]
+}

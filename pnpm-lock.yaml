@@ -49,6 +49,18 @@ importers:
     dependencies:
       jpptr: link:../..
 
+  sample/02-extends:
+    specifiers:
+      jpptr: link:..\..
+    dependencies:
+      jpptr: link:../..
+
+  sample/03-command:
+    specifiers:
+      jpptr: link:..\..
+    dependencies:
+      jpptr: link:../..
+
 packages:
 
   /@babel/code-frame/7.16.7:

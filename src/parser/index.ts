@@ -1,4 +1,4 @@
-import { ParserNames } from "..";
+
 import { Register } from "../core/register";
 import { ObjectAction } from "../plugins";
 import { ArrayParser } from "./ArrayParser";
@@ -35,4 +35,18 @@ export function defaultParsers() {
         .use(ParserNames["frame-parser"], FrameParser)
         .use(ParserNames["page-parser"], PageParser)
         .use(ParserNames["external-parser"], ExternalParser);
+}
+
+/**
+ * 默认解析器名
+ */
+ export enum ParserNames {
+    /** 数组解析器 */
+    "array-parser" = "array",
+    /** 外部模块解析器 */
+    "external-parser" = "external",
+    /** 页面框架切换解析器 */
+    "frame-parser" = "frame",
+    /** 页面切换解析器 */
+    "page-parser" = "page",
 }

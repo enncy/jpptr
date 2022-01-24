@@ -1,5 +1,5 @@
-import { PluginNames } from "..";
-import { Action } from "../plugins";
+ 
+import { Action, PluginNames } from "../plugins";
 import { FunctionPluginParam } from "../plugins/function";
 
 export function ArrayParser(action: Action): FunctionPluginParam | undefined {

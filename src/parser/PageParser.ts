@@ -1,5 +1,5 @@
-import { PluginNames } from "..";
-import { Action } from "../plugins";
+ 
+import { Action, PluginNames } from "../plugins";
 import { PagePluginParam } from "../plugins/page";
 
 export function PageParser(action: Action) {

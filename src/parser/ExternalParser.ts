@@ -1,4 +1,4 @@
-import { ParserNames, PluginNames } from "..";
+import { ParserNames } from ".";
 
  
 

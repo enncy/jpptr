@@ -1,5 +1,5 @@
-import { PluginNames } from "..";
-import { Action } from "../plugins";
+ 
+import { Action, PluginNames } from "../plugins";
 import { FramePluginParam } from "../plugins/frame";
 
 export function FrameParser(action: Action) {

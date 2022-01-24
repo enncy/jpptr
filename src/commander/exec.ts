@@ -15,7 +15,7 @@ ExecuteProgram.name("run")
     .alias("exec")
     .argument("<file>", "json file with actions")
     .action(async (file, options) => {
-        const jpptr = Jpptr.from(file);
+        const jpptr = Jpptr.from(path.resolve(process.cwd(), file));
         const execute = await jpptr.createExecutor();
         await execute.executeAll();
     })

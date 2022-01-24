@@ -12,5 +12,7 @@
         "outDir": "./lib",
         "downlevelIteration": true,
         "resolveJsonModule": true
-    }
+    },
+    "include": ["./src/**/*"],
+    "exclude": ["./test/**/*"]
 }

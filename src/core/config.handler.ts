@@ -4,6 +4,7 @@ import { defaultParsers } from "../parser";
 import { defaultPlugins } from "../plugins";
 
 import { GlobalRegister } from "./executor";
+import { error, log } from "./logger";
 
 import { JpptrOptions, JpptrSchema, ModuleRegister, PuppeteerOptions } from "./types";
 
@@ -53,11 +54,17 @@ export class JpptrConfigHandler {
         /** 切换工作目录 */
         this.cwd = configPath;
         /** 读取配置文件 */
-        let mod = require(configPath);
-        const json: JpptrSchema = mod.default || mod;
-        this.resolve(json);
-        if (json.extends) {
-            this.extends(resolve(configPath, json.extends));
+        let mod;
+        try {
+            mod = require(configPath);
+
+            const json: JpptrSchema = mod.default || mod;
+            this.resolve(json);
+            if (json.extends) {
+                this.extends(resolve(configPath, json.extends));
+            }
+        } catch {
+            error("module not found : ", path);
         }
     }
 }
@@ -75,6 +82,11 @@ export function resolveConfigPath(p: string, cwd: string = process.cwd()) {
  * 解析模块,可以传入 cwd 替换工作目录,默认 process.cwd()
  */
 export function resolveConfig(p: string, cwd: string = process.cwd()) {
-    let mod = require(resolveConfigPath(p, cwd));
-    return mod.default || mod;
+    let mod;
+    try {
+        mod = require(resolveConfigPath(p, cwd));
+    } catch {
+        error("module not found : ", p);
+    }
+    return mod?.default || mod;
 }

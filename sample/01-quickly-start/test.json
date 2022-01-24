@@ -1,33 +1,92 @@
 {
-    "options": {
+    "$schema": "../../jpptr.schema.json",
+    "register": {
+        "plugins": [
+            {
+                "name": "close-dialog",
+                "plugin": "./close-dialog-plugin.js"
+            }
+        ]
+    },
+    "launch": {
         "executablePath": "C:/Program Files/Google/Chrome/Application/chrome.exe",
         "defaultViewport": null,
         "headless": false
     },
     "actions": [
         ["goto", "https://enncy.github.io/jpptr/test.html"],
-        ["type", "#username", "myusername"],
+        ["type", "#username", "enncy"],
         ["type", "#password", "123456"],
         ["click", "#submit"],
-        ["waitForTimeout", 3000],
+        ["waitForTimeout", 2000],
+        {
+            "frame": -1,
+            "use": "function",
+            "name": "evaluate",
+            "args": ["document.querySelector('h1').innerText = 'hello jpptr'"]
+        },
+        ["waitForTimeout", 2000],
+        {
+            "frame": "test_frame",
+            "use": "function",
+            "name": "evaluate",
+            "args": ["document.querySelector('h1').innerText = 'hello jpptr , this is test_frame'"],
+            "actions": [["addStyleTag", { "url": "https://enncy.github.io/jpptr/test.css" }]]
+        },
+        ["waitForTimeout", 2000],
         ["click", "#example"],
-        ["waitForTimeout", 3000],
+        {
+            "description": "等待一段时间,防止页面打开延迟导致的切换错误,你也可以自定义模块去实现页面见的跳转和切换 \n waiting for a period of time to prevent switching errors caused by the delay in opening the page, you can also customize the module(plugin or parser) to jump and switch between pages",
+            "actions": [["waitForTimeout", 3000]]
+        },
         {
             "page": -1,
             "use": "function",
-            "name": "evaluate",
-            "args": ["alert('hello json')"],
-            "wait": false,
+            "name": "waitForNetworkIdle",
             "actions": [
                 {
-                    "use": "module",
-                    "path": "./close-dialog-plugin.js"
+                    "use": "function",
+                    "name": "evaluate",
+                    "args": ["alert('hello jpptr')"],
+                    "wait": false
                 },
-                ["waitForTimeout", 3000],
+                {
+                    "use": "external",
+                    "name": "close-dialog"
+                },
+                ["waitForTimeout", 2000],
+                {
+                    "use": "condition",
+                    "if": {
+                        "evaluate": "new Date().getMinutes()%2===0",
+                        "actions": [
+                            {
+                                "use": "function",
+                                "name": "evaluate",
+                                "args": ["alert('Now the timestamp is even')"],
+                                "wait": false
+                            }
+                        ]
+                    },
+                    "else": [
+                        {
+                            "use": "function",
+                            "name": "evaluate",
+                            "args": ["alert('Now the timestamp is singular')"],
+                            "wait": false
+                        }
+                    ]
+                },
+                {
+                    "use": "external",
+                    "name": "close-dialog"
+                },
+                ["waitForTimeout", 2000],
                 ["close"]
             ]
         },
-        ["waitForTimeout", 3000],
+        ["waitForTimeout", 2000],
+        ["close"],
         ["close"]
     ]
 }

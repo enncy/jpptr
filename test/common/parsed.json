@@ -86,8 +86,7 @@
                 "wait": false
             },
             {
-                "use": "external",
-                "name": "close-dialog"
+                "use": "close-dialog"
             },
             ["waitForTimeout", 2000],
             {
@@ -113,8 +112,7 @@
                 ]
             },
             {
-                "use": "external",
-                "name": "close-dialog"
+                "use": "close-dialog"
             },
             ["waitForTimeout", 2000],
             ["close"]

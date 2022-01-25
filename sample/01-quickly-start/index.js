@@ -3,12 +3,13 @@ const { Jpptr } = require("jpptr");
 const path = require("path");
 
 async function start() {
-    // @ts-ignore
- 
-    const jpptr = await Jpptr.from(path.resolve(__dirname, "./test.json"));
-    /** launch browser and create executor */
+    /** 
+     * 实例化 jpptr    
+     */
+    const jpptr = Jpptr.from(path.resolve(__dirname, "./test.json"));
+    /** 启动浏览器 */
     const execute = await jpptr.createExecutor();
-
+    /** 执行全部动作 */
     await execute.executeAll();
 }
 

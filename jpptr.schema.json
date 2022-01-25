@@ -99,7 +99,7 @@
                 },
                 "use": {
                     "description": "插件名",
-                    "enum": ["function", "condition", "page", "frame", "external"]
+                    "anyOf": [{ "enum": ["function", "condition", "page", "frame", "external"] }, { "type": "string" }]
                 },
                 "page": {
                     "description": "需要切换的 标签页 的索引",
@@ -114,23 +114,6 @@
                 }
             },
             "anyOf": [
-                {
-                    "description": "external plugin , 外部引用插件，可在 register.plugins 中定义 , 按照 \"key\":\"value\" 的方式定义一个外部插件",
-                    "properties": {
-                        "use": {
-                            "description": "external plugin , 外部引用插件，可在 register.plugins 中定义 , 按照 \"key\":\"value\" 的方式定义一个外部插件",
-                            "const": "external"
-                        },
-                        "name": {
-                            "description": "name 是 register.plugins 中定义的任意属性名",
-                            "type": "string"
-                        }
-                    },
-                    "required": ["name"]
-                },
-                {
-                    "$ref": "#/definitions/puppeteer-functions"
-                },
                 {
                     "description": "condition plugin",
                     "properties": {
@@ -1086,6 +1069,13 @@
                         {
                             "description": "browser.disconnect()",
                             "const": "disconnect"
+                        }
+                    ]
+                },
+                {
+                    "items": [
+                        {
+                            "type": "string"
                         }
                     ]
                 }

@@ -8,7 +8,7 @@ import { PagePluginParam } from "../plugins/page";
  */
 export function PageParser({ action }: ActionContext<any>) {
     if (!Array.isArray(action) && action.page) {
-        const { actions = [], ...newAction } = action;
+        const { actions = [], page, ...newAction } = action;
         action = {
             use: PluginNames["page-plugin"],
             index: action.page,

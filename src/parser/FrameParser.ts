@@ -7,7 +7,7 @@ import { FramePluginParam } from "../plugins/frame";
  */
 export function FrameParser({ action }: ActionContext<any>) {
     if (!Array.isArray(action) && action.frame) {
-        const { actions = [], ...newAction } = action;
+        const { actions = [], frame, ...newAction } = action;
         if (typeof action.frame === "string") {
             action = {
                 use: PluginNames["frame-plugin"],

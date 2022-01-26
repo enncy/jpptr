@@ -1,23 +1,26 @@
-import { Jpptr } from "../../src";
+import { ModuleRegister, Jpptr } from "../../src";
 import { describe, it } from "mocha";
 import { expect } from "chai";
-import { ActionExecutor, GlobalRegister } from "../../src/core/executor";
+import { ActionExecutor } from "../../src/core/executor";
+import { ActionContext } from "../../src/core/types";
 
 describe("02 register 外部模块注册测试", () => {
-    const register = new GlobalRegister();
+    const register = new ModuleRegister();
     const parsers = register.parser;
     const plugins = register.plugin;
 
     it("新增解析器", () => {
-        parsers.use("test-parser", (action: any) => {
-            if (typeof action === "number") {
-                return {
-                    use: "test-plugin",
-                    href: "https://example.com",
-                };
-            }
+        parsers.use("test-parser", {
+            parser({ action }: ActionContext<any>) {
+                if (typeof action === "number") {
+                    return {
+                        use: "test-plugin",
+                        href: "https://example.com",
+                    };
+                }
+            },
         });
-        expect(parsers.get("test-parser")?.(1)).deep.eq({
+        expect(parsers.get("test-parser")?.parser({ action: 1 })).deep.eq({
             use: "test-plugin",
             href: "https://example.com",
         });
@@ -36,7 +39,7 @@ describe("02 register 外部模块注册测试", () => {
         executor.add({ action: 1 });
         const ctx = await executor.walk();
         if (ctx) {
-            ctx.action = executor.parser.parse(ctx.action);
+            ctx.action = executor.parser.parse({ action: ctx.action });
 
             const plugin = plugins.get(ctx.action.use);
             const result = await plugin!(ctx);

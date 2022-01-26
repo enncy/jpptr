@@ -1,3 +1,15 @@
+import { ParserFunction, defaultParsers, ActionParser } from "../parser";
+import { PluginFunction, defaultPlugins } from "../plugins";
+
+export class ModuleRegister {
+    plugin: Register<PluginFunction> = new Register();
+    parser: Register<ActionParser> = new Register();
+
+    constructor() {
+        this.parser.useAll(defaultParsers().entries());
+        this.plugin.useAll(defaultPlugins().entries());
+    }
+}
 
 export class Register<T> {
     private items: Map<string, T> = new Map();
@@ -37,5 +49,9 @@ export class Register<T> {
 
     entries() {
         return Array.from(this.items.entries());
+    }
+
+    toString() {
+        return this.entries();
     }
 }

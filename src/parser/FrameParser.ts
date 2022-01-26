@@ -1,8 +1,11 @@
- 
-import { Action, PluginNames } from "../plugins";
+import { Action, ActionContext } from "../core/types";
+import { PluginNames } from "../plugins";
 import { FramePluginParam } from "../plugins/frame";
 
-export function FrameParser(action: Action) {
+/**
+ * frame框架切换解析器
+ */
+export function FrameParser({ action  }: ActionContext<any>) {
     if (!Array.isArray(action) && action.frame) {
         let { frame, actions = [], ...newAction } = action;
         if (typeof action.frame === "string") {

@@ -13,24 +13,29 @@
         "defaultViewport": null,
         "headless": false
     },
+    "variables": {
+        "username": "enncy",
+        "password": "123456",
+        "project": "jpptr"
+    },
     "actions": [
         ["goto", "https://enncy.github.io/jpptr/test.html"],
-        ["type", "#username", "enncy"],
-        ["type", "#password", "123456"],
+        ["type", "#username", "#{username}"],
+        ["type", "#password", "#{password}"],
         ["click", "#submit"],
         ["waitForTimeout", 2000],
         {
             "frame": -1,
             "use": "function",
             "name": "evaluate",
-            "args": ["document.querySelector('h1').innerText = 'hello jpptr'"]
+            "args": ["document.querySelector('h1').innerText = 'hello #{project}'"]
         },
         ["waitForTimeout", 2000],
         {
             "frame": "test_frame",
             "use": "function",
             "name": "evaluate",
-            "args": ["document.querySelector('h1').innerText = 'hello jpptr , this is test_frame'"],
+            "args": ["document.querySelector('h1').innerText = 'hello #{project} , this is test_frame'"],
             "actions": [["addStyleTag", { "url": "https://enncy.github.io/jpptr/test.css" }]]
         },
         ["waitForTimeout", 2000],
@@ -47,7 +52,7 @@
                 {
                     "use": "function",
                     "name": "evaluate",
-                    "args": ["alert('hello jpptr')"],
+                    "args": ["alert('hello #{project}')"],
                     "wait": false
                 },
                 {

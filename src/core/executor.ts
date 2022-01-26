@@ -1,37 +1,29 @@
 import { Page } from "puppeteer-core";
+import { Parser } from "../parser";
+import { ModuleRegister } from "./register";
 
-import { defaultParsers, Parser, ParserFunction } from "../parser";
-import { ActionContext, Action, PluginFunction, defaultPlugins } from "../plugins";
-import { Register } from "./register";
+import { Action, Context, Variables } from "./types";
 import { Walker, WalkerEvents } from "./walker";
 
 export interface ActionExecutorEvents<T extends Action> extends WalkerEvents<T> {
-    executestart: ActionContext<T>;
-    parsestart: ActionContext<T>;
-    executefinish: ActionContext<T>;
-    parsefinish: ActionContext<T>;
-}
-
-export class GlobalRegister {
-    plugin: Register<PluginFunction> = new Register();
-    parser: Register<ParserFunction> = new Register();
-
-    constructor(useDefault?: boolean) {
-        this.parser.useAll(defaultParsers().entries());
-        this.plugin.useAll(defaultPlugins().entries());
-    }
+    executestart: Context<T>;
+    parsestart: Context<T>;
+    executefinish: Context<T>;
+    parsefinish: Context<T>;
 }
 
 export interface ActionExecutorOptions<T extends Action> {
     page?: Page;
+    variables?: Variables;
     actions?: T[];
-    register?: GlobalRegister;
+    register?: ModuleRegister;
 }
 
-export class ActionExecutor<T extends Action> extends Walker<ActionContext<T>> {
+export class ActionExecutor<T extends Action> extends Walker<Context<T>> {
     public parser: Parser;
-    public register: GlobalRegister;
-    private currentContext?: ActionContext<T>;
+    public register: ModuleRegister;
+    public variables: Variables;
+    private currentContext?: Context<T>;
 
     constructor(options?: ActionExecutorOptions<T>) {
         super();
@@ -39,14 +31,15 @@ export class ActionExecutor<T extends Action> extends Walker<ActionContext<T>> {
         if (options) {
             const { page, actions } = options;
             if (page) {
-                this.addActions(actions || [], { browser: page.browser(), page, frame: page.mainFrame() } as ActionContext<T>);
+                this.addActions(actions || [], { browser: page.browser(), page, frame: page.mainFrame() } as Context<T>);
             }
         }
         let ctx = this.peek(0);
         if (ctx) this.currentContext = ctx;
 
+        this.variables = options?.variables || {};
         /** 初始化注册器 */
-        this.register = options?.register || new GlobalRegister();
+        this.register = options?.register || new ModuleRegister();
         /** 初始化动作解析器 */
         this.parser = new Parser(this.register.parser);
     }
@@ -79,7 +72,7 @@ export class ActionExecutor<T extends Action> extends Walker<ActionContext<T>> {
         if (ctx) {
             this.emit("executestart", ctx);
             this.emit("parsestart", ctx);
-            ctx.action = this.parser.parse(ctx.action);
+            ctx.action = this.parser.parse({ variables: this.variables, action: ctx.action });
             this.emit("parsefinish", ctx);
             this.currentContext = ctx;
 
@@ -107,7 +100,7 @@ export class ActionExecutor<T extends Action> extends Walker<ActionContext<T>> {
     }
 
     /** 添加事件 */
-    public addActions(actions: any[], ctx?: Omit<ActionContext<T>, "action">) {
+    public addActions(actions: any[], ctx?: Omit<Context<T>, "action">) {
         let { page, browser, frame } = ctx || {};
         this.add(
             ...actions.map(
@@ -117,7 +110,7 @@ export class ActionExecutor<T extends Action> extends Walker<ActionContext<T>> {
                         browser,
                         frame,
                         action: a,
-                    } as ActionContext<T>)
+                    } as Context<T>)
             )
         );
     }

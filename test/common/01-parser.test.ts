@@ -9,7 +9,7 @@ const parser = new Parser(defaultParsers());
 let gotoAction = {
     use: "function",
     name: "goto",
-    args: ["https://www.baidu.com"],
+    args: ["https://www.example.com"],
 };
 
 let typeAction = {
@@ -22,24 +22,22 @@ describe("01 json parser 解析测试", () => {
     describe("插件模块解析", () => {
         describe("function", () => {
             it("goto", () => {
-                // @ts-ignore
-                expect(parser.parse(gotoAction)).eql(gotoAction);
+                expect(parser.parse({ action: gotoAction })).deep.eq(gotoAction);
             });
 
             it("type", () => {
-                // @ts-ignore
-                expect(parser.parse(typeAction)).eql(typeAction);
+                expect(parser.parse({ action: typeAction })).deep.eq(typeAction);
             });
         });
     });
 
     describe("数组解析", () => {
         it("goto", () => {
-            expect(parser.parse(["goto", "https://www.baidu.com"])).deep.eq(gotoAction);
+            expect(parser.parse({ action: ["goto", "https://www.example.com"] })).deep.eq(gotoAction);
         });
 
         it("type", () => {
-            expect(parser.parse(["type", "#kw", "jpptr"])).deep.eq(typeAction);
+            expect(parser.parse({ action: ["type", "#kw", "jpptr"] })).deep.eq(typeAction);
         });
     });
 
@@ -47,30 +45,74 @@ describe("01 json parser 解析测试", () => {
         it("page选项解析", () => {
             expect(
                 parser.parse({
-                    use: "function",
-                    name: "goto",
-                    args: ["https://www.baidu.com"],
-                    page: -1,
+                    action: {
+                        use: "function",
+                        name: "goto",
+                        args: ["https://www.example.com"],
+                        page: -1,
+                    },
                 })
             ).deep.eq({
                 use: "page",
                 index: -1,
-                actions: [{ use: "function", name: "goto", args: ["https://www.baidu.com"] }],
+                actions: [{ use: "function", name: "goto", args: ["https://www.example.com"] }],
             });
         });
 
         it("frame选项解析", () => {
             expect(
                 parser.parse({
-                    use: "function",
-                    name: "goto",
-                    args: ["https://www.baidu.com"],
-                    frame: "some_frame",
+                    action: {
+                        use: "function",
+                        name: "goto",
+                        args: ["https://www.example.com"],
+                        frame: "some_frame",
+                    },
                 })
             ).deep.eq({
                 use: "frame",
                 name: "some_frame",
-                actions: [{ use: "function", name: "goto", args: ["https://www.baidu.com"] }],
+                actions: [{ use: "function", name: "goto", args: ["https://www.example.com"] }],
+            });
+        });
+    });
+
+    describe("变量解析测试", () => {
+        it("浅解析", () => {
+            expect(
+                parser.parse({
+                    variables: {
+                        name: "goto",
+                    },
+                    action: {
+                        use: "function",
+                        name: "#{name}",
+                        args: ["https://www.example.com"],
+                    },
+                })
+            ).deep.eq({
+                use: "function",
+                name: "goto",
+                args: ["https://www.example.com"],
+            });
+        });
+
+        it("深度对象解析", () => {
+            expect(
+                parser.parse({
+                    variables: {
+                        host: "www.example.com",
+                    },
+                    action: {
+                        use: "function",
+                        name: "goto",
+                        args: ["https://#{host}"],
+                    },
+                })
+            ).deep.eq({
+                use: "function",
+                name: "goto",
+                args: ["https://www.example.com"],
             });
         });
     });
@@ -80,7 +122,16 @@ describe("01 json parser 解析测试", () => {
             const config = require("./test.json");
             const parsedJson = require("./parsed.json");
 
-            const parsed = config.actions.map((a: any) => parser.parse(a));
+            const parsed = config.actions.map((a: any) =>
+                parser.parse({
+                    variables: {
+                        username: "enncy",
+                        password: "123456",
+                        project: "jpptr",
+                    },
+                    action: a,
+                })
+            );
 
             expect(parsed).is.deep.eq(parsedJson);
         });

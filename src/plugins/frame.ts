@@ -1,9 +1,9 @@
-import { Action, ActionContext, ObjectAction } from ".";
- 
+import { Context, ObjectAction } from "../core/types";
+
 /**
  * frame 切换插件
  */
-export function FramePlugin({ browser, page, frame, action }: ActionContext<FramePluginParam>) {
+export function FramePlugin({ browser, page, frame, action }: Context<FramePluginParam>) {
     let name = action?.name;
     let index = action?.index;
     if (page) {

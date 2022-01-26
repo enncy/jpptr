@@ -1,5 +1,5 @@
 export { ActionExecutor } from "./executor";
-export { GlobalRegister } from "./executor";
+export { ModuleRegister } from "./register";
 export { Register } from "./register";
 export { defaultParsers } from "../parser";
 export { defaultPlugins } from "../plugins";

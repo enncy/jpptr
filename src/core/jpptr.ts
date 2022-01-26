@@ -4,7 +4,7 @@ import puppeteer from "puppeteer-core";
 import { JpptrProgramAction } from "../commander";
 import { JpptrConfigHandler } from "./config.handler";
 import { ActionExecutor } from "./executor";
-
+import fs from "fs";
 import { JpptrOptions, JpptrSchema } from "./types";
 
 /**
@@ -28,7 +28,8 @@ export class Jpptr {
      */
     public static from(path: string, options?: { cwd: string }) {
         const cwd = options?.cwd || resolve(path, "../");
-        const resolvedOptions = new JpptrConfigHandler(cwd).resolve(require(path));
+        const content = JSON.parse(fs.readFileSync(path).toString());
+        const resolvedOptions = new JpptrConfigHandler(cwd).resolve(content);
         return new Jpptr(resolvedOptions);
     }
 
@@ -50,11 +51,11 @@ export class Jpptr {
      * @param options jpptr实例化参数
      */
     public async createExecutor(options?: JpptrOptions): Promise<ActionExecutor<any>> {
-        const { launch: launchOptions, register, actions } = options || this.options;
+        const { launch: launchOptions, register, actions, variables } = options || this.options;
         /** 启动浏览器 */
         const browser = await puppeteer.launch(launchOptions);
         const [page] = await browser.pages();
         /** 实例化 */
-        return new ActionExecutor({ register, actions, page });
+        return new ActionExecutor({ register, actions, page, variables });
     }
 }

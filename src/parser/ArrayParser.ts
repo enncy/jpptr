@@ -1,8 +1,12 @@
- 
-import { Action, PluginNames } from "../plugins";
+import { ActionContext } from "../core/types";
+import { PluginNames } from "../plugins";
 import { FunctionPluginParam } from "../plugins/function";
 
-export function ArrayParser(action: Action): FunctionPluginParam | undefined {
+/**
+ * 
+ * 数组解析器
+ */
+export function ArrayParser({ action }: ActionContext<any>): FunctionPluginParam | undefined {
     // 使用数组第一个值作为函数名,剩下的作为参数
     if (Array.isArray(action)) {
         let [name, ...args] = action;

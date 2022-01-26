@@ -10,6 +10,10 @@
     "definitions": {
         "config": {
             "properties": {
+                "variables": {
+                    "description": "变量注册",
+                    "type": "object"
+                },
                 "extends": {
                     "description": "the parent config file",
                     "type": "string"
@@ -28,8 +32,10 @@
                             "items": {
                                 "properties": {
                                     "name": { "type": "string" },
-                                    "parser": { "type": "string" }
-                                }
+                                    "parser": { "type": "string" },
+                                    "priority": { "type": "number", "default": 10 }
+                                },
+                                "required": ["name", "parser"]
                             }
                         },
                         "plugins": {
@@ -39,7 +45,8 @@
                                 "properties": {
                                     "name": { "type": "string" },
                                     "plugin": { "type": "string" }
-                                }
+                                },
+                                "required": ["name", "plugin"]
                             }
                         }
                     }

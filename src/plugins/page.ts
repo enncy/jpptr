@@ -1,9 +1,9 @@
-import { Action, ObjectAction, ActionContext } from ".";
- 
+import { ObjectAction, Context } from "../core/types";
+
 /**
  * page 切换插件
  */
-export async function PagePlugin({ browser, page, frame, action }: ActionContext<PagePluginParam>) {
+export async function PagePlugin({ browser, page, frame, action }: Context<PagePluginParam>) {
     if (browser && page && frame) {
         const pages = await browser.pages();
         // 指定的页面索引

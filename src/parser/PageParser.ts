@@ -1,8 +1,12 @@
- 
-import { Action, PluginNames } from "../plugins";
+import { ActionContext, Action } from "../core/types";
+import { PluginNames } from "../plugins";
 import { PagePluginParam } from "../plugins/page";
 
-export function PageParser(action: Action) {
+/**
+ * 页面切换解析器
+ * 
+ */
+export function PageParser({ action }: ActionContext<any>) {
     if (!Array.isArray(action) && action.page) {
         let { page, actions = [], ...newAction } = action;
         action = {

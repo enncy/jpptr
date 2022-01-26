@@ -5,6 +5,7 @@ import { ExecuteProgram } from "./exec";
 import { resolve } from "path";
 import glob from "glob";
 import { Jpptr } from "..";
+import { readFileSync } from "fs";
 
 export interface ExecuteConfig {
     name: string;
@@ -36,8 +37,8 @@ JpptrProgram.parse(process.argv);
 
 export async function JpptrProgramAction(file: string, options?: { cwd?: string }) {
     let cwd = options?.cwd || process.cwd();
-    const config: ExecuteConfig = require(resolve(cwd, file));
- 
+    const config: ExecuteConfig = JSON.parse(readFileSync(resolve(cwd, file)).toString());
+
     /** 查找配置文件 */
     const paths = config.include
         .map((path) =>

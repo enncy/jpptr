@@ -1,11 +1,12 @@
+ 
 import { Page, Frame, Browser } from "puppeteer-core";
-import { ObjectAction, ActionContext } from ".";
-
+import { Context, ObjectAction } from "../core/types";
+ 
 /**
  * 函数执行插件
  */
 
-export async function FunctionPlugin({ browser, page, frame, action }: ActionContext<FunctionPluginParam>) {
+export async function FunctionPlugin({ browser, page, frame, action }: Context<FunctionPluginParam>) {
     let { name, args, wait, target: execTarget } = action;
 
     /** 优先级为 browser > frame > page */

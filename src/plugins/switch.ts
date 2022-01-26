@@ -1,22 +1,22 @@
 import { Frame, Page } from "puppeteer-core";
-import { Action, ObjectAction, ActionContext } from ".";
+import { Action, ObjectAction, Context } from "../core/types";
 
 /**
  * 条件判断插件
  */
 
-export async function SwitchPlugin({ page, frame, action }: ActionContext<SwitchPluginParam>) {
+export async function SwitchPlugin({ page, frame, action }: Context<SwitchPluginParam>) {
     let { actions = [] } = action;
     if (page && frame) {
         // 条件列表
-        for (const item of action.case) {
+        for (const item of action.case || []) {
             // 处理条件，直到某个返回一个动作列表
             let caseActions = await handleCaseParam(page, frame, item);
             if (caseActions) {
                 return actions.concat(caseActions);
             }
         }
-        return actions.concat(action.default);
+        return actions.concat(action.default || []);
     }
 }
 
@@ -96,8 +96,8 @@ interface ConditionWrapper {
 
 /** 插件参数 */
 export interface SwitchPluginParam extends ObjectAction {
-    case: SwitchCaseParam[];
-    default: Action[];
+    case?: SwitchCaseParam[];
+    default?: Action[];
 }
 
 /** 插件 case 参数的选项 */

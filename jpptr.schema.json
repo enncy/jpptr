@@ -63,7 +63,7 @@
                 ]
             }
         },
-        "condition-properties": {
+        "switch-properties": {
             "properties": {
                 "include": {
                     "properties": {
@@ -85,9 +85,7 @@
                 "actions": {
                     "$ref": "#/definitions/actions"
                 }
-            },
-
-            "required": ["actions"]
+            }
         },
         "plugin-properties": {
             "type": "object",
@@ -99,7 +97,7 @@
                 },
                 "use": {
                     "description": "插件名",
-                    "anyOf": [{ "enum": ["function", "condition", "page", "frame", "external"] }, { "type": "string" }]
+                    "anyOf": [{ "enum": ["function", "switch", "page", "frame", "external"] }, { "type": "string" }]
                 },
                 "page": {
                     "description": "需要切换的 标签页 的索引",
@@ -115,23 +113,24 @@
             },
             "anyOf": [
                 {
-                    "description": "condition plugin",
+                    "description": "switch statement  plugin",
                     "properties": {
                         "use": {
-                            "description": "condition plugin",
-                            "const": "condition"
+                            "description": "switch statement plugin",
+                            "const": "switch"
                         },
-                        "if": {
-                            "$ref": "#/definitions/condition-properties"
+                        "case": {
+                            "description": "条件列表",
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/switch-properties"
+                            }
                         },
-                        "elif": {
-                            "$ref": "#/definitions/condition-properties"
-                        },
-                        "else": {
+                        "default": {
+                            "description": "如果以上条件未执行，则默认执行此动作列表",
                             "$ref": "#/definitions/actions"
                         }
-                    },
-                    "required": ["if"]
+                    }
                 },
                 {
                     "description": "page plugin",
@@ -147,8 +146,7 @@
                         "actions": {
                             "$ref": "#/definitions/actions"
                         }
-                    },
-                    "required": ["index", "actions"]
+                    }
                 },
                 {
                     "description": "frame plugin",
@@ -168,8 +166,7 @@
                         "actions": {
                             "$ref": "#/definitions/actions"
                         }
-                    },
-                    "required": ["name", "actions"]
+                    }
                 },
                 {
                     "$ref": "#/definitions/puppeteer-functions"

@@ -37,9 +37,7 @@ JpptrProgram.parse(process.argv);
 export async function JpptrProgramAction(file: string, options?: { cwd?: string }) {
     let cwd = options?.cwd || process.cwd();
     const config: ExecuteConfig = require(resolve(cwd, file));
-
-    console.log(cwd, config);
-
+ 
     /** 查找配置文件 */
     const paths = config.include
         .map((path) =>

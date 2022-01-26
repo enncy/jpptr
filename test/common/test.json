@@ -55,19 +55,21 @@
                 },
                 ["waitForTimeout", 2000],
                 {
-                    "use": "condition",
-                    "if": {
-                        "evaluate": "new Date().getMinutes()%2===0",
-                        "actions": [
-                            {
-                                "use": "function",
-                                "name": "evaluate",
-                                "args": ["alert('Now the timestamp is even')"],
-                                "wait": false
-                            }
-                        ]
-                    },
-                    "else": [
+                    "use": "switch",
+                    "case": [
+                        {
+                            "evaluate": "new Date().getMinutes()%2===0",
+                            "actions": [
+                                {
+                                    "use": "function",
+                                    "name": "evaluate",
+                                    "args": ["alert('Now the timestamp is even')"],
+                                    "wait": false
+                                }
+                            ]
+                        }
+                    ],
+                    "default": [
                         {
                             "use": "function",
                             "name": "evaluate",

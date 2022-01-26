@@ -3,7 +3,7 @@ import { expect } from "chai";
 import { readFileSync } from "fs";
 import { resolve } from "path";
 import { defaultParsers, Parser } from "../../src/parser";
- 
+
 const parser = new Parser(defaultParsers());
 
 let gotoAction = {
@@ -29,20 +29,6 @@ describe("01 json parser 解析测试", () => {
             it("type", () => {
                 // @ts-ignore
                 expect(parser.parse(typeAction)).eql(typeAction);
-            });
-        });
-
-        describe("external", () => {
-            it("close-dialog", () => {
-                // @ts-ignore
-                expect(
-                    parser.parse({
-                        use: "external",
-                        name: "close-dialog",
-                    })
-                ).deep.eq({
-                    use: "close-dialog",
-                });
             });
         });
     });

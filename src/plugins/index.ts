@@ -1,5 +1,5 @@
 import { Browser, Frame, Page } from "puppeteer-core";
-import { ConditionPlugin, ConditionPluginParam } from "./condition";
+import { SwitchPlugin, SwitchPluginParam } from "./switch";
 import { FramePluginParam, FramePlugin } from "./frame";
 import { PagePluginParam, PagePlugin } from "./page";
 import { FunctionPluginParam, FunctionPlugin } from "./function";
@@ -14,7 +14,7 @@ export interface ObjectAction {
 
 export type ArrayAction = [string, ...(string | number | boolean)[]];
 
-export type Action = ArrayAction | ObjectAction | ConditionPluginParam | FramePluginParam | PagePluginParam | FunctionPluginParam;
+export type Action = ArrayAction | ObjectAction | SwitchPluginParam | FramePluginParam | PagePluginParam | FunctionPluginParam;
 
 export interface ActionContext<T extends Action> {
     browser?: Browser;
@@ -29,14 +29,14 @@ export type PluginFunction = (ctx: ActionContext<any>) => PluginReturnType<Actio
 
 export interface JpptrPluginError extends Error {}
 
-export { ConditionPlugin, FramePlugin, FunctionPlugin, PagePlugin };
+export { SwitchPlugin, FramePlugin, FunctionPlugin, PagePlugin };
 
 /**
  * 默认插件注册器
  */
 export function defaultPlugins() {
     return new Register<PluginFunction>()
-        .use(PluginNames["condition-plugin"], ConditionPlugin)
+        .use(PluginNames["switch-plugin"], SwitchPlugin)
         .use(PluginNames["frame-plugin"], FramePlugin)
         .use(PluginNames["function-plugin"], FunctionPlugin)
         .use(PluginNames["page-plugin"], PagePlugin);
@@ -53,5 +53,5 @@ export function defaultPlugins() {
     /** 页面切换插件，配合页面解析器使用 */
     "page-plugin" = "page",
     /** 条件插件 */
-    "condition-plugin" = "condition",
+    "switch-plugin" = "switch",
 }

@@ -56,7 +56,7 @@
                 },
                 ["waitForTimeout", 2000],
                 {
-                    "use": "condition",
+                    "use": "switch",
                     "if": {
                         "evaluate": "new Date().getMinutes()%2===0",
                         "actions": [

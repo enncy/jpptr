@@ -104,7 +104,7 @@
                 },
                 "use": {
                     "description": "插件名",
-                    "anyOf": [{ "enum": ["function", "switch", "page", "frame", "external"] }, { "type": "string" }]
+                    "anyOf": [{ "enum": ["function", "switch", "page", "frame"] }, { "type": "string" }]
                 },
                 "page": {
                     "description": "需要切换的 标签页 的索引",
@@ -176,6 +176,38 @@
                     }
                 },
                 {
+                    "description": "set plugin",
+                    "properties": {
+                        "use": {
+                            "description": "set plugin",
+                            "const": "set"
+                        },
+                        "name": { "type": "string" },
+                        "value": {
+                            "anyOf": [
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "text": { "type": "string" },
+                                        "evaluate": { "type": "string" },
+                                        "url": { "type": "string" },
+                                        "cookie": { "type": "string" },
+                                        "attribute": {
+                                            "properties": {
+                                                "selector": { "type": "string" },
+                                                "key": { "type": "string" }
+                                            }
+                                        }
+                                    }
+                                },
+                                {
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
                     "$ref": "#/definitions/puppeteer-functions"
                 },
                 {
@@ -190,7 +222,6 @@
         },
         "puppeteer-functions": {
             "description": "action-like of all the puppeteer page function",
-            "required": ["use", "name"],
             "properties": {
                 "use": {
                     "const": "function"

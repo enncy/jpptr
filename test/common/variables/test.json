@@ -1,0 +1,77 @@
+{
+    "$schema": "../../../jpptr.schema.json",
+    "register": {
+        "plugins": [
+            {
+                "name": "close-dialog",
+                "plugin": "../close-dialog-plugin.js"
+            }
+        ]
+    },
+    "launch": {
+        "executablePath": "C:/Program Files/Google/Chrome/Application/chrome.exe",
+        "defaultViewport": null,
+        "headless": false
+    },
+    "variables": {
+        "username": "enncy",
+        "password": "123456"
+    },
+    "actions": [
+        ["goto", "https://enncy.github.io/jpptr/test.html"],
+        ["type", "#username", "#{username}"],
+        ["type", "#password", "#{password}"],
+        {
+            "use": "set",
+            "name": "form-username",
+            "value": {
+                "attribute": {
+                    "selector": "#username",
+                    "key": "value"
+                }
+            }
+        },
+        {
+            "use": "set",
+            "name": "form-password",
+            "value": {
+                "attribute": {
+                    "selector": "#password",
+                    "key": "value"
+                }
+            }
+        },
+        ["click", "#submit"],
+        ["waitForTimeout", 3000],
+        {
+            "use": "set",
+            "name": "url-param-username",
+            "value": {
+                "url": "uname"
+            }
+        },
+        {
+            "use": "set",
+            "name": "pwd-innerText",
+            "value": {
+                "text": "#pwd"
+            }
+        },
+        {
+            "use": "function",
+            "name": "evaluate",
+            "args": [
+                "alert('form-username : #{form-username}, form-password : #{form-password} \\n url-param-username : #{url-param-username}, pwd-innerText : #{pwd-innerText}')"
+            ],
+            "wait": false,
+            "actions": [
+                {
+                    "use": "close-dialog"
+                }
+            ]
+        },
+
+        ["close"],
+        ["close"]
+    ]
+}

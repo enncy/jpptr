@@ -5,14 +5,15 @@ import { FunctionPlugin } from "./function";
 import { Register } from "../core/register";
 
 import { Action, Context } from "../core/types";
+import { SetPlugin } from "./set";
 
-export type PluginReturnType<T extends Action> = void | undefined | T[] | Context<T>;
+export type PluginReturnType<T extends Action> = void | undefined | T[] | Partial<Context<T>>;
 
 export type PluginFunction = (ctx: Context<any>) => PluginReturnType<Action> | Promise<PluginReturnType<Action>>;
 
 export interface JpptrPluginError extends Error {}
 
-export { SwitchPlugin, FramePlugin, FunctionPlugin, PagePlugin };
+export { SwitchPlugin, FramePlugin, FunctionPlugin, PagePlugin, SetPlugin };
 
 /**
  * 默认插件注册器
@@ -22,7 +23,8 @@ export function defaultPlugins() {
         .use(PluginNames["switch-plugin"], SwitchPlugin)
         .use(PluginNames["frame-plugin"], FramePlugin)
         .use(PluginNames["function-plugin"], FunctionPlugin)
-        .use(PluginNames["page-plugin"], PagePlugin);
+        .use(PluginNames["page-plugin"], PagePlugin)
+        .use(PluginNames["set-plugin"], SetPlugin);
 }
 
 /**
@@ -37,4 +39,6 @@ export enum PluginNames {
     "page-plugin" = "page",
     /** 条件插件 */
     "switch-plugin" = "switch",
+    /** 设置插件 */
+    "set-plugin" = "set",
 }

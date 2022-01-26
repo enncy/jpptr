@@ -27,6 +27,13 @@ export class ActionExecutor<T extends Action> extends Walker<Context<T>> {
 
     constructor(options?: ActionExecutorOptions<T>) {
         super();
+        /** 初始化注册器 */
+        this.register = options?.register || new ModuleRegister();
+        /** 初始化动作解析器 */
+        this.parser = new Parser(this.register.parser);
+        /** 初始化变量池 */
+        this.variables = options?.variables || {};
+
         /** 初始化任务，如果不存在任务，则必须使用 addActions 添加 */
         if (options) {
             const { page, actions } = options;
@@ -35,17 +42,13 @@ export class ActionExecutor<T extends Action> extends Walker<Context<T>> {
                     browser: page.browser(),
                     page,
                     frame: page.mainFrame(),
+                    variables: this.variables,
                 } as Context<T>);
             }
         }
+
         const ctx = this.peek(0);
         if (ctx) this.currentContext = ctx;
-
-        this.variables = options?.variables || {};
-        /** 初始化注册器 */
-        this.register = options?.register || new ModuleRegister();
-        /** 初始化动作解析器 */
-        this.parser = new Parser(this.register.parser);
     }
 
     on<E extends keyof ActionExecutorEvents<T>>(event: E, handler: (value: ActionExecutorEvents<T>[E]) => void) {
@@ -76,7 +79,7 @@ export class ActionExecutor<T extends Action> extends Walker<Context<T>> {
         if (ctx) {
             this.emit("executestart", ctx);
             this.emit("parsestart", ctx);
-            ctx.action = this.parser.parse({ variables: this.variables, action: ctx.action });
+            ctx.action = this.parser.parse(ctx);
             this.emit("parsefinish", ctx);
             this.currentContext = ctx;
 
@@ -105,14 +108,11 @@ export class ActionExecutor<T extends Action> extends Walker<Context<T>> {
 
     /** 添加事件 */
     public addActions(actions: any[], ctx?: Omit<Context<T>, "action">) {
-        const { page, browser, frame } = ctx || {};
         this.add(
             ...actions.map(
                 (a) =>
                     ({
-                        page,
-                        browser,
-                        frame,
+                        ...ctx,
                         action: a,
                     } as Context<T>)
             )

@@ -7,7 +7,6 @@ import { Context, ObjectAction } from "../core/types";
 
 export async function FunctionPlugin({ browser, page, frame, action }: Context<FunctionPluginParam>) {
     const { name, args, wait, target: execTarget } = action;
-
     /** 优先级为 browser > frame > page */
     if (browser) {
         let func;

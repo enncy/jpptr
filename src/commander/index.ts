@@ -33,8 +33,6 @@ jpptr ./test/jpptr.config.json
 
 JpptrProgram.addCommand(ExecuteProgram);
 
-JpptrProgram.parse(process.argv);
-
 export async function jpptrProgramAction(file: string, options?: { cwd?: string }) {
     const cwd = options?.cwd || process.cwd();
     const config: ExecuteConfig = JSON.parse(readFileSync(resolve(cwd, file)).toString());

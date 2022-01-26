@@ -71,6 +71,12 @@ importers:
     dependencies:
       jpptr: link:../..
 
+  sample/04-variables:
+    specifiers:
+      jpptr: link:..\..
+    dependencies:
+      jpptr: link:../..
+
 packages:
 
   /@babel/code-frame/7.16.7:

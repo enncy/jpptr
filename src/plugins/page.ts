@@ -15,13 +15,12 @@ export async function PagePlugin({ browser, page, frame, action }: Context<PageP
                 const newFrame = newPage.mainFrame();
                 // 如果新页面的 main frame 不匹配旧页面的 main frame 和当前的 frame，则使用新页面的 main frame
                 if (newFrame._id !== page.mainFrame()._id && newFrame._id !== frame._id) {
-                    return { browser, page: newPage, frame: newFrame, action };
+                    return { page: newPage, frame: newFrame };
                 } else {
-                    return { browser, page: newPage, frame, action };
+                    return { page: newPage };
                 }
             }
         }
-        return { browser, page, frame, action };
     }
 }
 

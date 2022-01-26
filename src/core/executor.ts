@@ -31,10 +31,14 @@ export class ActionExecutor<T extends Action> extends Walker<Context<T>> {
         if (options) {
             const { page, actions } = options;
             if (page) {
-                this.addActions(actions || [], { browser: page.browser(), page, frame: page.mainFrame() } as Context<T>);
+                this.addActions(actions || [], {
+                    browser: page.browser(),
+                    page,
+                    frame: page.mainFrame(),
+                } as Context<T>);
             }
         }
-        let ctx = this.peek(0);
+        const ctx = this.peek(0);
         if (ctx) this.currentContext = ctx;
 
         this.variables = options?.variables || {};
@@ -80,7 +84,7 @@ export class ActionExecutor<T extends Action> extends Walker<Context<T>> {
                 /** 执行插件 ， 并处理返回值 */
                 const plugin = this.register.plugin.get(ctx.action.use);
                 if (plugin) {
-                    let result = await plugin(ctx);
+                    const result = await plugin(ctx);
                     this.emit("executefinish", ctx);
                     if (result) {
                         if (Array.isArray(result)) {
@@ -101,7 +105,7 @@ export class ActionExecutor<T extends Action> extends Walker<Context<T>> {
 
     /** 添加事件 */
     public addActions(actions: any[], ctx?: Omit<Context<T>, "action">) {
-        let { page, browser, frame } = ctx || {};
+        const { page, browser, frame } = ctx || {};
         this.add(
             ...actions.map(
                 (a) =>

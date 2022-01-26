@@ -1,18 +1,17 @@
 import { describe, it } from "mocha";
 import { expect } from "chai";
-import { readFileSync } from "fs";
-import { resolve } from "path";
 import { defaultParsers, Parser } from "../../src/parser";
+import { readFileSync } from "fs";
 
 const parser = new Parser(defaultParsers());
 
-let gotoAction = {
+const gotoAction = {
     use: "function",
     name: "goto",
     args: ["https://www.example.com"],
 };
 
-let typeAction = {
+const typeAction = {
     use: "function",
     name: "type",
     args: ["#kw", "jpptr"],
@@ -119,8 +118,8 @@ describe("01 json parser 解析测试", () => {
 
     describe("文件整体解析测试", () => {
         it("test.json actions => parsed.json", () => {
-            const config = require("./test.json");
-            const parsedJson = require("./parsed.json");
+            const config = JSON.parse(readFileSync("./test.json").toString());
+            const parsedJson = JSON.parse(readFileSync("./parsed.json").toString());
 
             const parsed = config.actions.map((a: any) =>
                 parser.parse({

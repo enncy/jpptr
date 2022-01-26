@@ -36,13 +36,13 @@ export class Walker<T> extends EventEmitter {
         if (this._isStop) {
             return new Promise<T>((resolve, reject) => {
                 this.once("start", () => {
-                    let item = this.list.at(this.index++);
+                    const item = this.list.at(this.index++);
                     this.emit("walk", item);
                     if (item) resolve(item);
                 });
             });
         } else {
-            let item = this.list.at(this.index++);
+            const item = this.list.at(this.index++);
             this.emit("walk", item);
             return item;
         }
@@ -107,7 +107,7 @@ export class Walker<T> extends EventEmitter {
     }
 
     peek(index?: number) {
-        let item = this.list.at(index || this.index);
+        const item = this.list.at(index || this.index);
         this.emit("peek", item);
         return item;
     }

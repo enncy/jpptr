@@ -21,13 +21,13 @@ JpptrProgram.name("jpptr").version("1.0.0");
 JpptrProgram.argument("[file]", "the jpptr config file", "jpptr.config.json")
     .option("-c, --cwd", "command working directory, default : process.cwd()")
     .description("Execute the jpptr config file")
-    .action(JpptrProgramAction)
+    .action(jpptrProgramAction)
     .addHelpText(
         "after",
         `
 Examples:
 jpptr
-jpptr ./test/jpptr.config.json
+jpptr ./test/jpptr.config.json 
 `
     );
 
@@ -35,8 +35,8 @@ JpptrProgram.addCommand(ExecuteProgram);
 
 JpptrProgram.parse(process.argv);
 
-export async function JpptrProgramAction(file: string, options?: { cwd?: string }) {
-    let cwd = options?.cwd || process.cwd();
+export async function jpptrProgramAction(file: string, options?: { cwd?: string }) {
+    const cwd = options?.cwd || process.cwd();
     const config: ExecuteConfig = JSON.parse(readFileSync(resolve(cwd, file)).toString());
 
     /** 查找配置文件 */

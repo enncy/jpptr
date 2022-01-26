@@ -1,4 +1,12 @@
-import { LaunchOptions, BrowserLaunchArgumentOptions, BrowserConnectOptions, Product, Page, Frame, Browser } from "puppeteer-core";
+import {
+    LaunchOptions,
+    BrowserLaunchArgumentOptions,
+    BrowserConnectOptions,
+    Product,
+    Page,
+    Frame,
+    Browser,
+} from "puppeteer-core";
 
 import "reflect-metadata";
 import { ModuleRegister } from "./register";
@@ -52,7 +60,13 @@ export interface ObjectAction {
 
 export type ArrayAction = [string, ...(string | number | boolean)[]];
 
-export type Action = ArrayAction | ObjectAction | SwitchPluginParam | FramePluginParam | PagePluginParam | FunctionPluginParam;
+export type Action =
+    | ArrayAction
+    | ObjectAction
+    | SwitchPluginParam
+    | FramePluginParam
+    | PagePluginParam
+    | FunctionPluginParam;
 
 export interface PuppeteerContext {
     browser?: Browser;

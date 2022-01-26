@@ -8,10 +8,10 @@ export function error(...message: any[]) {
     console.log(chalk.redBright("[ERROR] :"), ...message);
 }
 
-export function info(level: string, ...message: any[]) {
+export function info(...message: any[]) {
     console.log("[INFO] :", ...message);
 }
 
-export function debug(level: string, ...message: any[]) {
+export function debug(...message: any[]) {
     console.log(chalk.bgGray("[DEBUG] :"), ...message);
 }

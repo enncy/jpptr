@@ -4,14 +4,13 @@ import { Action, ObjectAction, Context } from "../core/types";
 /**
  * 条件判断插件
  */
-
 export async function SwitchPlugin({ page, frame, action }: Context<SwitchPluginParam>) {
-    let { actions = [] } = action;
+    const { actions = [] } = action;
     if (page && frame) {
         // 条件列表
         for (const item of action.case || []) {
             // 处理条件，直到某个返回一个动作列表
-            let caseActions = await handleCaseParam(page, frame, item);
+            const caseActions = await handleCaseParam(page, frame, item);
             if (caseActions) {
                 return actions.concat(caseActions);
             }
@@ -22,6 +21,9 @@ export async function SwitchPlugin({ page, frame, action }: Context<SwitchPlugin
 
 /**
  * 处理 case 语句
+ * @param page 页面对象
+ * @param frame frame对象
+ * @param _case 处理的条件
  */
 async function handleCaseParam(page: Page, frame: Frame, _case: SwitchCaseParam): Promise<Action[] | undefined> {
     const target = _case.target === "frame" ? frame : page;
@@ -48,11 +50,17 @@ async function handleCaseParam(page: Page, frame: Frame, _case: SwitchCaseParam)
 }
 
 /** 条件和字符串比较器 */
-type Comparator = (condition: string, target: string) => boolean;
+// eslint-disable-next-line no-unused-vars
+export type Comparator = (condition: string, target: string) => boolean;
 
 /** 条件构造器的处理器 */
 export class ConditionWrapperHandler {
-    constructor(private target: Page | Frame, private comparator: Comparator) {}
+    private target: Page | Frame;
+    private comparator: Comparator;
+    constructor(target: Page | Frame, comparator: Comparator) {
+        this.target = target;
+        this.comparator = comparator;
+    }
 
     /** 处理条件 */
     async resolve(wrapper: ConditionWrapper) {
@@ -63,9 +71,11 @@ export class ConditionWrapperHandler {
 
         // 判断页面的 cookie
         if (wrapper.cookie && this.target instanceof Page) {
-            let wrapperCookie = wrapper.cookie;
-            let cookies = await this.target.cookies();
-            return cookies.map((cookie) => [cookie.name, cookie.value].join("=")).some((cookie) => this.comparator(cookie, wrapperCookie));
+            const wrapperCookie = wrapper.cookie;
+            const cookies = await this.target.cookies();
+            return cookies
+                .map((cookie) => [cookie.name, cookie.value].join("="))
+                .some((cookie) => this.comparator(cookie, wrapperCookie));
         }
         // 判断页面HTML是否含有子串
         if (wrapper.html) {

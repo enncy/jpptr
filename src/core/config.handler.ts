@@ -1,9 +1,8 @@
 import { existsSync, readFileSync } from "fs";
 import { resolve } from "path";
-import { ActionParser, defaultParsers } from "../parser";
-import { defaultPlugins } from "../plugins";
+import { ActionParser } from "../parser";
 
-import { error, log } from "../logger/logger";
+import { error } from "../logger/logger";
 
 import { JpptrOptions, JpptrSchema, ModuleRegisterSchema, PuppeteerOptions, Variables } from "./types";
 import { ModuleRegister } from "./register";
@@ -43,7 +42,7 @@ export class JpptrConfigHandler {
 
     /** 注册外部插件 */
     loadExternalModules(regSchema: ModuleRegisterSchema) {
-        let reg = regSchema;
+        const reg = regSchema;
         if (reg) {
             /** 注册 parser */
             const parsers = reg.parsers?.map(
@@ -57,7 +56,13 @@ export class JpptrConfigHandler {
                     ] as [string, ActionParser]
             );
             /** 注册 plugin */
-            const plugins = reg.plugins?.map((p) => [p.name, typeof p.plugin === "string" ? resolveModule(p.plugin, this.cwd) : p.plugin] as [string, any]);
+            const plugins = reg.plugins?.map(
+                (p) =>
+                    [p.name, typeof p.plugin === "string" ? resolveModule(p.plugin, this.cwd) : p.plugin] as [
+                        string,
+                        any
+                    ]
+            );
             this.register.parser.useAll(parsers || []);
             this.register.plugin.useAll(plugins || []);
         }
@@ -65,7 +70,7 @@ export class JpptrConfigHandler {
 
     /** 递归继承配置文件 */
     extends(path: string) {
-        let configPath = resolveFilePath(path, this.cwd);
+        const configPath = resolveFilePath(path, this.cwd);
         /** 切换工作目录 */
         this.cwd = configPath;
         /** 读取配置文件 */
@@ -87,8 +92,8 @@ export class JpptrConfigHandler {
  * 解析模块路径，可以传入  cwd 替换工作目录,默认 process.cwd()
  */
 export function resolveFilePath(p: string, cwd: string = process.cwd()) {
-    let defaultCwdPaths = [cwd, __dirname, "./"];
-    let path = defaultCwdPaths.find((dp) => existsSync(resolve(dp, p)));
+    const defaultCwdPaths = [cwd, __dirname, "./"];
+    const path = defaultCwdPaths.find((dp) => existsSync(resolve(dp, p)));
     return resolve(path!, p);
 }
 

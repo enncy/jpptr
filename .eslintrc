@@ -1,0 +1,28 @@
+{
+    "root": true,
+    "env": {
+        "node": true,
+        "es6": true
+    },
+    "extends": ["eslint:recommended", "plugin:@typescript-eslint/eslint-recommended"],
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "ecmaVersion": 12,
+        "sourceType": "module"
+    },
+
+    "plugins": ["mocha", "@typescript-eslint"],
+    "rules": {
+        "linebreak-style": [0, "windows"],
+        "max-len": ["error", { "code": 120 }],
+        "object-curly-spacing": 0,
+        "quotes": 0,
+        "indent": 0,
+        "valid-jsdoc": 0,
+        "require-jsdoc": 0,
+        "no-trailing-spaces": 0,
+        "no-unused-vars": 0,
+        "comma-dangle": 0,
+        "space-before-function-paren": 0
+    }
+}

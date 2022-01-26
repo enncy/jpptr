@@ -1,11 +1,10 @@
-import { existsSync } from "fs";
 import { resolve } from "path";
 import puppeteer from "puppeteer-core";
-import { JpptrProgramAction } from "../commander";
+import { jpptrProgramAction } from "../commander";
 import { JpptrConfigHandler } from "./config.handler";
 import { ActionExecutor } from "./executor";
 import fs from "fs";
-import { JpptrOptions, JpptrSchema } from "./types";
+import { JpptrOptions } from "./types";
 
 /**
  * jpptr class
@@ -42,7 +41,7 @@ export class Jpptr {
      * ```
      */
     public static async launch(path: string, options?: { cwd?: string }) {
-        await JpptrProgramAction(path, options);
+        await jpptrProgramAction(path, options);
     }
 
     /**

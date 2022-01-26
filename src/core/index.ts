@@ -5,6 +5,5 @@ export { defaultParsers } from "../parser";
 export { defaultPlugins } from "../plugins";
 export { Walker } from "./walker";
 export { Jpptr } from "./jpptr";
- 
 
-export * from "../logger/logger"
+export * from "../logger/logger";

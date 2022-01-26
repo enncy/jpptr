@@ -1,4 +1,4 @@
-import { ModuleRegister, Jpptr } from "../../src";
+import { ModuleRegister } from "../../src";
 import { describe, it } from "mocha";
 import { expect } from "chai";
 import { ActionExecutor } from "../../src/core/executor";
@@ -30,7 +30,9 @@ describe("02 register 外部模块注册测试", () => {
         plugins.use("test-plugin", (opts: any) => {
             return [["goto", opts.action.href]];
         });
-        expect(plugins.get("test-plugin")?.({ action: { href: "https://example.com" } } as any)).to.deep.eq([["goto", "https://example.com"]]);
+        expect(plugins.get("test-plugin")?.({ action: { href: "https://example.com" } } as any)).to.deep.eq([
+            ["goto", "https://example.com"],
+        ]);
     });
 
     it("调用模块,使一个数字1,变成可以让浏览器访问网页的动作", async () => {
@@ -43,8 +45,7 @@ describe("02 register 外部模块注册测试", () => {
 
             const plugin = plugins.get(ctx.action.use);
             const result = await plugin!(ctx);
-
-            // @ts-ignore
+ 
             expect(result).eql([["goto", "https://example.com"]]);
         }
     });

@@ -1,15 +1,14 @@
 import { describe, it } from "mocha";
-import { expect } from "chai";
-import { JpptrProgramAction } from "../../src/commander";
-import { ExecuteProgramAction } from "../../src/commander/exec";
-import path from "path";
+
+import { jpptrProgramAction } from "../../src/commander";
+import { executeProgramAction } from "../../src/commander/exec";
 
 describe("command run test", () => {
     it("jpptr", async () => {
-        await JpptrProgramAction("./jpptr.config.json", { cwd: __dirname });
+        await jpptrProgramAction("./jpptr.config.json", { cwd: __dirname });
     });
 
     it("jpptr exec", async () => {
-        await ExecuteProgramAction("./src/test.json", { cwd: __dirname });
+        await executeProgramAction("./src/test.json", { cwd: __dirname });
     });
 });

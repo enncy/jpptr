@@ -5,9 +5,9 @@ import { FramePluginParam } from "../plugins/frame";
 /**
  * frame框架切换解析器
  */
-export function FrameParser({ action  }: ActionContext<any>) {
+export function FrameParser({ action }: ActionContext<any>) {
     if (!Array.isArray(action) && action.frame) {
-        let { frame, actions = [], ...newAction } = action;
+        const { actions = [], ...newAction } = action;
         if (typeof action.frame === "string") {
             action = {
                 use: PluginNames["frame-plugin"],

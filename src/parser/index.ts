@@ -1,5 +1,5 @@
 import { Register } from "../core/register";
-import { Action, ActionContext, ObjectAction } from "../core/types";
+import { ActionContext, ObjectAction } from "../core/types";
 
 import { ArrayParser } from "./ArrayParser";
 
@@ -30,7 +30,7 @@ export class Parser {
 
         /** 对解析器 降序 排序 */
         aps = aps.sort((a, b) => (b.priority || 10) - (a.priority || 10));
-   
+
         for (const ap of aps) {
             /** 解析动作 */
             actionContext.action = ap.parser(actionContext) || actionContext.action;

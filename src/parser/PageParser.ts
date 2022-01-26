@@ -4,11 +4,11 @@ import { PagePluginParam } from "../plugins/page";
 
 /**
  * 页面切换解析器
- * 
+ *
  */
 export function PageParser({ action }: ActionContext<any>) {
     if (!Array.isArray(action) && action.page) {
-        let { page, actions = [], ...newAction } = action;
+        const { actions = [], ...newAction } = action;
         action = {
             use: PluginNames["page-plugin"],
             index: action.page,

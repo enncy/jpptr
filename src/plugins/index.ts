@@ -1,8 +1,7 @@
-import { Browser, Frame, Page } from "puppeteer-core";
-import { SwitchPlugin, SwitchPluginParam } from "./switch";
-import { FramePluginParam, FramePlugin } from "./frame";
-import { PagePluginParam, PagePlugin } from "./page";
-import { FunctionPluginParam, FunctionPlugin } from "./function";
+import { SwitchPlugin } from "./switch";
+import { FramePlugin } from "./frame";
+import { PagePlugin } from "./page";
+import { FunctionPlugin } from "./function";
 import { Register } from "../core/register";
 
 import { Action, Context } from "../core/types";

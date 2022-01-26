@@ -4,8 +4,8 @@ import { Context, ObjectAction } from "../core/types";
  * frame 切换插件
  */
 export function FramePlugin({ browser, page, frame, action }: Context<FramePluginParam>) {
-    let name = action?.name;
-    let index = action?.index;
+    const name = action?.name;
+    const index = action?.index;
     if (page) {
         if (index) {
             return { browser, page, frame: page.frames().at(index), action };

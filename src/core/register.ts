@@ -1,4 +1,4 @@
-import { ParserFunction, defaultParsers, ActionParser } from "../parser";
+import { defaultParsers, ActionParser } from "../parser";
 import { PluginFunction, defaultPlugins } from "../plugins";
 
 export class ModuleRegister {

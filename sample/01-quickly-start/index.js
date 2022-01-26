@@ -3,8 +3,8 @@ const { Jpptr } = require("jpptr");
 const path = require("path");
 
 async function start() {
-    /** 
-     * 实例化 jpptr    
+    /**
+     * 实例化 jpptr
      */
     const jpptr = Jpptr.from(path.resolve(__dirname, "./test.json"));
     /** 启动浏览器 */

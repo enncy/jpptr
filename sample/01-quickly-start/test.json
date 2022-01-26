@@ -51,24 +51,25 @@
                     "wait": false
                 },
                 {
-                    "use": "external",
-                    "name": "close-dialog"
+                    "use": "close-dialog"
                 },
                 ["waitForTimeout", 2000],
                 {
                     "use": "switch",
-                    "if": {
-                        "evaluate": "new Date().getMinutes()%2===0",
-                        "actions": [
-                            {
-                                "use": "function",
-                                "name": "evaluate",
-                                "args": ["alert('Now the timestamp is even')"],
-                                "wait": false
-                            }
-                        ]
-                    },
-                    "else": [
+                    "case": [
+                        {
+                            "evaluate": "new Date().getMinutes()%2===0",
+                            "actions": [
+                                {
+                                    "use": "function",
+                                    "name": "evaluate",
+                                    "args": ["alert('Now the timestamp is even')"],
+                                    "wait": false
+                                }
+                            ]
+                        }
+                    ],
+                    "default": [
                         {
                             "use": "function",
                             "name": "evaluate",
@@ -78,8 +79,7 @@
                     ]
                 },
                 {
-                    "use": "external",
-                    "name": "close-dialog"
+                    "use": "close-dialog"
                 },
                 ["waitForTimeout", 2000],
                 ["close"]

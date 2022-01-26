@@ -172,6 +172,9 @@
                     "required": ["name", "actions"]
                 },
                 {
+                    "$ref": "#/definitions/puppeteer-functions"
+                },
+                {
                     "description": "empty action",
                     "properties": {
                         "actions": {
@@ -194,6 +197,9 @@
                 "wait": {
                     "type": "boolean",
                     "default": false
+                },
+                "target": {
+                    "enum": ["page", "frame", "browser"]
                 }
             },
             "anyOf": [

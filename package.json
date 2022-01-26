@@ -35,12 +35,13 @@
     "homepage": "https://github.com/enncy/jpptr#readme",
     "dependencies": {
         "axios": "^0.24.0",
+        "chalk": "^4.0.0",
         "commander": "^8.3.0",
         "denque": "^2.0.1",
         "glob": "^7.2.0",
         "puppeteer-core": "^13.0.1",
         "reflect-metadata": "^0.1.13",
-        "chalk": "^4.0.0"
+        "xlsx": "^0.17.5"
     },
     "devDependencies": {
         "@types/chai": "^4.3.0",

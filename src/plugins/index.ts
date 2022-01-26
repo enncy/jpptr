@@ -20,7 +20,6 @@ export interface ActionContext<T extends Action> {
     browser?: Browser;
     page?: Page;
     frame?: Frame;
-    
     action: T;
 }
 

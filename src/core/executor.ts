@@ -3,7 +3,6 @@ import { Page } from "puppeteer-core";
 import { defaultParsers, Parser, ParserFunction } from "../parser";
 import { ActionContext, Action, PluginFunction, defaultPlugins } from "../plugins";
 import { Register } from "./register";
-import { ModuleRegister } from "./types";
 import { Walker, WalkerEvents } from "./walker";
 
 export interface ActionExecutorEvents<T extends Action> extends WalkerEvents<T> {
@@ -94,7 +93,7 @@ export class ActionExecutor<T extends Action> extends Walker<ActionContext<T>> {
                         if (Array.isArray(result)) {
                             ctx.action.actions = result;
                         } else {
-                            ctx = result as ActionContext<T>;
+                            ctx = Object.assign({}, ctx, result);
                         }
                     }
                 }

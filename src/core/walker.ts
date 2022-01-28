@@ -8,7 +8,6 @@ export interface WalkerEvents<T> {
     append: [number, T[]];
     remove: [number, number];
 
-
     update: number;
 
     back: number;
@@ -17,11 +16,12 @@ export interface WalkerEvents<T> {
 
     start: number;
     stop: number;
-}
  
+}
+
 export class Walker<T> extends EventEmitter {
     /** walk step index */
-    protected index: number = 0;
+    protected _step: number = 0;
     /** values */
     private list: T[];
     private _isStop: boolean = false;
@@ -31,18 +31,26 @@ export class Walker<T> extends EventEmitter {
         this.list = array || [];
     }
 
+    get step() {
+        return this._step;
+    }
+
+    private set step(s) {
+        this._step = s;
+    }
+
     /** walk , and return the item value  */
     walk(): T | undefined | Promise<T | undefined> {
         if (this._isStop) {
             return new Promise<T>((resolve, reject) => {
                 this.once("start", () => {
-                    const item = this.list.at(this.index++);
+                    const item = this.list.at(this.step++);
                     this.emit("walk", item);
                     if (item) resolve(item);
                 });
             });
         } else {
-            const item = this.list.at(this.index++);
+            const item = this.list.at(this.step++);
             this.emit("walk", item);
             return item;
         }
@@ -51,20 +59,20 @@ export class Walker<T> extends EventEmitter {
     /** walk the previous step */
     back() {
         if (!this._isStop) {
-            this.emit("back", this.index);
-            this.emit("update", this.index);
-            this.index = this.index - 1;
+            this.emit("back", this.step);
+            this.emit("update", this.step);
+            this.step = this.step - 1;
         }
 
         return this;
     }
 
     /** jump to some step */
-    jump(index: number) {
+    jump(step: number) {
         if (!this._isStop) {
-            this.emit("jump", this.index);
-            this.emit("update", index);
-            this.index = index;
+            this.emit("jump", this.step);
+            this.emit("update", step);
+            this.step = step;
         }
 
         return this;
@@ -72,9 +80,9 @@ export class Walker<T> extends EventEmitter {
 
     reWalk() {
         if (!this._isStop) {
-            this.emit("rewalk", this.index);
-            this.emit("update", this.index);
-            this.index = 0;
+            this.emit("rewalk", this.step);
+            this.emit("update", this.step);
+            this.step = 0;
         }
 
         return this;
@@ -83,7 +91,7 @@ export class Walker<T> extends EventEmitter {
     /** make stop false */
     start() {
         this._isStop = false;
-        this.emit("start", this.index);
+        this.emit("start", this.step);
 
         return this;
     }
@@ -91,7 +99,7 @@ export class Walker<T> extends EventEmitter {
     /** stop walking */
     stop() {
         this._isStop = true;
-        this.emit("stop", this.index);
+        this.emit("stop", this.step);
 
         return this;
     }
@@ -103,11 +111,11 @@ export class Walker<T> extends EventEmitter {
 
     /** is walk end */
     end() {
-        return this.index === this.list.length;
+        return this.step === this.list.length;
     }
 
-    peek(index?: number) {
-        const item = this.list.at(index || this.index);
+    peek(step?: number) {
+        const item = this.list.at(step || this.step);
         this.emit("peek", item);
         return item;
     }
@@ -116,7 +124,6 @@ export class Walker<T> extends EventEmitter {
         this.emit("peekall", this.list);
         return this.list;
     }
-
 
     /** add actions at tail */
     append(...actions: T[]) {
@@ -128,25 +135,24 @@ export class Walker<T> extends EventEmitter {
 
     /** add actions at next */
     add(...actions: T[]) {
-        this.emit("add", [this.index, actions]);
-        this.list.splice(this.index, 0, ...actions);
+        this.emit("add", [this.step, actions]);
+        this.list.splice(this.step, 0, ...actions);
 
         return this;
     }
 
-
     /** add actions at some step */
-    addAt(index: number, ...actions: T[]) {
-        this.emit("add", [index, actions]);
-        this.list.splice(index, 0, ...actions);
+    addAt(step: number, ...actions: T[]) {
+        this.emit("add", [step, actions]);
+        this.list.splice(step, 0, ...actions);
 
         return this;
     }
 
     /** remove current action and return */
     remove(count?: number) {
-        this.emit("remove", [this.index, count || 1]);
-        this.list.splice(this.index, count || 1);
+        this.emit("remove", [this.step, count || 1]);
+        this.list.splice(this.step, count || 1);
 
         return this;
     }

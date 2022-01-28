@@ -7,18 +7,14 @@ import {
     Frame,
     Browser,
 } from "puppeteer-core";
-
+  
 import "reflect-metadata";
 import { ModuleRegister } from "./register";
 import { ParserFunction } from "../parser";
 import { PluginFunction } from "../plugins";
-import { FramePluginParam } from "../plugins/frame";
-import { FunctionPluginParam } from "../plugins/function";
-import { PagePluginParam } from "../plugins/page";
-import { SwitchPluginParam } from "../plugins/switch";
-import { VariablePluginParam } from "../plugins/variables";
 import { PluginParams } from "./schema";
- 
+import { DebugOptions } from "./debugger";
+
 /** puppeteer 启动参数 */
 export type PuppeteerOptions = LaunchOptions &
     BrowserLaunchArgumentOptions &
@@ -29,9 +25,15 @@ export type PuppeteerOptions = LaunchOptions &
 
 /** jpptr 实例化参数 */
 export interface JpptrOptions {
+    /** 是否开启调试模式 */
+    debug?: boolean | DebugOptions
+    /** 变量池 */
     variables?: Variables;
+    /** 模块注册器 */
     register?: ModuleRegister;
+    /** puppeteer 启动参数 */
     launch?: PuppeteerOptions;
+    /** 动作列表 */
     actions?: Action[];
 }
 
@@ -86,7 +88,7 @@ export type ObjectAction = {
 /**
  * 动作类型
  */
-export type Action = ArrayAction | PluginParams[keyof PluginParams];
+export type Action = ArrayAction | PluginParams[keyof PluginParams] | ObjectAction
 
 export interface PuppeteerContext {
     browser?: Browser;

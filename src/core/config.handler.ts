@@ -79,13 +79,12 @@ export class JpptrConfigHandler {
         let content;
         try {
             content = Jpptr.readJsonFile(configPath);
-
-            this.resolve(content);
-            if (content.extends) {
-                this.extends(resolve(configPath, content.extends));
-            }
         } catch {
-            error("module not found : ", path);
+            error("jpptr : file not found : ", path);
+        }
+        this.resolve(content);
+        if (content.extends) {
+            this.extends(resolve(configPath, content.extends));
         }
     }
 }

@@ -3,10 +3,11 @@ import puppeteer from "puppeteer-core";
 import { jpptrProgramAction } from "../commander";
 import { JpptrConfigHandler } from "./config.handler";
 import { ActionExecutor } from "./executor";
-import fs from "fs";
+import { readFileSync } from "fs";
 import { JpptrOptions } from "./types";
 import stripJsonComments from "strip-json-comments";
-import { JpptrSchema } from "./schema";
+import { startDebug } from "./debugger";
+
 /**
  * jpptr class
  */
@@ -35,7 +36,7 @@ export class Jpptr {
 
     /** 解析可带注释的 json 文件 */
     public static readJsonFile(path: string): any {
-        return JSON.parse(stripJsonComments(fs.readFileSync(path).toString()));
+        return JSON.parse(stripJsonComments(readFileSync(path).toString()));
     }
 
     /**
@@ -56,11 +57,16 @@ export class Jpptr {
      * @param options jpptr实例化参数
      */
     public async createExecutor(options?: JpptrOptions): Promise<ActionExecutor<any>> {
-        const { launch: launchOptions, register, actions, variables } = options || this.options;
+        const opts = Object.assign({}, this.options, options);
+        const { launch: launchOptions, register, actions, variables } = opts;
         /** 启动浏览器 */
         const browser = await puppeteer.launch(launchOptions);
         const [page] = await browser.pages();
         /** 实例化 */
-        return new ActionExecutor({ register, actions, page, variables });
+        const executor = new ActionExecutor({ register, actions, page, variables });
+        if (options?.debug) {
+            startDebug(opts, executor as any);
+        }
+        return executor;
     }
 }

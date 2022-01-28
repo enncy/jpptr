@@ -8,8 +8,9 @@ import { Walker, WalkerEvents } from "./walker";
 export interface ActionExecutorEvents<T extends Action> extends WalkerEvents<T> {
     executestart: Context<T>;
     parsestart: Context<T>;
-    executefinish: Context<T>;
     parsefinish: Context<T>;
+    executefinish: Context<T>;
+    executeerror: Context<T>;
 }
 
 export interface ActionExecutorOptions<T extends Action> {
@@ -51,17 +52,31 @@ export class ActionExecutor<T extends Action> extends Walker<Context<T>> {
         if (ctx) this.currentContext = ctx;
     }
 
-    on<E extends keyof ActionExecutorEvents<T>>(event: E, handler: (value: ActionExecutorEvents<T>[E]) => void) {
+    on<E extends keyof ActionExecutorEvents<T>>(
+        event: E,
+        handler: (value: ActionExecutorEvents<T>[E], ...args: any[]) => void
+    ) {
         return super.on(event, handler);
     }
-    once<E extends keyof ActionExecutorEvents<T>>(event: E, handler: (value: ActionExecutorEvents<T>[E]) => void) {
+    once<E extends keyof ActionExecutorEvents<T>>(
+        event: E,
+        handler: (value: ActionExecutorEvents<T>[E], ...args: any[]) => void
+    ) {
         return super.once(event, handler);
     }
-    off<E extends keyof ActionExecutorEvents<T>>(event: E, handler: (value: ActionExecutorEvents<T>[E]) => void) {
+    off<E extends keyof ActionExecutorEvents<T>>(
+        event: E,
+        handler: (value: ActionExecutorEvents<T>[E], ...args: any[]) => void
+    ) {
         return super.off(event, handler);
     }
-    emit<E extends keyof ActionExecutorEvents<T>>(event: E, value: ActionExecutorEvents<T>[E]): boolean {
-        return super.emit(event, value);
+
+    emit<E extends keyof ActionExecutorEvents<T>>(
+        event: E,
+        value: ActionExecutorEvents<T>[E],
+        ...args: any[]
+    ): boolean {
+        return super.emit(event, value, args);
     }
 
     context() {
@@ -77,31 +92,35 @@ export class ActionExecutor<T extends Action> extends Walker<Context<T>> {
     async execute() {
         let ctx = await this.walk();
         if (ctx) {
-            this.emit("executestart", ctx);
-            this.emit("parsestart", ctx);
-            ctx.action = this.parser.parse(ctx);
-            this.emit("parsefinish", ctx);
-            this.currentContext = ctx;
+            try {
+                this.currentContext = ctx;
+                this.emit("executestart", ctx);
+                this.emit("parsestart", ctx);
+                ctx.action = this.parser.parse(ctx);
+                this.emit("parsefinish", ctx);
 
-            if (ctx.action && !Array.isArray(ctx.action) && ctx.action.use) {
-                /** 执行插件 ， 并处理返回值 */
-                const plugin = this.register.plugin.get(ctx.action.use);
-                if (plugin) {
-                    const result = await plugin(ctx);
-                    this.emit("executefinish", ctx);
-                    if (result) {
-                        if (Array.isArray(result)) {
-                            ctx.action.actions = result;
-                        } else {
-                            ctx = Object.assign({}, ctx, result);
+                if (ctx.action && !Array.isArray(ctx.action) && ctx.action.use) {
+                    /** 执行插件 ， 并处理返回值 */
+                    const plugin = this.register.plugin.get(ctx.action.use);
+                    if (plugin) {
+                        const result = await plugin(ctx);
+                        this.emit("executefinish", ctx);
+                        if (result) {
+                            if (Array.isArray(result)) {
+                                ctx.action.actions = result;
+                            } else {
+                                ctx = Object.assign({}, ctx, result);
+                            }
                         }
                     }
-                }
 
-                /** 执行 actions 子事件 */
-                if (!Array.isArray(ctx.action) && ctx.action.actions) {
-                    this.addActions(ctx.action.actions, ctx);
+                    /** 执行 actions 子事件 */
+                    if (!Array.isArray(ctx.action) && ctx.action.actions) {
+                        this.addActions(ctx.action.actions, ctx);
+                    }
                 }
+            } catch (e) {
+                this.emit("executeerror", ctx, e);
             }
         }
     }

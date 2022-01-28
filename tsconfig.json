@@ -11,7 +11,7 @@
         "experimentalDecorators": true,
         "outDir": "./lib",
         "downlevelIteration": true,
-        "resolveJsonModule": true
+        "resolveJsonModule": true,
     },
     "include": ["./src/**/*"],
     "exclude": ["./test/**/*"]

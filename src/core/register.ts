@@ -1,9 +1,10 @@
 import { defaultParsers, ActionParser } from "../parser";
 import { PluginFunction, defaultPlugins } from "../plugins";
+import { PluginParams } from "./schema";
 
 export class ModuleRegister {
-    plugin: Register<PluginFunction> = new Register();
-    parser: Register<ActionParser> = new Register();
+    plugin: Register<string | keyof PluginParams, PluginFunction> = new Register();
+    parser: Register<string, ActionParser> = new Register();
 
     constructor() {
         this.parser.useAll(defaultParsers().entries());
@@ -11,21 +12,21 @@ export class ModuleRegister {
     }
 }
 
-export class Register<T> {
-    private items: Map<string, T> = new Map();
+export class Register<T, M> {
+    private items: Map<T, M> = new Map();
 
-    use(name: string, item: T) {
+    use(name: T, item: M) {
         this.items.set(name, item);
         return this;
     }
 
-    useAll(items: IterableIterator<[string, T]> | [string, T][]) {
+    useAll(items: IterableIterator<[T, M]> | [T, M][]) {
         for (const item of items) {
             this.items.set(item[0], item[1]);
         }
     }
 
-    remove(name: string) {
+    remove(name: T) {
         this.items.delete(name);
         return this;
     }
@@ -35,7 +36,7 @@ export class Register<T> {
         return this;
     }
 
-    get(name: string) {
+    get(name: T) {
         return this.items.get(name);
     }
 

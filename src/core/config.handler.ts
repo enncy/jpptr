@@ -72,18 +72,19 @@ export class JpptrConfigHandler {
 
     /** 递归继承配置文件 */
     extends(path: string) {
-        const configPath = resolveFilePath(path, this.cwd);
-        /** 切换工作目录 */
-        this.cwd = configPath;
-        /** 读取配置文件 */
+        let configPath;
         let content;
         try {
+            configPath = resolveFilePath(path, this.cwd);
+            /** 切换工作目录 */
+            this.cwd = configPath;
+            /** 读取配置文件 */
             content = Jpptr.readJsonFile(configPath);
         } catch {
             error("jpptr : file not found : ", path);
         }
         this.resolve(content);
-        if (content.extends) {
+        if (configPath && content.extends) {
             this.extends(resolve(configPath, content.extends));
         }
     }

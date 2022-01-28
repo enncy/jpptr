@@ -7,6 +7,7 @@ import { readFileSync } from "fs";
 import { JpptrOptions } from "./types";
 import stripJsonComments from "strip-json-comments";
 import { startDebug } from "./debugger";
+import { executeProgramAction } from "../commander/exec";
 
 /**
  * jpptr class
@@ -40,8 +41,10 @@ export class Jpptr {
     }
 
     /**
-     * 启动配置文件
+     * 启动配置文件, 与命令行 jpptr 功能一致
+     * 
      * 如果你的配置文件不是在根目录，请添加 __dirname 去定位文件的路径
+     * 
      * 或者使用 cwd 选项
      * ```js
      * await Jpptr.launch("./jpptr.config.json",{cwd:__dirname});
@@ -49,6 +52,20 @@ export class Jpptr {
      */
     public static async launch(path: string, options?: { cwd?: string }) {
         await jpptrProgramAction(path, options);
+    }
+
+    /**
+     * 启动动作文件, 与命令行 jpptr exec 功能一致       
+     * 
+     * 如果你的配置文件不是在根目录，请添加 __dirname 去定位文件的路径
+     * 
+     * 或者使用 cwd 选项
+     * ```js
+     * await Jpptr.execute("./test.json",{cwd:__dirname});
+     * ```
+     */
+    public static async execute(path: string, options?: { cwd?: string }) {
+        await executeProgramAction(path, options);
     }
 
     /**

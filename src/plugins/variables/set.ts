@@ -14,10 +14,17 @@ export async function VariablesSetPlugin({
     const target = action.target === "page" ? page : frame;
     if (target) {
         let vars;
-        const { const: varConst, text, attribute, evaluate, url: urlParam, cookie: cookieName } = action;
+        const { const: varConst, range, text, attribute, evaluate, url: urlParam, cookie: cookieName } = action;
         /** 设置一个常量 */
         if (varConst) {
             vars = varConst;
+        } else if (range) {
+            vars = [];
+            for (let i = range[0]; i < range[1]; i++) {
+                if (i % (range[2] || 1) == 0) {
+                    vars.push(i);
+                }
+            }
         } else if (text) {
             /** 或者 元素 的 text 值 */
             vars = await target.evaluate(`document.querySelector("${text}").innerText`);
@@ -53,6 +60,12 @@ export async function VariablesSetPlugin({
 export type SetPluginParam = {
     /** 常量 */
     const?: any;
+    /**
+     * 范围: 开始，结束，步长
+     * ***
+     * range: start, end, step
+     */
+    range: [number, number, number];
     /** 对元素取 innerText 的值 */
     text?: string;
     /** 获取元素属性值 */

@@ -5,17 +5,17 @@ import { ActionContext } from "../core/types";
  *
  */
 export function VariablesParser({ variables, action }: ActionContext<any>) {
-    if (!Array.isArray(action)) {
-        const vars: any = variables || {};
-        replacePlaceholder(action, vars);
-        return action;
+    if (Reflect.ownKeys(variables || {}).length) {
+        return replacePlaceholder(action, variables);
     }
 }
 
-function replacePlaceholder(action: any, vars: any) {
+/** 替换占位符 */
+export function replacePlaceholder(action: any, vars: any) {
+    action = JSON.parse(JSON.stringify(action));
     for (const key in action) {
         if (Object.prototype.hasOwnProperty.call(action, key)) {
-            let value = Reflect.get(action, key);
+            let value = action[key];
 
             if (typeof value === "string") {
                 if (/#\{(.*?)\}/.test(value)) {
@@ -23,17 +23,21 @@ function replacePlaceholder(action: any, vars: any) {
 
                     for (const placeholder of placeholders) {
                         const varName = placeholder.replace(/#\{(.*)\}/, "$1");
-                        value = value.replace(placeholder, vars[varName]);
+                        if (vars[varName] !== undefined) {
+                            value = value.replace(placeholder, vars[varName]);
+                        }
                     }
 
-                    Reflect.set(action, key, value);
+                    action[key] = value;
                 }
             }
 
             if (typeof value === "object") {
                 /** 如果是数组，或者对象，则递归处理 */
-                replacePlaceholder(value, vars);
+                action[key] = replacePlaceholder(value, vars);
             }
         }
     }
+
+    return action;
 }

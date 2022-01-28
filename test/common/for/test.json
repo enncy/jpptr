@@ -1,0 +1,21 @@
+{
+    "$schema": "../../../dist/schema.json",
+    "extends": "../../base.config.json",
+    "variables": {
+        "username": "enncy"
+    },
+    "actions": [
+        ["goto", "https://enncy.github.io/jpptr/test.html"],
+        ["type", "#username", "#{username}"],
+        {
+            "use": "for",
+            "var": "i",
+            "set": { "range": [0, 20, 5] },
+            "template": ["type", "#password", "#{i}-"]
+        },
+        ["click", "#submit"],
+        ["waitForTimeout", 3000],
+        ["close"],
+        ["close"]
+    ]
+}

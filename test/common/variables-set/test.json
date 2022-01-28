@@ -1,5 +1,6 @@
 {
     "$schema": "../../../dist/schema.json",
+    "extends": "../../base.config.json",
     "register": {
         "plugins": [
             {
@@ -7,11 +8,6 @@
                 "plugin": "../close-dialog-plugin.js"
             }
         ]
-    },
-    "launch": {
-        "executablePath": "C:/Program Files/Google/Chrome/Application/chrome.exe",
-        "defaultViewport": null,
-        "headless": false
     },
     "variables": {
         "username": "enncy",

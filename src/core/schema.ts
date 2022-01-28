@@ -1,17 +1,10 @@
+import { ForPluginParams } from "../plugins/for";
 import { FramePluginParam } from "../plugins/frame";
 import { FunctionPluginParam } from "../plugins/function";
 import { PagePluginParam } from "../plugins/page";
 import { SwitchPluginParam } from "../plugins/switch";
 import { VariablePluginParam } from "../plugins/variables";
-import { ArrayAction, ModuleRegisterSchema,  PuppeteerOptions, Variables } from "./types";
-
-export interface PluginParams {
-    page: PagePluginParam;
-    frame: FramePluginParam;
-    switch: SwitchPluginParam;
-    function: FunctionPluginParam;
-    variables: VariablePluginParam;
-}
+import { ArrayAction, ModuleRegisterSchema, PuppeteerOptions, Variables } from "./types";
 
 /**
  * jpptr 动作文件类型
@@ -29,12 +22,26 @@ export interface JpptrSchema {
     actions?: ActionSchema[];
 }
 
+export interface PluginParams {
+    page: PagePluginParam;
+    frame: FramePluginParam;
+    switch: SwitchPluginParam;
+    function: FunctionPluginParam;
+    variables: VariablePluginParam;
+    for: ForPluginParams;
+}
+
+export interface PluginParamsWithName {
+    page: PagePluginParam & { use: "page" };
+    frame: FramePluginParam & { use: "frame" };
+    switch: SwitchPluginParam & { use: "switch" };
+    function: FunctionPluginParam & { use: "function" };
+    variables: VariablePluginParam & { use: "variables" };
+    for: ForPluginParams & { use: "for" };
+}
+
 export type ActionSchema =
     | ArrayAction
-    | (PagePluginParam & { use: "page" })
-    | (FramePluginParam & { use: "frame" })
-    | (SwitchPluginParam & { use: "switch" })
-    | (FunctionPluginParam & { use: "function" })
-    | (VariablePluginParam & { use: "variables" })
+    | PluginParamsWithName[keyof PluginParamsWithName]
     | { use: string }
     | { use: keyof PluginParams };

@@ -15,7 +15,7 @@ export interface ActionParser {
 export type ParserFunction = (actionContext: ActionContext<any>) => ObjectAction | undefined;
 
 export class Parser {
-    constructor(private parserRegister: Register<ActionParser | ParserFunction>) {}
+    constructor(private parserRegister: Register<string, ActionParser | ParserFunction>) {}
 
     parse(actionContext: ActionContext<any>) {
         /** 将没有优先级的解析器方法，转换成默认优先级为 10 的解析器对象 */
@@ -47,23 +47,16 @@ export { ArrayParser, FrameParser, PageParser };
  * ArrayParser 优先级为100，其余为默认的10
  */
 export function defaultParsers() {
-    return new Register<ActionParser>()
-        .use(ParserNames["array-parser"], { priority: 100, parser: ArrayParser })
-        .use(ParserNames["variables-parser"], { parser: VariablesParser })
-        .use(ParserNames["frame-parser"], { parser: FrameParser })
-        .use(ParserNames["page-parser"], { parser: PageParser });
+    return new Register<keyof typeof DefaultParsers, ActionParser>()
+        .use("array", { priority: 100, parser: ArrayParser })
+        .use("variables", { parser: VariablesParser })
+        .use("frame", { parser: FrameParser })
+        .use("page", { parser: PageParser });
 }
 
-/**
- * 默认解析器名
- */
-export enum ParserNames {
-    /** 数组解析器 */
-    "array-parser" = "array",
-    /** 页面框架切换解析器 */
-    "frame-parser" = "frame",
-    /** 页面切换解析器 */
-    "page-parser" = "page",
-    /** 变量解析器 */
-    "variables-parser" = "variables",
-}
+export const DefaultParsers = {
+    array: ArrayParser,
+    variables: VariablesParser,
+    frame: FrameParser,
+    page: PageParser,
+};

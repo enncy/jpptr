@@ -1,5 +1,6 @@
+import { PluginParamsWithName } from "../core/schema";
 import { Action, ActionContext } from "../core/types";
-import { PluginNames } from "../plugins";
+
 import { FramePluginParam } from "../plugins/frame";
 
 /**
@@ -10,16 +11,16 @@ export function FrameParser({ action }: ActionContext<any>) {
         const { actions = [], frame, ...newAction } = action;
         if (typeof action.frame === "string") {
             action = {
-                use: PluginNames["frame-plugin"],
+                use: "frame",
                 name: action.frame,
                 actions: [newAction as Action].concat(actions),
-            } as FramePluginParam;
+            } as PluginParamsWithName["frame"];
         } else if (typeof action.frame === "number") {
             action = {
-                use: PluginNames["frame-plugin"],
+                use: "frame",
                 index: action.frame,
                 actions: [newAction as Action].concat(actions),
-            } as FramePluginParam;
+            } as PluginParamsWithName["frame"];
         }
         return action;
     }

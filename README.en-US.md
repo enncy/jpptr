@@ -4,7 +4,7 @@
 
 [中文](https://github.com/enncy/jpptr/blob/main/README.md) | [English](https://github.com/enncy/jpptr/blob/main/README.en-US.md)
 
-[Document](https://enncy.github.io/jpptr/) | [Sample](https://github.com/enncy/jpptr/tree/main/sample)
+[Document](https://enncy.github.io/jpptr-docs/) | [Sample](https://github.com/enncy/jpptr/tree/main/sample)
 
 > a json syntactic sugar for execute puppeteer.     
 > Jpptr use json to execute puppeteer, just as you can use javascript to execute puppeteer.         
@@ -30,7 +30,7 @@ page.goto("https://example.com")
 ```
 
 ## Document
-https://enncy.github.io/jpptr/
+https://enncy.github.io/jpptr-docs/
 ## Sample
 [https://github.com/enncy/jpptr/tree/main/sample](https://github.com/enncy/jpptr/tree/main/sample)
  

@@ -60,11 +60,12 @@ async function applyFunction({
     }
 }
 
-export interface FunctionPluginParam extends ObjectAction {
+export type FunctionPluginParam = ObjectAction & {
+ 
     // 函数名
-    name: string;
+    name: keyof Page | keyof Frame | keyof Browser;
     // 函数的参数
-    args?: (string | number | boolean)[];
+    args?: any[];
     // 是否等待函数执行，默认 true
     wait?: boolean;
     /**
@@ -77,4 +78,4 @@ export interface FunctionPluginParam extends ObjectAction {
      * but if frame.id is not equals to page.mainFrame().id , the frame's priority is big than page
      */
     target?: "browser" | "page" | "frame";
-}
+};

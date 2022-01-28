@@ -1,11 +1,13 @@
+import { Jpptr } from "..";
 import { existsSync, readFileSync } from "fs";
 import { resolve } from "path";
 import { ActionParser } from "../parser";
 
 import { error } from "../logger/logger";
 
-import { JpptrOptions, JpptrSchema, ModuleRegisterSchema, PuppeteerOptions, Variables } from "./types";
+import { JpptrOptions, ModuleRegisterSchema, PuppeteerOptions, Variables } from "./types";
 import { ModuleRegister } from "./register";
+import { JpptrSchema } from "./schema";
 
 /**
  * 配置文件解析器
@@ -76,7 +78,7 @@ export class JpptrConfigHandler {
         /** 读取配置文件 */
         let content;
         try {
-            content = JSON.parse(readFileSync(configPath).toString());
+            content = Jpptr.readJsonFile(configPath);
 
             this.resolve(content);
             if (content.extends) {

@@ -1,10 +1,10 @@
 {
-    "$schema": "../../../jpptr.schema.json",
+    "$schema": "../../dist/schema.json",
     "register": {
         "plugins": [
             {
                 "name": "close-dialog",
-                "plugin": "../close-dialog-plugin.js"
+                "plugin": "./close-dialog-plugin.js"
             }
         ]
     },
@@ -22,9 +22,9 @@
         ["type", "#username", "#{username}"],
         ["type", "#password", "#{password}"],
         {
-            "use": "set",
-            "name": "form-username",
-            "value": {
+            "use": "variables",
+            "var": "form-username",
+            "set": {
                 "attribute": {
                     "selector": "#username",
                     "key": "value"
@@ -32,9 +32,9 @@
             }
         },
         {
-            "use": "set",
-            "name": "form-password",
-            "value": {
+            "use": "variables",
+            "var": "form-password",
+            "set": {
                 "attribute": {
                     "selector": "#password",
                     "key": "value"
@@ -44,16 +44,16 @@
         ["click", "#submit"],
         ["waitForTimeout", 3000],
         {
-            "use": "set",
-            "name": "url-param-username",
-            "value": {
+            "use": "variables",
+            "var": "url-param-username",
+            "set": {
                 "url": "uname"
             }
         },
         {
-            "use": "set",
-            "name": "pwd-innerText",
-            "value": {
+            "use": "variables",
+            "var": "pwd-innerText",
+            "set": {
                 "text": "#pwd"
             }
         },

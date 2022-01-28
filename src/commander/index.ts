@@ -35,7 +35,7 @@ JpptrProgram.addCommand(ExecuteProgram);
 
 export async function jpptrProgramAction(file: string, options?: { cwd?: string }) {
     const cwd = options?.cwd || process.cwd();
-    const config: ExecuteConfig = JSON.parse(readFileSync(resolve(cwd, file)).toString());
+    const config: ExecuteConfig = Jpptr.readJsonFile(resolve(cwd, file))
 
     /** 查找配置文件 */
     const paths = config.include

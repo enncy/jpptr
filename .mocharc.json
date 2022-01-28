@@ -6,5 +6,5 @@
     "slow": 75,
     "timeout": 60000,
     "ui": "bdd",
-    "spec": ["./test/**/*.ts"] 
+    "spec": ["./test/**/*.ts"]
 }

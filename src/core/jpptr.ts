@@ -5,7 +5,8 @@ import { JpptrConfigHandler } from "./config.handler";
 import { ActionExecutor } from "./executor";
 import fs from "fs";
 import { JpptrOptions } from "./types";
-
+import stripJsonComments from "strip-json-comments";
+import { JpptrSchema } from "./schema";
 /**
  * jpptr class
  */
@@ -27,9 +28,14 @@ export class Jpptr {
      */
     public static from(path: string, options?: { cwd: string }) {
         const cwd = options?.cwd || resolve(path, "../");
-        const content = JSON.parse(fs.readFileSync(path).toString());
+        const content = this.readJsonFile(path);
         const resolvedOptions = new JpptrConfigHandler(cwd).resolve(content);
         return new Jpptr(resolvedOptions);
+    }
+
+    /** 解析可带注释的 json 文件 */
+    public static readJsonFile(path: string): any {
+        return JSON.parse(stripJsonComments(fs.readFileSync(path).toString()));
     }
 
     /**

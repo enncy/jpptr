@@ -1,0 +1,36 @@
+{
+    "$schema": "../../../dist/schema.json",
+    "launch": {
+        "executablePath": "C:/Program Files/Google/Chrome/Application/chrome.exe",
+        "defaultViewport": null,
+        "headless": false
+    },
+    "variables": {
+        "username": "enncy"
+    },
+    "actions": [
+        {
+            "use": "variables",
+            "var": "password",
+            "set": {
+                "const": 123456.123456
+            }
+        },
+        {
+            "use": "variables",
+            "var": "password",
+            "apply": {
+                "name": "toFixed",
+                "args": [0],
+                "reassign": true
+            }
+        },
+        ["goto", "https://enncy.github.io/jpptr/test.html"],
+        ["type", "#username", "#{username}"],
+        ["type", "#password", "#{password}"],
+        ["click", "#submit"],
+        ["waitForTimeout", 3000],
+        ["close"],
+        ["close"]
+    ]
+}

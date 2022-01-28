@@ -1,5 +1,5 @@
 {
-    "$schema": "../../jpptr.schema.json",
+    "$schema": "../../dist/schema.json",
     "launch": {
         "executablePath": "C:/Program Files/Google/Chrome/Application/chrome.exe",
         "defaultViewport": null,

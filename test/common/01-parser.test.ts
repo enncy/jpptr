@@ -3,6 +3,7 @@ import { expect } from "chai";
 import { defaultParsers, Parser } from "../../src/parser";
 import { readFileSync } from "fs";
 import { resolve } from "path";
+import { Jpptr } from "../../src";
 
 const parser = new Parser(defaultParsers());
 
@@ -119,8 +120,8 @@ describe("01 json parser 解析测试", () => {
 
     describe("文件整体解析测试", () => {
         it("test.json actions => parsed.json", () => {
-            const config = JSON.parse(readFileSync(resolve(__dirname, "./test.json")).toString());
-            const parsedJson = JSON.parse(readFileSync(resolve(__dirname, "./parsed.json")).toString());
+            const config = Jpptr.readJsonFile(resolve(__dirname, "./test.json"));
+            const parsedJson = Jpptr.readJsonFile(resolve(__dirname, "./parsed.json"));
 
             const parsed = config.actions.map((a: any) =>
                 parser.parse({

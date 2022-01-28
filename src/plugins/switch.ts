@@ -105,21 +105,21 @@ interface ConditionWrapper {
 }
 
 /** 插件参数 */
-export interface SwitchPluginParam extends ObjectAction {
+export type SwitchPluginParam = ObjectAction & {
     case?: SwitchCaseParam[];
     default?: Action[];
-}
+};
 
 /** 插件 case 参数的选项 */
 interface SwitchCaseParam {
-    // 是否包含某个子串
+    /** 是否包含某个子串 */
     include?: ConditionWrapper;
-    // 是否匹配某个子串
+    /** 是否匹配某个子串 */
     match?: ConditionWrapper;
-    // 调用页面函数判断
+    /** 调用页面函数判断 */
     evaluate?: string;
-    // 子操作
+    /** 子操作 */
     actions?: Action[];
-    //  操作对象
+    /** 操作对象 */
     target: "page" | "frame";
 }

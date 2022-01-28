@@ -1,5 +1,5 @@
 {
-    "$schema": "../../jpptr.schema.json",
+    "$schema": "../../dist/schema.json",
     "register": {
         "plugins": [
             {
@@ -35,10 +35,13 @@
         },
         ["waitForTimeout", 2000],
         ["click", "#example"],
-        {
-            "description": "等待一段时间,防止页面打开延迟导致的切换错误,你也可以自定义模块去实现页面见的跳转和切换 \n waiting for a period of time to prevent switching errors caused by the delay in opening the page, you can also customize the module(plugin or parser) to jump and switch between pages",
-            "actions": [["waitForTimeout", 3000]]
-        },
+        /** 
+            等待一段时间,防止页面打开延迟导致的切换错误,你也可以自定义模块去实现页面见的跳转和切换
+            
+            waiting for a period of time to prevent switching errors caused by the delay in opening the page, 
+            you can also customize the module(plugin or parser) to jump and switch between pages
+        */
+        ["waitForTimeout", 3000],
         {
             "page": -1,
             "use": "function",

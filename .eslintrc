@@ -14,7 +14,7 @@
     "plugins": ["mocha", "@typescript-eslint"],
     "rules": {
         "linebreak-style": [0, "windows"],
-        "max-len": ["error", { "code": 120 }],
+        "max-len": ["error", { "code": 120, "ignoreStrings": true }],
         "object-curly-spacing": 0,
         "quotes": 0,
         "indent": 0,

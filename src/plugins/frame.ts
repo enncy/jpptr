@@ -21,7 +21,11 @@ export function FramePlugin({ page, frame, action }: Context<FramePluginParam>) 
     }
 }
 
-export interface FramePluginParam extends ObjectAction {
+/** frame 切换插件参数 */
+export type FramePluginParam = ObjectAction & {
+ 
+    /** frame 名字 */
     name?: string;
+    /** frame 索引 */
     index?: number;
-}
+};

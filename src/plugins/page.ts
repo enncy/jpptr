@@ -24,6 +24,9 @@ export async function PagePlugin({ browser, page, frame, action }: Context<PageP
     }
 }
 
-export interface PagePluginParam extends ObjectAction {
+/** page 切换插件参数 */
+export type PagePluginParam = ObjectAction & {
+    
+    /** page 索引 */
     index?: number;
-}
+};

@@ -83,7 +83,7 @@ export class ActionExecutor<T extends Action> extends Walker<Context<T>> {
             this.emit("parsefinish", ctx);
             this.currentContext = ctx;
 
-            if (ctx.action && !Array.isArray(ctx.action)) {
+            if (ctx.action && !Array.isArray(ctx.action) && ctx.action.use) {
                 /** 执行插件 ， 并处理返回值 */
                 const plugin = this.register.plugin.get(ctx.action.use);
                 if (plugin) {

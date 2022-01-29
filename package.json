@@ -1,11 +1,12 @@
 {
     "name": "jpptr",
-    "version": "1.6.0",
+    "version": "1.6.1",
     "description": "a json syntactic sugar for execute puppeteer",
     "main": "./lib/index.js",
     "type": "commonjs",
     "files": [
-        "lib"
+        "lib",
+        "dist"
     ],
     "bin": {
         "jpptr": "./lib/commander/bin.js"

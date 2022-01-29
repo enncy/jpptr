@@ -105,9 +105,13 @@ export function resolveFilePath(p: string, cwd: string = process.cwd()) {
 export function resolveModule(p: string, cwd: string = process.cwd()) {
     let mod;
     try {
-        mod = require(resolveFilePath(p, cwd));
+        mod = require(p);
     } catch {
-        error("module not found : ", p);
+        try {
+            mod = require(resolveFilePath(p, cwd));
+        } catch (e) {
+            error("module not found : ", p);
+        }
     }
     return mod?.default || mod;
 }

@@ -2,10 +2,11 @@ import { Page, Frame, Browser } from "puppeteer-core";
 import { Context, ObjectAction } from "../core/types";
 
 /**
- * 函数执行插件
+ * a plugin that provides puppeteer function execution
+ * 
+ * @param options Context\<{@link FunctionPluginParams}\>
  */
-
-export async function FunctionPlugin({ browser, page, frame, action }: Context<FunctionPluginParam>) {
+export async function FunctionPlugin({ browser, page, frame, action }: Context<FunctionPluginParams>) {
     const { name, args, wait, target: execTarget } = action;
     /** 优先级为 browser > frame > page */
     if (browser) {
@@ -60,20 +61,20 @@ async function applyFunction({
     }
 }
 
-export type FunctionPluginParam = ObjectAction & {
- 
-    // 函数名
+export type FunctionPluginParams = ObjectAction & {
+    /** function name of `Page | Frame | Browser` */
     name: keyof Page | keyof Frame | keyof Browser;
-    // 函数的参数
+    /** arguments of function */
     args?: any[];
-    // 是否等待函数执行，默认 true
+    /**
+     * wait for this function, whether it is asynchronous or not
+     *
+     * @default true
+     */
     wait?: boolean;
     /**
-     * 执行对象
+     * execution target
      *
-     * 你可以选择目标来执行puppeteer函数，默认浏览器 >页面 >框架，
-     * 但是如果 `框架frame` 被切换过 (frame.id不等于page.mainFrame().id) ，则框架的优先级大于页面
-     * ****
      * you can select target to execute puppeteer function, default browser > page > frame
      * but if frame.id is not equals to page.mainFrame().id , the frame's priority is big than page
      */

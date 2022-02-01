@@ -1,27 +1,60 @@
 import { PluginParamsWithName } from "../core/schema";
-import { Action, ActionContext } from "../core/types";
-
-import { FramePluginParam } from "../plugins/frame";
+import { Action, ObjectAction } from "../core/types";
+import { ParserContext } from "./types";
 
 /**
- * frame框架切换解析器
+ * syntactic sugar parser of {@link ObjectAction.frame}
+ *
+ *
+ * @param options {@link ObjectAction}
+ * @example
+ * ```json
+ * {
+ *      "use": "function",
+ *      "name": "goto",
+ *      "args": ["https://example.com"],
+ *
+ *      "frame": "test_frame",
+ *      "frame": -1,
+ *
+ *      "actions": [["click", "#btn"]]
+ *
+ *  }
+ * // will be parsed to
+ * {
+ *      "use": "frame",
+ *      "name": "test_frame",
+ *      "index": -1,
+ *
+ *      "actions": [
+ *          {
+ *          "use": "function",
+ *          "name": "goto",
+ *          "args": ["https://example.com"]
+ *          },
+ *          ["click","#btn"]
+ *      ]
+ *  }
+ * ```
  */
-export function FrameParser({ action }: ActionContext<any>) {
+
+export function FrameParser({ action }: ParserContext<any>): PluginParamsWithName["frame"] | undefined {
     if (!Array.isArray(action) && action.frame) {
         const { actions = [], frame, ...newAction } = action;
         if (typeof action.frame === "string") {
-            action = {
+            return {
                 use: "frame",
                 name: action.frame,
                 actions: [newAction as Action].concat(actions),
-            } as PluginParamsWithName["frame"];
+            };
         } else if (typeof action.frame === "number") {
-            action = {
+            return {
                 use: "frame",
                 index: action.frame,
                 actions: [newAction as Action].concat(actions),
-            } as PluginParamsWithName["frame"];
+            };
         }
+
         return action;
     }
 }

@@ -1,42 +1,90 @@
+import { ArrayParser } from "../parser";
+import { ParserFunction } from "../parser/types";
+import { PluginFunction } from "../plugins";
 import { ForPluginParams } from "../plugins/for";
-import { FramePluginParam } from "../plugins/frame";
-import { FunctionPluginParam } from "../plugins/function";
-import { PagePluginParam } from "../plugins/page";
-import { SwitchPluginParam } from "../plugins/switch";
-import { VariablePluginParam } from "../plugins/variables";
-import { ArrayAction, ModuleRegisterSchema, PuppeteerOptions, Variables } from "./types";
+import { FramePluginParams } from "../plugins/frame";
+import { FunctionPluginParams } from "../plugins/function";
+import { PagePluginParams } from "../plugins/page";
+import { SwitchPluginParams } from "../plugins/switch";
+import { VariablesPluginParams } from "../plugins/variables";
+import { ArrayAction, JpptrOptions } from "./types";
 
 /**
- * jpptr 动作文件类型
+ * json schema of actions file
  */
 export interface JpptrSchema {
-    /** 变量 */
-    variables?: Variables;
-    /** 文件继承 */
+    /**
+     * extends file.
+     *
+     * you can use this option to merge other action file
+     *
+     * which has same options of {@link JpptrSchema}
+     *
+     * @example
+     *
+     * {
+     *      "extends":"./base.config.json"
+     * }
+     */
     extends?: string;
-    /** 模块注册器 */
+    /** json schema of module register */
     register?: ModuleRegisterSchema;
-    /** puppeteer 启动参数 */
-    launch?: PuppeteerOptions;
-    /** 动作列表 */
+    /** json schema of actions */
     actions?: ActionSchema[];
+
+    variables?: JpptrOptions["variables"];
+    launch?: JpptrOptions["launch"];
+}
+
+/**
+ * module register
+ */
+export interface ModuleRegisterSchema {
+    /** register of plugin */
+    plugins?: {
+        /** name of plugin */
+        name: string;
+        /**
+         * - js module path of plugin
+         * - function of plugin
+         */
+        plugin: string | PluginFunction;
+    }[];
+    /** register of parser */
+    parsers?: {
+        /** name of parser */
+        name: string;
+        /**
+         * - js module path of parser
+         * - function of parser
+         */
+        parser: string | ParserFunction;
+        /**
+         * priority of parser.
+         *
+         * the priority of {@link ArrayParser} is 100
+         *
+         * @default 10
+         */
+        priority: number;
+    }[];
 }
 
 export interface PluginParams {
-    page: PagePluginParam;
-    frame: FramePluginParam;
-    switch: SwitchPluginParam;
-    function: FunctionPluginParam;
-    variables: VariablePluginParam;
+    page: PagePluginParams;
+    frame: FramePluginParams;
+    switch: SwitchPluginParams;
+    function: FunctionPluginParams;
+    variables: VariablesPluginParams;
     for: ForPluginParams;
 }
 
 export interface PluginParamsWithName {
-    page: PagePluginParam & { use: "page" };
-    frame: FramePluginParam & { use: "frame" };
-    switch: SwitchPluginParam & { use: "switch" };
-    function: FunctionPluginParam & { use: "function" };
-    variables: VariablePluginParam & { use: "variables" };
+    page: PagePluginParams & { use: "page" };
+    frame: FramePluginParams & { use: "frame" };
+    switch: SwitchPluginParams & { use: "switch" };
+    function: FunctionPluginParams & { use: "function" };
+    variables: VariablesPluginParams & { use: "variables" };
     for: ForPluginParams & { use: "for" };
 }
 

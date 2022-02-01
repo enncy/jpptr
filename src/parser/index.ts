@@ -1,10 +1,11 @@
 import { Register } from "../core/register";
-import { ActionContext, ObjectAction } from "../core/types";
+import { ObjectAction } from "../core/types";
 
 import { ArrayParser } from "./ArrayParser";
 
 import { FrameParser } from "./FrameParser";
 import { PageParser } from "./PageParser";
+import { ParserContext, ParserFunction } from "./types";
 import { VariablesParser } from "./VariablesParser";
 
 export interface ActionParser {
@@ -12,12 +13,10 @@ export interface ActionParser {
     priority?: number;
 }
 
-export type ParserFunction = (actionContext: ActionContext<any>) => ObjectAction | undefined;
-
 export class Parser {
     constructor(private parserRegister: Register<string, ActionParser | ParserFunction>) {}
 
-    parse(actionContext: ActionContext<any>) {
+    parse(actionContext: ParserContext<any>) {
         /** 将没有优先级的解析器方法，转换成默认优先级为 10 的解析器对象 */
         let aps = this.parserRegister.values().map((ap) =>
             typeof ap === "function"
@@ -42,9 +41,9 @@ export class Parser {
 export { ArrayParser, FrameParser, PageParser };
 
 /**
- * 默认json解析注册器
+ * default parsers
  *
- * ArrayParser 优先级为100，其余为默认的10
+ * ArrayParser priority is 100, the rest is the default 10
  */
 export function defaultParsers() {
     return new Register<keyof typeof DefaultParsers, ActionParser>()

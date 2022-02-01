@@ -1,13 +1,17 @@
-import { Context, ObjectAction } from "../../core/types";
+import { Context } from "../../core/types";
+import { VariablesPluginParams } from "../variables";
 
 /**
- * 提供对变量变量操作的插件
+ * a plugin that provides support for variable operation.
+ *
+ * use {@link VariablesPluginParams.apply} to call this function
  */
 export function VariablesApplyPlugin({
     variables,
     action,
     var: varName,
-}: Pick<Context<any>, "variables"> & { action: ApplyPluginParam; var: string }) {
+}: Pick<Context<any>, "variables"> & { action: ApplyPluginParams; var: string }) {
+    variables = variables || {};
     /** 对基础类型进行包装转换 */
     if (typeof variables[varName] !== "object") {
         variables[varName] = new Object(variables[varName]);
@@ -26,15 +30,24 @@ export function VariablesApplyPlugin({
     return { variables };
 }
 
-/** 变量操作插件参数 */
-export type ApplyPluginParam = {
-    /** 是否对变量重新分配值，值为当前执行函数的返回值 */
+/**
+ * param of {@link VariablesApplyPlugin}
+ */
+export type ApplyPluginParams = {
+    /**
+     * reassign a value to this variable, the value is the return value of the currently executed function
+     */
     reassign?: boolean;
-    /** 方法参数 */
+    /** arguments of function */
     args?: any[];
 } & (
     | {
-          /** 对变量操作的方法名, 例如 字符串的 toString, 数组的 push, pop */
+          /**
+           * function name of `String | Array | Object | Boolean`
+           *
+           * @example toString, push, pop
+           *
+           */
           name: keyof String | keyof Array<any> | keyof Object | keyof Boolean;
       }
     | { name: string }

@@ -1,9 +1,11 @@
 import { ObjectAction, Context } from "../core/types";
 
 /**
- * page 切换插件
+ * a plugin that provides function of switch page
+ * 
+ * @param options Context\<{@link PagePluginParams}\>
  */
-export async function PagePlugin({ browser, page, frame, action }: Context<PagePluginParam>) {
+export async function PagePlugin({ browser, page, frame, action }: Context<PagePluginParams>) {
     if (browser && page && frame) {
         const pages = await browser.pages();
         // 指定的页面索引
@@ -25,8 +27,11 @@ export async function PagePlugin({ browser, page, frame, action }: Context<PageP
 }
 
 /** page 切换插件参数 */
-export type PagePluginParam = ObjectAction & {
-    
-    /** page 索引 */
+export type PagePluginParams = ObjectAction & {
+    /**
+     * index of page
+     *
+     * @see Array.at
+     */
     index?: number;
 };

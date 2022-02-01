@@ -2,9 +2,35 @@ import { Frame, Page } from "puppeteer-core";
 import { Action, ObjectAction, Context } from "../core/types";
 
 /**
- * 条件判断插件
+ * plugin of actions switch
+ *
+ * Iterate over each {@link SwitchCase}, until a case is return an actions list
+ *
+ * @example
+ * ```json
+ * {
+ *      "use":"switch",
+ *      "case":[
+ *          {
+ *              //...condition1
+ *              "actions":[...]
+ *          },
+ *          {
+ *              //...condition2
+ *              "actions":[...]
+ *          },
+ *          {
+ *              //...condition3
+ *              "actions":[...]
+ *          },
+ *      ],
+ *      "default":[...]
+ * }
+ * ```
+ *
+ * @param options Context\<{@link SwitchPluginParams}\>
  */
-export async function SwitchPlugin({ page, frame, action }: Context<SwitchPluginParam>) {
+export async function SwitchPlugin({ page, frame, action }: Context<SwitchPluginParams>) {
     const { actions = [] } = action;
     if (page && frame) {
         // 条件列表
@@ -25,7 +51,7 @@ export async function SwitchPlugin({ page, frame, action }: Context<SwitchPlugin
  * @param frame frame对象
  * @param _case 处理的条件
  */
-async function handleCaseParam(page: Page, frame: Frame, _case: SwitchCaseParam): Promise<Action[] | undefined> {
+async function handleCaseParam(page: Page, frame: Frame, _case: SwitchCase): Promise<Action[] | undefined> {
     const target = _case.target === "frame" ? frame : page;
     let actions;
 
@@ -46,15 +72,22 @@ async function handleCaseParam(page: Page, frame: Frame, _case: SwitchCaseParam)
         actions = (await target.evaluate(_case.evaluate)) ? _case.actions : actions;
     }
 
+    // 判断页面是否包含选择器
+    if (_case.selector) {
+        actions = await target.evaluate((selector) => document.querySelector(selector), _case.selector)
+            ? _case.actions
+            : actions;
+    }
+
     return actions;
 }
 
 /** 条件和字符串比较器 */
 // eslint-disable-next-line no-unused-vars
-export type Comparator = (condition: string, target: string) => boolean;
+type Comparator = (condition: string, target: string) => boolean;
 
 /** 条件构造器的处理器 */
-export class ConditionWrapperHandler {
+class ConditionWrapperHandler {
     private target: Page | Frame;
     private comparator: Comparator;
     constructor(target: Page | Frame, comparator: Comparator) {
@@ -87,39 +120,180 @@ export class ConditionWrapperHandler {
             return this.comparator(wrapper.text, await this.target.evaluate(() => document.body.innerText));
         }
 
-        // 判断页面是否包含选择器
-        if (wrapper.selector) {
-            return !!(await this.target.evaluate((selector) => document.querySelector(selector), wrapper.selector));
-        }
-
         return false;
     }
 }
-/** 条件构造器 */
-interface ConditionWrapper {
+/**
+ * condition wrapper
+ */
+export interface ConditionWrapper {
+    /**
+     * url sub string of page or frame
+     *
+     * @example
+     * ```js
+     * // https://example.com/?username=Jimmy
+     * {
+     *      "use":"switch",
+     *      "case":[
+     *          {
+     *              include:{
+     *                   url:"username=Jimmy"
+     *              },
+     *              // or
+     *              match:{
+     *                  url:"username=.*"
+     *              },
+     *              actions:[...]
+     *          }
+     *      ]
+     *
+     * }
+     * ```
+     */
     url?: string;
+    /**
+     * cookie string of page or frame
+     *
+     * @example
+     * ```js
+     * // cookie: JESSIONID=ad3f0f0263535855962c79320f4c0523
+     * {
+     *      "use":"switch",
+     *      "case":[
+     *          {
+     *              include:{
+     *                   cookie:"JESSIONID=ad3f0f0263535855962c79320f4c0523"
+     *              },
+     *              // or
+     *              match:{
+     *                  cookie:"JESSIONID=.*"
+     *              },
+     *              actions:[...]
+     *          }
+     *      ]
+     *
+     * }
+     * ```
+     */
     cookie?: string;
+    /**
+     * innerText of document body
+     *
+     * @example
+     * ```js
+     * // <body><h1>hello<h1><h2>world<h2><body>
+     * {
+     *      "use":"switch",
+     *      "case":[
+     *          {
+     *              include:{
+     *                   text:"hello\nworld"
+     *              },
+     *              // or
+     *              match:{
+     *                  text:"hello(\\s)world"
+     *              },
+     *              actions:[...]
+     *          }
+     *      ]
+     *
+     * }
+     * ```
+     */
     text?: string;
+    /**
+     * content of page or frame
+     *
+     * @example
+     * ```js
+     * // <body><h1>hello<h1><h2>world<h2><body>
+     * {
+     *      "use":"switch",
+     *      "case":[
+     *          {
+     *              include:{
+     *                   html:"<h1>hello<h1><h2>world<h2>"
+     *              },
+     *              // or
+     *              match:{
+     *                  html:"hello(.*)world"
+     *              },
+     *              actions:[...]
+     *          }
+     *      ]
+     *
+     * }
+     * ```
+     */
     html?: string;
-    selector?: string;
 }
 
-/** 插件参数 */
-export type SwitchPluginParam = ObjectAction & {
-    case?: SwitchCaseParam[];
-    default?: Action[];
+/**
+ * params of {@link SwitchPlugin}
+ *
+ * Iterate over each case-list, until a case is return an actions list
+ *
+ */
+export type SwitchPluginParams = ObjectAction & {
+    case?: SwitchCase[];
+    default?: Action[] | Action;
 };
 
-/** 插件 case 参数的选项 */
-interface SwitchCaseParam {
-    /** 是否包含某个子串 */
+/**
+ * params of {@link SwitchPluginParams.case}
+ *
+ * if any params return true ,then this plugin will execute this actions
+ *
+ */
+export interface SwitchCase {
+    /** include value in page or frame */
     include?: ConditionWrapper;
-    /** 是否匹配某个子串 */
+    /** match value in page or frame */
     match?: ConditionWrapper;
-    /** 调用页面函数判断 */
+    /**
+     * call the function of {@link Page.evaluate} or {@link Frame.evaluate}.
+     *
+     * if return true, then execute the child actions {@link SwitchCase.actions}
+     *
+     * @example
+     * ```js
+     * // <body><h1 class="title">hello<h1><h2>world<h2><body>
+     * {
+     *      "use":"switch",
+     *      "case":[
+     *          {
+     *              evaluate:"document.querySelector('.title')?.innerText==='hello'",
+     *              actions:[...]
+     *          }
+     *      ]
+     *
+     * }
+     * ```
+     *
+     */
     evaluate?: string;
-    /** 子操作 */
-    actions?: Action[];
-    /** 操作对象 */
+    /**
+     * is element of selector exist
+     *
+     * @example
+     * ```js
+     * // <body><h1 class="title">hello<h1><h2>world<h2><body>
+     * {
+     *      "use":"switch",
+     *      "case":[
+     *          {
+     *              selector:".title",
+     *              actions:[...]
+     *          }
+     *      ]
+     *
+     * }
+     * ```
+     */
+    selector?: string;
+    /** target of operate */
     target: "page" | "frame";
+
+    actions?: Action[];
 }

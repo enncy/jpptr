@@ -1,19 +1,44 @@
 import { PluginParamsWithName } from "../core/schema";
-import { ActionContext, Action } from "../core/types";
+import { Action, ObjectAction } from "../core/types";
+import { ParserContext } from "./types";
 
 /**
- * 页面切换解析器
- *
+ * syntactic sugar parser of {@link ObjectAction.page}
+ * 
+ * 
+ * @param options {@link ObjectAction}
+ * @example
+ * ```json
+ * {
+ *      "use":"function",
+ *      "name":"goto",
+ *      "args":["https://example.com"],
+ *      "page":-1,
+ *      "actions":[["click","#btn"]]
+ * }
+ * // will be parsed to
+ * {
+ *      "use":"page",
+ *      "index":-1,
+ *      "actions":[
+ *          {
+ *              "use":"function",
+                "name":"goto",
+                "args":["https://example.com"],
+ *          },
+            ["click","#btn"]
+ *      ]
+ * }
+ * ```
  */
-export function PageParser({ action }: ActionContext<any>) {
+export function PageParser({ action }: ParserContext<any>): PluginParamsWithName["page"] | undefined {
     if (!Array.isArray(action) && action.page) {
         const { actions = [], page, ...newAction } = action;
-        action = {
+
+        return {
             use: "page",
             index: action.page,
             actions: [newAction as Action].concat(actions),
-        } as PluginParamsWithName["page"];
-
-        return action;
+        };
     }
 }

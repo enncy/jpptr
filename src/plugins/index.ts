@@ -19,7 +19,7 @@ export interface JpptrPluginError extends Error {}
 export { SwitchPlugin, FramePlugin, FunctionPlugin, PagePlugin, VariablesPlugin };
 
 /**
- * 默认插件注册器
+ * default plugins
  */
 export function defaultPlugins() {
     return new Register<keyof PluginParams, PluginFunction>()

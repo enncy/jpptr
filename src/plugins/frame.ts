@@ -1,9 +1,11 @@
 import { Context, ObjectAction } from "../core/types";
 
 /**
- * frame 切换插件
+ *  a plugin that provides function of switch frame
+ * 
+ * @param options Context\<{@link FramePluginParams}\>
  */
-export function FramePlugin({ page, frame, action }: Context<FramePluginParam>) {
+export function FramePlugin({ page, frame, action }: Context<FramePluginParams>) {
     const name = action?.name;
     const index = action?.index;
     if (page) {
@@ -21,11 +23,13 @@ export function FramePlugin({ page, frame, action }: Context<FramePluginParam>) 
     }
 }
 
-/** frame 切换插件参数 */
-export type FramePluginParam = ObjectAction & {
- 
-    /** frame 名字 */
+/** params of {@link FramePlugin} */
+export type FramePluginParams = ObjectAction & {
+    /** name of frame */
     name?: string;
-    /** frame 索引 */
+    /**
+     * index of frame
+     * @see Array.at
+     */
     index?: number;
 };

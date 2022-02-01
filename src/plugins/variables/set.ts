@@ -1,7 +1,10 @@
+import { VariablesPluginParams } from "./../variables";
 import { Context } from "../../core/types";
 
 /**
- * 设置指定变量的值
+ * a plugin that provides support for variable creation.
+ *
+ * use {@link VariablesPluginParams.set} to call this function
  */
 export async function VariablesSetPlugin({
     page,
@@ -9,7 +12,9 @@ export async function VariablesSetPlugin({
     variables,
     action,
     var: varName,
-}: Pick<Context<any>, "variables" | "page" | "frame"> & { action: SetPluginParam; var: string }) {
+}: Pick<Context<any>, "variables" | "page" | "frame"> & { action: SetPluginParams; var: string }) {
+    variables = variables || {};
+
     /** 设置变量 */
     const target = action.target === "page" ? page : frame;
     if (target) {
@@ -56,31 +61,29 @@ export async function VariablesSetPlugin({
     return { variables };
 }
 
-/** 设置变量插件 */
-export type SetPluginParam = {
-    /** 常量 */
+/** params of {@link VariablesSetPlugin} */
+export type SetPluginParams = {
+    /** constant value */
     const?: any;
     /**
-     * 范围: 开始，结束，步长
-     * ***
      * range: start, end, step
      */
     range: [number, number, number];
-    /** 对元素取 innerText 的值 */
+    /** the innerText of the element selected by the element selector */
     text?: string;
-    /** 获取元素属性值 */
+    /** the attributes of the element selected by the element selector */
     attribute?: {
-        /** 元素选择器 */
+        /** element selector */
         selector: string;
-        /** 元素属性 */
+        /** key of attributes */
         key: string;
     };
-    /** 获取指定的名字的cookie值  */
+    /** name of cookie   */
     cookie?: string;
-    /** 获取指定的 url 参数的值 */
+    /** name of url param  */
     url?: string;
-    /** 或者页面方法返回值 */
+    /** return value of evaluate function*/
     evaluate?: string;
-    /** 操作对象 */
+    /** execution target */
     target?: "page" | "frame";
 };

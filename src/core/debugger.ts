@@ -4,7 +4,7 @@ import pino from "pino";
 import ora from "ora";
 import chalk from "chalk";
 import { PluginParams } from "./schema";
-import { FunctionPluginParam } from "../plugins/function";
+import { FunctionPluginParams } from "../plugins/function";
 import { SonicBoomOpts } from "sonic-boom";
 import { Frame, Page } from "puppeteer-core";
 
@@ -119,7 +119,7 @@ export function createOraText(
             if (!Array.isArray(info.action)) {
                 const use: keyof PluginParams = info.action.use as any;
                 if (use === "function") {
-                    const action = info.action as FunctionPluginParam;
+                    const action = info.action as FunctionPluginParams;
                     MORE = space(chalk.greenBright(action.name), action.args);
                 } else {
                     const { use, actions, ...args } = info.action;

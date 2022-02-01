@@ -1,11 +1,27 @@
 import { Context, ObjectAction } from "../core/types";
-import { ApplyPluginParam, VariablesApplyPlugin } from "./variables/apply";
-import { SetPluginParam, VariablesSetPlugin } from "./variables/set";
+import { ApplyPluginParams, VariablesApplyPlugin } from "./variables/apply";
+import { SetPluginParams, VariablesSetPlugin } from "./variables/set";
 
 /**
- * 变量操作插件
+ * A plugin that provides support for variable operation and creation.
+ *
+ * @param options Context\<{@link VariablesPluginParams}\>
+ *
+ * @example
+ * ```json
+ * {
+ *      "use":"variables",
+ *      "var":"my-name",
+ *      // variables creation, see VariablesPluginParams.set
+ *      "set":{...},
+ *      // variables operation, see VariablesPluginParams.apply
+ *      "apply":{...}
+ * }
+ * ```
+ *
+ *
  */
-export function VariablesPlugin(opts: Context<VariablePluginParam>) {
+export function VariablesPlugin(opts: Context<VariablesPluginParams>) {
     const varName = opts.action.var;
     if (opts.action.set) {
         const { set } = opts.action;
@@ -16,8 +32,12 @@ export function VariablesPlugin(opts: Context<VariablePluginParam>) {
     }
 }
 
-export type VariablePluginParam = ObjectAction & {
+/** params of  {@link VariablesPlugin}  */
+export type VariablesPluginParams = ObjectAction & {
+    /** name of variable */
     var: string;
-    set?: SetPluginParam;
-    apply?: ApplyPluginParam;
+    /** params of  {@link VariablesSetPlugin} */
+    set?: SetPluginParams;
+    /** params of  {@link VariablesApplyPlugin} */
+    apply?: ApplyPluginParams;
 };

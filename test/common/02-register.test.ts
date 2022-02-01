@@ -2,7 +2,7 @@ import { ModuleRegister } from "../../src";
 import { describe, it } from "mocha";
 import { expect } from "chai";
 import { ActionExecutor } from "../../src/core/executor";
-import { ActionContext } from "../../src/core/types";
+import { ParserContext } from "../../src/parser/types";
 
 describe("02 register 外部模块注册测试", () => {
     const register = new ModuleRegister();
@@ -11,7 +11,7 @@ describe("02 register 外部模块注册测试", () => {
 
     it("新增解析器", () => {
         parsers.use("test-parser", {
-            parser({ action }: ActionContext<any>) {
+            parser({ action }: ParserContext<any>) {
                 if (typeof action === "number") {
                     return {
                         use: "test-plugin",
@@ -45,7 +45,7 @@ describe("02 register 外部模块注册测试", () => {
 
             const plugin = plugins.get(ctx.action.use);
             const result = await plugin!(ctx);
- 
+
             expect(result).eql([["goto", "https://example.com"]]);
         }
     });

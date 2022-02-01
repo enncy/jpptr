@@ -5,9 +5,9 @@ import { ActionParser } from "../parser";
 
 import { error } from "../logger/logger";
 
-import { JpptrOptions, ModuleRegisterSchema, PuppeteerOptions, Variables } from "./types";
+import { JpptrOptions, PuppeteerOptions, Variables } from "./types";
 import { ModuleRegister } from "./register";
-import { JpptrSchema } from "./schema";
+import { JpptrSchema, ModuleRegisterSchema } from "./schema";
 
 /**
  * 配置文件解析器

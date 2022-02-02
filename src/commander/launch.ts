@@ -1,11 +1,10 @@
 #! /usr/bin/env node
 
 import { Command } from "commander";
-import { ExecuteProgram } from "./exec";
+import { executeCommand } from "./exec";
 import { resolve } from "path";
 import glob from "glob";
 import { Jpptr } from "..";
-import { readFileSync } from "fs";
 
 export interface ExecuteConfig {
     name: string;
@@ -14,14 +13,15 @@ export interface ExecuteConfig {
     exclude: string[];
 }
 
-export const JpptrProgram = new Command();
+export const launchCommand = new Command();
 
-JpptrProgram.name("jpptr").version("1.0.0");
+launchCommand.name("jpptr").version("1.0.0");
 
-JpptrProgram.argument("[file]", "the jpptr config file", "jpptr.config.json")
+launchCommand
+    .argument("[file]", "the jpptr config file", "jpptr.config.json")
     .option("-c, --cwd", "command working directory, default : process.cwd()")
     .description("Execute the jpptr config file")
-    .action(jpptrProgramAction)
+    .action(launchCommandAction)
     .addHelpText(
         "after",
         `
@@ -31,11 +31,11 @@ jpptr ./test/jpptr.config.json
 `
     );
 
-JpptrProgram.addCommand(ExecuteProgram);
+launchCommand.addCommand(executeCommand);
 
-export async function jpptrProgramAction(file: string, options?: { cwd?: string }) {
+export async function launchCommandAction(file: string, options?: { cwd?: string }) {
     const cwd = options?.cwd || process.cwd();
-    const config: ExecuteConfig = Jpptr.readJsonFile(resolve(cwd, file))
+    const config: ExecuteConfig = Jpptr.readJsonFile(resolve(cwd, file));
 
     /** 查找配置文件 */
     const paths = config.include

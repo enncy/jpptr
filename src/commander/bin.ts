@@ -1,5 +1,5 @@
 #!/usr/bin/env node
 
-import { JpptrProgram } from ".";
+import { launchCommand } from "./launch";
 
-JpptrProgram.parse(process.argv);
+launchCommand.parse(process.argv);

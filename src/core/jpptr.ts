@@ -1,77 +1,149 @@
-import { resolve } from "path";
+import { dirname } from "path";
 import puppeteer from "puppeteer-core";
-import { jpptrProgramAction } from "../commander";
+import { launchCommandAction } from "../commander/launch";
 import { JpptrConfigHandler } from "./config.handler";
 import { ActionExecutor } from "./executor";
 import { readFileSync } from "fs";
 import { JpptrOptions } from "./types";
 import stripJsonComments from "strip-json-comments";
 import { startDebug } from "./debugger";
-import { executeProgramAction } from "../commander/exec";
+import { executeCommandAction } from "../commander/exec";
+import { JpptrSchema } from "./schema";
 
 /**
  * jpptr class
+ * 
+ * help create jpptr and create actions executor
+ * 
+ * @example
+ * ```ts
+ * 
+ * ;(async ()=>{
+ * 
+ * const jpptr = Jpptr.from("./test.json")
+ * 
+ * const executor = await jpptr.createExecutor()
+ * 
+ * await executor.executeAll()
+ * 
+ * })()
+ * 
+ * 
+ * 
+ * ```
  */
 export class Jpptr {
     options: JpptrOptions;
 
+    debug: JpptrOptions["debug"];
+    variables: JpptrOptions["variables"];
+    register: JpptrOptions["register"];
+    launch: JpptrOptions["launch"];
+    actions: JpptrOptions["actions"];
+
     constructor(options: JpptrOptions) {
         this.options = options;
+        this.debug = options.debug;
+        this.variables = options.variables;
+        this.register = options.register;
+        this.launch = options.launch;
+        this.actions = options.actions;
     }
 
     /**
-     * 实例化 jpptr
-     * ****
-     * 如果你的json动作文件不是在根目录，请添加 __dirname 去定位文件的路径
-     * 或者使用 cwd 选项
-     * ```js
-     * const jpptr = Jpptr.from("./test.json",{cwd:__dirname});
-     * ```
+     * create jpptr with JpptrSchema object
+     * @param schema {@link JpptrSchema}
+     * @param options \{cwd: string}
+     * @returns <{@link Jpptr}>
      */
-    public static from(path: string, options?: { cwd: string }) {
-        const cwd = options?.cwd || resolve(path, "../");
-        const content = this.readJsonFile(path);
-        const resolvedOptions = new JpptrConfigHandler(cwd).resolve(content);
+    public static create(schema: JpptrSchema, options?: { cwd: string }) {
+        const cwd = options?.cwd || dirname(process.cwd());
+        const resolvedOptions = new JpptrConfigHandler(cwd).resolve(schema);
         return new Jpptr(resolvedOptions);
     }
 
-    /** 解析可带注释的 json 文件 */
+    /**
+     * create jpptr with json file with actions
+     * ****
+     * If your json file is not in the root directory, add `__dirname` to locate the path to the file.
+     *
+     * Or use the `options.cwd` to specify
+     * ```js
+     *
+     * const jpptr = Jpptr.from(path.resolve(__dirname,"./test.json"));
+     * // or
+     * const jpptr = Jpptr.from("./test.json",{cwd:__dirname});
+     *
+     * ```
+     * 
+     * @returns <{@link Jpptr}>
+     */
+    public static from(path: string, options?: { cwd: string }) {
+        const content = this.readJsonFile(path);
+        return this.create(content, options);
+    }
+
+    /**
+     * read jsonc `(json with comments)` file
+     */
     public static readJsonFile(path: string): any {
         return JSON.parse(stripJsonComments(readFileSync(path).toString()));
     }
 
     /**
-     * 启动配置文件, 与命令行 jpptr 功能一致
-     * 
-     * 如果你的配置文件不是在根目录，请添加 __dirname 去定位文件的路径
-     * 
-     * 或者使用 cwd 选项
-     * ```js
-     * await Jpptr.launch("./jpptr.config.json",{cwd:__dirname});
+     * execute the file with jpptr configs
+     *
+     * same as
+     * ```shell
+     * $ jpptr ./jpptr.config.json
      * ```
+     *
+     * @see launchCommandAction
+     * @returns Promise<void>
      */
     public static async launch(path: string, options?: { cwd?: string }) {
-        await jpptrProgramAction(path, options);
+        await launchCommandAction(path, options);
     }
 
     /**
-     * 启动动作文件, 与命令行 jpptr exec 功能一致       
-     * 
-     * 如果你的配置文件不是在根目录，请添加 __dirname 去定位文件的路径
-     * 
-     * 或者使用 cwd 选项
-     * ```js
-     * await Jpptr.execute("./test.json",{cwd:__dirname});
+     * execute the json file with actions
+     *
+     * same as
+     * ```shell
+     * $ jpptr exec ./test.json
      * ```
+     *
+     * @see executeCommandAction
+     * @returns Promise<void>
      */
     public static async execute(path: string, options?: { cwd?: string }) {
-        await executeProgramAction(path, options);
+        await executeCommandAction(path, options);
     }
 
     /**
-     * 创建 executor 实例
-     * 传入选项的参数，可覆盖 jpptr 的初始化参数
-     * @param options jpptr实例化参数
+     * create actions executor with jpptr options
+     *
+     * the parameters passed in can override the initialization parameters of jpptr.
+     * 
+     * 
+     * @param options {@link JpptrOptions}
+     * @returns Promise<{@link ActionExecutor}<any>>
+     * @example
+     * ```ts
+     * 
+     * ;(async ()=>{
+     * 
+     * const jpptr = Jpptr.from("./test.json")
+     * 
+     * const executor = await jpptr.createExecutor()
+     * 
+     * await executor.executeAll()
+     * 
+     * })()
+     * 
+     * 
+     * 
+     * ```
      */
     public async createExecutor(options?: JpptrOptions): Promise<ActionExecutor<any>> {
         const opts = Object.assign({}, this.options, options);

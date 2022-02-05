@@ -1,13 +1,13 @@
 import { Jpptr } from "..";
 import { existsSync, readFileSync } from "fs";
 import { resolve } from "path";
-import { ActionParser } from "../parser";
 
 import { error } from "../logger/logger";
 
 import { JpptrOptions, PuppeteerOptions, Variables } from "./types";
 import { ModuleRegister } from "./register";
 import { JpptrSchema, ModuleRegisterSchema } from "./schema";
+import { ActionParser } from "../parser/Parser";
 
 /**
  * 配置文件解析器
@@ -81,7 +81,7 @@ export class JpptrConfigHandler {
             /** 读取配置文件 */
             content = Jpptr.readJsonFile(configPath);
         } catch {
-            error("jpptr : file not found : ", path);
+            error("jpptr : file not found : ", path, `(cwd:${this.cwd})`);
         }
         this.resolve(content);
         if (configPath && content.extends) {

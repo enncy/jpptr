@@ -7,8 +7,9 @@ import { VariablesPluginParams, VariablesPlugin } from "./variables";
  *
  * The variables set in this loop are `local variables`
  * can only be used in the template actions.
- *
+ * 
  * @param options Context\<{@link ForPluginParams}\>
+ * @category Plugin
  * @example
  * ```json
  * {
@@ -38,7 +39,7 @@ export async function ForPlugin(opts: Context<ForPluginParams>) {
 
 /**
  * params of {@link ForPlugin}
- *
+ * @category Plugin Params
  * @extends VariablesPluginParams
  */
 export type ForPluginParams = VariablesPluginParams & {

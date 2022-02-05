@@ -1,13 +1,14 @@
-import { ArrayAction } from './../core/types';
+import { ArrayAction, Action } from "../core/types";
 import { PluginParamsWithName } from "../core/schema";
-import { ParserContext } from './types';
- 
+import { ParserContext } from "./types";
+
 /**
  *
  * Array-like action parser
- * 
+ *
  * it will parse action which is {@link ArrayAction} to object action
- * 
+ * @param options {@link Action}
+ * @category Parser
  * @example
  * ```json
  * ["goto", "https://example.com"]
@@ -18,6 +19,8 @@ import { ParserContext } from './types';
  *     "args": ["https://example.com"]
  * }
  * ```
+ *
+ *
  */
 export function ArrayParser({ action }: ParserContext<any>): PluginParamsWithName["function"] | undefined {
     // 使用数组第一个值作为函数名,剩下的作为参数

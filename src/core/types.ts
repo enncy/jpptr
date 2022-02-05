@@ -16,7 +16,11 @@ import { ModuleRegister } from "./register";
 import { PluginParams } from "./schema";
 import { DebugOptions } from "./debugger";
 
-/** options of puppeteer */
+/** 
+ * options of puppeteer
+ * 
+ * @see https://pptr.dev/#?product=Puppeteer&version=v13.0.1&show=api-puppeteerlaunchoptions
+ */
 export type PuppeteerOptions = LaunchOptions &
     BrowserLaunchArgumentOptions &
     BrowserConnectOptions & {
@@ -79,6 +83,13 @@ export type ArrayAction = [keyof Page | keyof Frame | keyof Browser, ...any[]];
 
 /**
  * basic action
+ * @example
+ * ```json
+ * {
+ *      "use":"xxx",
+ *      // ...options
+ * }
+ * ```
  */
 export type ObjectAction = {
     /**
@@ -131,10 +142,18 @@ export type Action = ArrayAction | PluginParams[keyof PluginParams] | ObjectActi
 
 /** context of parser and plugin */
 export type Context<T extends Action> = {
+    /** puppeteer Browser */
     browser?: Browser;
+    /** puppeteer Page */
     page?: Page;
+    /** puppeteer Frame */
     frame?: Frame;
+    /** variables pool */
     variables?: Variables;
+    /**
+     * the action of json file with actions,
+     * could be {@link ArrayAction} or {@link ObjectAction}, also could be customize action
+     */
     action: T;
 };
 

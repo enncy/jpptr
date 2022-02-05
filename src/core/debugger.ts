@@ -8,7 +8,51 @@ import { FunctionPluginParams } from "../plugins/function";
 import { SonicBoomOpts } from "sonic-boom";
 import { Frame, Page } from "puppeteer-core";
 
+/**
+ * options with SonicBoomOpts
+ *
+ * @see https://github.com/pinojs/pino/blob/HEAD/docs/api.md#pino-destination
+ */
 export type DebugOptions = SonicBoomOpts & {
+    /**
+     * debugger formatter
+     *
+     * you can use placeholder : `[$step][$time][$page][$frameIndex][$plugin] \t$base`
+     * 
+     * `placeholders` : 
+     * 
+     * - `$step`: step of action
+     * - `$time`: time spent
+     * - `$page`: hostname of page url
+     * - `$frame`: hostname of frame url
+     * - `$frameIndex`: frame index
+     * - `$plugin`: plugin name
+     * - `$base`: basic output, example: [function name] [...args]
+ 
+     * @example
+     * ```text
+     *
+     * [01][0124/ms][example.com][0][function]     goto https://example.com
+     * [02][0315/ms][example.com][0][function]     type #username xxx
+     * [03][0452/ms][example.com][0][function]     type #password 123
+     * [04][1230/ms][example.com][0][function]     click #submit
+     *
+     *
+     * ```
+     *
+     * you can also customize in function
+     *
+     * ```js
+     * {
+     *      formatter({step,time,action}){
+     *          return `${step} ${action} ${time}`
+     *          // 01 {use:"function",name:"goto",args:["https://example.com"]} 1234/ms
+     *      }
+     * }
+     *
+     * ```
+     *
+     */
     formatter?:
         | string
         | {
@@ -97,7 +141,7 @@ export function startDebug(options: JpptrOptions, executor: ActionExecutor<Actio
  * console 控制台输出
  */
 export function createOraText(
-    formatter: DebugOptions["formatter"],
+    formatter: DebugOptions["formatter"] = "[$step][$time][$page][$frameIndex][$plugin] \t$base",
     info: Context<Action> & { step: number; executedTime?: number; more?: string }
 ) {
     if (Array.isArray(info.action)) {
@@ -146,21 +190,17 @@ export function createOraText(
             /** 基础输出 */
             const base = chalk.blackBright(MORE);
 
-            if (typeof formatter === "string") {
-                return (
-                    formatter
-                        .replace("$step", step)
-                        .replace("$time", time)
-                        .replace("$page", page)
-                        /** frameIndex 需要在 frame 之前 */
-                        .replace("$frameIndex", frameIndex)
-                        .replace("$frame", frame)
-                        .replace("$plugin", plugin)
-                        .replace("$base", base)
-                );
-            } else {
-                return `[${step}][${time}][${page}][${frameIndex}][${plugin}] \t${base}`;
-            }
+            return (
+                formatter
+                    .replace("$step", step)
+                    .replace("$time", time)
+                    .replace("$page", page)
+                    /** frameIndex 需要在 frame 之前 */
+                    .replace("$frameIndex", frameIndex)
+                    .replace("$frame", frame)
+                    .replace("$plugin", plugin)
+                    .replace("$base", base)
+            );
         }
     }
 }

@@ -1,11 +1,11 @@
 import { describe, it } from "mocha";
 import { expect } from "chai";
-import { defaultParsers, Parser } from "../../src/parser";
+import { Parser } from "../../src/parser";
 import { readFileSync } from "fs";
 import { resolve } from "path";
 import { Jpptr } from "../../src";
 
-const parser = new Parser(defaultParsers());
+const parser = new Parser(Jpptr.defaultParsers());
 
 const gotoAction = {
     use: "function",

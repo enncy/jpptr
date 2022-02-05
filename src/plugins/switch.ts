@@ -5,7 +5,7 @@ import { Action, ObjectAction, Context } from "../core/types";
  * plugin of actions switch
  *
  * Iterate over each {@link SwitchCase}, until a case is return an actions list
- *
+ * @category Plugin
  * @example
  * ```json
  * {
@@ -233,7 +233,7 @@ export interface ConditionWrapper {
  * params of {@link SwitchPlugin}
  *
  * Iterate over each case-list, until a case is return an actions list
- *
+ * @category Plugin Params
  */
 export type SwitchPluginParams = ObjectAction & {
     case?: SwitchCase[];

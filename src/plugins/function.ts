@@ -3,7 +3,7 @@ import { Context, ObjectAction } from "../core/types";
 
 /**
  * a plugin that provides puppeteer function execution
- * 
+ * @category Plugin
  * @param options Context\<{@link FunctionPluginParams}\>
  */
 export async function FunctionPlugin({ browser, page, frame, action }: Context<FunctionPluginParams>) {
@@ -61,6 +61,12 @@ async function applyFunction({
     }
 }
 
+/**
+ * 
+ * params of {@link FunctionPlugin}
+ * 
+ * @category Plugin Params
+ */
 export type FunctionPluginParams = ObjectAction & {
     /** function name of `Page | Frame | Browser` */
     name: keyof Page | keyof Frame | keyof Browser;

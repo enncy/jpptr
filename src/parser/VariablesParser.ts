@@ -1,4 +1,4 @@
-import { Action, ObjectAction, Variables } from "./../core/types";
+import { Action, ObjectAction, Variables } from "../core/types";
 import { ParserContext } from "./types";
 
 /**
@@ -11,8 +11,9 @@ export const defaultPlaceholder = (flags?: string) => RegExp("#\\{(.*?)\\}", fla
 
 /**
  * parser of variable placeholder
+ * 
  * @param options {@link ObjectAction}
- *
+ * @category Parser
  * @example
  *
  *

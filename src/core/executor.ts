@@ -1,5 +1,5 @@
 import { Page } from "puppeteer-core";
-import { Parser } from "../parser";
+import { Parser } from "../parser/Parser";
 import { ModuleRegister } from "./register";
 
 import { Action, Context, Variables } from "./types";
@@ -20,6 +20,11 @@ export interface ActionExecutorOptions<T extends Action> {
     register?: ModuleRegister;
 }
 
+/**
+ * executor of action
+ * 
+ * @see Walker
+ */
 export class ActionExecutor<T extends Action> extends Walker<Context<T>> {
     public parser: Parser;
     public register: ModuleRegister;
@@ -79,15 +84,44 @@ export class ActionExecutor<T extends Action> extends Walker<Context<T>> {
         return super.emit(event, value, args);
     }
 
+    /**
+     * @returns current {@link Context}
+     */
     context() {
         return this.currentContext;
     }
+    /**
+     * same as function {@link context}
+     */
     ctx() {
         return this.context();
     }
 
     /**
-     * 执行插件，并调用 walk 使自身事件步数自增
+     * execute the plugin and call `walk()` to increase the number of action steps,
+     *
+     * and resolve child actions
+     *
+     * @example
+     * ```ts
+     *
+     * ;(async ()=>{
+     *
+     * const jpptr = Jpptr.from("./test.json")
+     *
+     * const executor = await jpptr.createExecutor({
+     *      // cover all the actions
+     *      actions:[{"user":"function","name":"goto","args":["https://example.com"]}]
+     * })
+     *
+     * await executor.execute() // goto https://example.com
+     *
+     * })()
+     *
+     *
+     *
+     * ```
+     *
      */
     async execute() {
         let ctx = await this.walk();
@@ -125,7 +159,9 @@ export class ActionExecutor<T extends Action> extends Walker<Context<T>> {
         }
     }
 
-    /** 添加事件 */
+    /**
+     * add actions
+     */
     public addActions(actions: any[], ctx?: Omit<Context<T>, "action">) {
         this.add(
             ...actions.map(
@@ -138,7 +174,18 @@ export class ActionExecutor<T extends Action> extends Walker<Context<T>> {
         );
     }
 
-    /** 执行全部 */
+    /**
+     * execute all the actions
+     *
+     *
+     * ```ts
+     * while (!executor.end()) {
+     *      await executor.execute();
+     * }
+     * ```
+     * @see end
+     * @see execute
+     */
     public async executeAll() {
         while (!this.end()) {
             await this.execute();

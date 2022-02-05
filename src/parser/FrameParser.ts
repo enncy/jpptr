@@ -7,6 +7,7 @@ import { ParserContext } from "./types";
  *
  *
  * @param options {@link ObjectAction}
+ * @category Parser
  * @example
  * ```json
  * {

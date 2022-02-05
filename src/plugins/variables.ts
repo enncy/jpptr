@@ -2,11 +2,13 @@ import { Context, ObjectAction } from "../core/types";
 import { ApplyPluginParams, VariablesApplyPlugin } from "./variables/apply";
 import { SetPluginParams, VariablesSetPlugin } from "./variables/set";
 
+export { SetPluginParams, ApplyPluginParams };
+
 /**
  * A plugin that provides support for variable operation and creation.
  *
  * @param options Context\<{@link VariablesPluginParams}\>
- *
+ * @category Plugin
  * @example
  * ```json
  * {
@@ -32,7 +34,10 @@ export function VariablesPlugin(opts: Context<VariablesPluginParams>) {
     }
 }
 
-/** params of  {@link VariablesPlugin}  */
+/**
+ * params of  {@link VariablesPlugin}
+ * @category Plugin Params
+ */
 export type VariablesPluginParams = ObjectAction & {
     /** name of variable */
     var: string;

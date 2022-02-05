@@ -2,7 +2,7 @@
 
 import { Command } from "commander";
 import { executeCommand } from "./exec";
-import { resolve } from "path";
+import { dirname, resolve } from "path";
 import glob from "glob";
 import { Jpptr } from "..";
 
@@ -49,7 +49,7 @@ export async function launchCommandAction(file: string, options?: { cwd?: string
         .flat();
 
     /** 根据每个配置文件实例化 */
-    const jpptrs = await Promise.all(paths.map((path) => Jpptr.from(path)));
+    const jpptrs = await Promise.all(paths.map((path) => Jpptr.from(path, { cwd: dirname(path) })));
 
     /** 创建执行器 */
     const executors = await Promise.all(jpptrs.map((j) => j.createExecutor()));

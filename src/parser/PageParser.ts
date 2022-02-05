@@ -5,7 +5,7 @@ import { ParserContext } from "./types";
 /**
  * syntactic sugar parser of {@link ObjectAction.page}
  * 
- * 
+ * @category Parser
  * @param options {@link ObjectAction}
  * @example
  * ```json

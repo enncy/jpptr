@@ -24,7 +24,7 @@ jpptr exec ./test.json
     );
 
 export async function executeCommandAction(file: string, options?: { cwd?: string }) {
-    const jpptr = Jpptr.from(path.resolve(options?.cwd || process.cwd(), file));
+    const jpptr = Jpptr.from(file, { cwd: options?.cwd || process.cwd() });
     const execute = await jpptr.createExecutor();
     await execute.executeAll();
 }

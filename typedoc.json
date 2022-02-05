@@ -1,0 +1,21 @@
+{
+    "$schema": "https://typedoc.org/schema.json",
+    "entryPoints": ["./src/typedoc.ts"],
+    "includes": ["./src/"],
+
+    "entryPointStrategy": "Expand",
+    "plugin": ["typedoc-plugin-markdown"],
+    "theme": "default",
+    "out": "./docs",
+    "name": "Jpptr API",
+    "readme": "none",
+    "disableSources": true,
+    "includeVersion": true,
+    "cleanOutputDir": true,
+   
+    "categoryOrder": ["Plugin"],
+
+    "hideInPageTOC": true,
+    "hideBreadcrumbs": true,
+    "entryDocument": "api.md"
+}

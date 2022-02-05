@@ -1,8 +1,8 @@
 import { Context, ObjectAction } from "../core/types";
 
 /**
- *  a plugin that provides function of switch frame
- * 
+ * a plugin that provides function of switch frame
+ * @category Plugin
  * @param options Context\<{@link FramePluginParams}\>
  */
 export function FramePlugin({ page, frame, action }: Context<FramePluginParams>) {
@@ -23,7 +23,10 @@ export function FramePlugin({ page, frame, action }: Context<FramePluginParams>)
     }
 }
 
-/** params of {@link FramePlugin} */
+/** 
+ * params of {@link FramePlugin}
+ * @category Plugin Params
+ */
 export type FramePluginParams = ObjectAction & {
     /** name of frame */
     name?: string;

@@ -1,5 +1,6 @@
-import { defaultParsers, ActionParser } from "../parser";
-import { PluginFunction, defaultPlugins } from "../plugins";
+import { ActionParser } from "../parser/Parser";
+import { PluginFunction } from "../plugins";
+import { Jpptr } from "./jpptr";
 import { PluginParams } from "./schema";
 
 export class ModuleRegister {
@@ -7,8 +8,8 @@ export class ModuleRegister {
     parser: Register<string, ActionParser> = new Register();
 
     constructor() {
-        this.parser.useAll(defaultParsers().entries());
-        this.plugin.useAll(defaultPlugins().entries());
+        this.parser.useAll(Jpptr.defaultParsers().entries());
+        this.plugin.useAll(Jpptr.defaultPlugins().entries());
     }
 }
 

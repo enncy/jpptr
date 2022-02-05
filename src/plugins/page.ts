@@ -2,7 +2,7 @@ import { ObjectAction, Context } from "../core/types";
 
 /**
  * a plugin that provides function of switch page
- * 
+ * @category Plugin
  * @param options Context\<{@link PagePluginParams}\>
  */
 export async function PagePlugin({ browser, page, frame, action }: Context<PagePluginParams>) {
@@ -26,7 +26,10 @@ export async function PagePlugin({ browser, page, frame, action }: Context<PageP
     }
 }
 
-/** page 切换插件参数 */
+/** 
+ * params of {@link PagePlugin}
+ * @category Plugin Params
+ */
 export type PagePluginParams = ObjectAction & {
     /**
      * index of page

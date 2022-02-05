@@ -4,7 +4,7 @@
 
 [中文](https://github.com/enncy/jpptr/blob/main/README.md) | [English](https://github.com/enncy/jpptr/blob/main/README.en-US.md)
 
-[文档](https://enncy.github.io/jpptr-docs/) | [实例](https://github.com/enncy/jpptr/tree/main/sample)
+[文档](https://enncy.github.io/jpptr-docs/) | [API](https://github.com/enncy/jpptr/blob/main/docs/api.md) | [实例](https://github.com/enncy/jpptr/tree/main/sample)
   
 > 一个使用 json 语法糖去执行 puppeteer 的框架。     
 > 你可以使用 json 去执行 puppeteer , 就像使用 javascript 去执行 puppeteer 一样       
@@ -31,7 +31,9 @@ page.goto("https://example.com")
 
 ## 文档
 https://enncy.github.io/jpptr-docs/
+## API
+https://github.com/enncy/jpptr/blob/main/docs/api.md
 ## 实例
 
-[https://github.com/enncy/jpptr/tree/main/sample](https://github.com/enncy/jpptr/tree/main/sample)
+https://github.com/enncy/jpptr/tree/main/sample
  
